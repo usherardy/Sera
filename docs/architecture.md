@@ -79,7 +79,12 @@ Migration `0003_baseline_and_auto_tasks.sql` adds `conversations.is_baseline` (t
 | `POST /api/transcribe` | Transcribe an uploaded recording (own folder only), then delete it (120 s) |
 | `POST /api/intake` | From segments or pasted text: label speakers, match or create the project, add and analyze the conversation (120 s) |
 | `POST/DELETE /api/demo/seed` | Load / remove demo data (two sample projects with example findings and tasks), via `lib/sample/seed.ts` |
+| `POST /api/ask` | Ask Sera: `{question, project_id?}` → answer, points, sources resolved from stored rows, optional email draft (60 s). Read-only |
+| `POST /api/ask/transcribe` | A spoken question (multipart `audio`, ≤ 4 MB) → text, via `gpt-4o-mini-transcribe`; audio not stored |
 | `POST /api/demo/login` | No sign-in needed: signs in to the shared demo account (creating it on first use) and seeds it when empty |
+
+## Ask Sera ([lib/ask/ask.ts](../lib/ask/ask.ts))
+`loadAskData` reads projects, calls (summaries; transcripts only for one project, newest first, up to 40k chars), non-dismissed findings and tasks as the user. `buildAskPrompt` writes them as a DATA block with short refs and statuses in words, plus today's date and a 14-day grid. One structured-output call returns `{found, answer, points, sources: refs, draft}`. The server maps refs back to rows (unknown refs dropped), so quotes, titles and links shown are always the stored ones; amounts not in the data are redacted. Nothing is written.
 
 ## Code layout
 ```
@@ -102,12 +107,15 @@ lib/sample/demo.ts                      full demo data: two projects, summaries,
 lib/sample/seed.ts                      seedDemoData(): inserts the demo data for the signed-in user
 lib/demo-account.ts                     shared demo account email + password (public)
 lib/projects/calendar.ts                Google Calendar "create event" link (no OAuth)
+lib/ask/ask.ts                          Ask Sera: loadAskData (RLS), buildAskPrompt (refs P1/C1/F1/T1), askSera, resolveSources
+lib/ask/types.ts, limit.ts              shared response types; best-effort per-user rate limit
+components/ask/ask-bar.tsx              the prompt bar: text + push-to-talk, suggestions, answer, sources, draft
 lib/viewer.ts, auth.ts, dates.ts, format.ts, supabase/, client/api.ts
 scripts/eval-analysis.ts                npm run eval
 ```
 
 ## Environment variables
-`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `OPENAI_API_KEY`, `OPENAI_ANALYSIS_MODEL`, `OPENAI_TRANSCRIBE_MODEL` (fallback when speaker separation is unavailable), `APP_URL`. Without the Supabase keys the app shows a "not configured" notice instead of crashing.
+`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `OPENAI_API_KEY`, `OPENAI_ANALYSIS_MODEL`, `OPENAI_TRANSCRIBE_MODEL` (fallback when speaker separation is unavailable), `OPENAI_ASK_MODEL` (optional, Ask Sera; defaults to the analysis model), `APP_URL`. Without the Supabase keys the app shows a "not configured" notice instead of crashing.
 
 ## Verification
 `npx tsc --noEmit`, `npm run lint`, `npm run build`, `npm run eval` (needs the key and credits). Grounding and redaction were checked offline against fabricated and drifted quotes.

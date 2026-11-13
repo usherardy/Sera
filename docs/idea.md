@@ -21,6 +21,7 @@ You have a lot of clients. Calls blur together, you promise something and forget
 3. **Sera compares.** One structured AI pass finds requests, changes, deadlines, and commitments, classifies each against the original agreement, and attaches the exact quote.
 4. **You review.** Confirm or correct each finding, add notes, create follow-up tasks.
 5. **You ask the client.** Sera drafts a message that *asks* for approval. Today you copy it, send it yourself and record the client's answer by hand.
+6. **Ask Sera anything.** Type or say a question ("What did Acme ask for beyond the agreement?", "Draft an email about the open changes"). Answers come only from your calls, with the exact quotes; emails come back as drafts. It never sends or changes anything.
 
 ## Integrations (planned)
 Sera should work inside the tools you already use. Only the first is live today; the landing page and Settings label the rest **Coming soon**.

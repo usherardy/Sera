@@ -83,13 +83,15 @@ const LINES: Line[] = [
 /* ------------------------------------------------------------ sound */
 
 // A short filtered noise burst: a soft mechanical tick, generated in the
-// browser (no audio file). Browsers only allow sound after a click, so it
-// starts when the visitor turns it on.
+// browser (no audio file). Sound is ON by default, but browsers only allow
+// audio after the visitor interacts, so it unlocks on the first click, tap or
+// key press anywhere on the page.
 let audio: AudioContext | null = null;
 let noise: AudioBuffer | null = null;
 
-function startAudio() {
-  if (typeof window === "undefined" || !window.AudioContext) return;
+/** Resolves true once audio is actually playing (it needs a user gesture). */
+async function startAudio(): Promise<boolean> {
+  if (typeof window === "undefined" || !window.AudioContext) return false;
   if (!audio) {
     audio = new AudioContext();
     const len = Math.floor(audio.sampleRate * 0.025);
@@ -97,7 +99,8 @@ function startAudio() {
     const d = noise.getChannelData(0);
     for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 8);
   }
-  void audio.resume();
+  await audio.resume().catch(() => {});
+  return audio.state === "running";
 }
 
 function tick(volume: number) {
@@ -169,12 +172,29 @@ export function HeroDemo() {
   const [line, setLine] = useState(0);
   const [landed, setLanded] = useState(false);
   const [center, setCenter] = useState(0);
-  const [sound, setSound] = useState(false);
+  const [sound, setSound] = useState(true);
+  const [unlocked, setUnlocked] = useState(false);
   const [visible, setVisible] = useState(true);
   const rootRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
   const pos = useRef(0);
-  const soundOn = useRef(false);
+  const soundOn = useRef(true);
+
+  // Sound is on by default: unlock audio on the visitor's first interaction.
+  useEffect(() => {
+    const events = ["pointerdown", "keydown", "touchstart"] as const;
+    const unlock = (e: Event) => {
+      // The toggle handles its own clicks (so a first click there doesn't turn sound off).
+      if (!soundOn.current || (e.target instanceof Element && e.target.closest("[data-sound-toggle]"))) return;
+      void startAudio().then((ok) => {
+        if (!ok) return;
+        setUnlocked(true);
+        events.forEach((e) => window.removeEventListener(e, unlock));
+      });
+    };
+    events.forEach((e) => window.addEventListener(e, unlock, { passive: true }));
+    return () => events.forEach((e) => window.removeEventListener(e, unlock));
+  }, []);
 
   // Only run while on screen: no ticking while the visitor reads further down.
   useEffect(() => {
@@ -246,10 +266,15 @@ export function HeroDemo() {
   }, [line, visible]);
 
   const toggleSound = () => {
+    // On but still locked by the browser: this click unlocks it and keeps it on.
+    if (sound && !unlocked) {
+      void startAudio().then(setUnlocked);
+      return;
+    }
     const next = !sound;
-    if (next) startAudio();
     soundOn.current = next;
     setSound(next);
+    if (next) void startAudio().then(setUnlocked);
   };
 
   const current = LINES[line];
@@ -291,10 +316,11 @@ export function HeroDemo() {
           type="button"
           onClick={toggleSound}
           aria-pressed={sound}
+          data-sound-toggle
           className="inline-flex w-fit items-center gap-2 rounded-full border border-white/80 bg-white/60 px-3 py-1.5 text-xs font-semibold text-ink/70 backdrop-blur transition-colors hover:text-ink"
         >
           {sound ? <Volume2 className="size-3.5" /> : <VolumeX className="size-3.5" />}
-          {sound ? "Sound on" : "Sound off"}
+          {sound ? (unlocked ? "Sound on" : "Sound on · tap to hear") : "Sound off"}
         </button>
       </div>
 

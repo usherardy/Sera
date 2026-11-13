@@ -12,6 +12,7 @@
 | 5. Record-first flow | Home Record button, upload audio, speaker separation and tagging, auto project match / draft | Built; untested live (needs OpenAI credits) |
 | 5b. Visibility | Project "Where it stands" card, Findings page, Add to Google Calendar links, full demo data | Built |
 | 5c. "Organize every client" pitch | Auto tasks from promises, baseline first calls, To do page + Home "Up next", walkthrough landing with problem section, demo data refresh | Built (needs migration 0003) |
+| 5d. Ask Sera | Prompt bar on Home and project pages, push-to-talk, grounded answers with sources, email drafts | Built; tested live on demo data |
 | 6. Polish and deploy | Mobile pass, empty/loading states, Vercel env vars, deploy | Planned |
 | 7. Integrations | Notion (tasks and deadlines), Gmail and Outlook (send approved change requests from your inbox), Google Calendar sync (OAuth) | Planned, after the hackathon. Landing page and Settings already mention them, labeled Coming soon; Google Calendar "Add to calendar" links work today |
 

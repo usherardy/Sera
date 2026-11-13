@@ -2,6 +2,15 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-14 (Ask Sera)
+- **Ask Sera bar** on Home (all clients) and on each project page (that project only): type or say a question ("What deadlines are coming up?", "Was anything flagged in the last meeting?", "Revise the project and draft an email to the client"). Three suggested questions per page.
+- Answers come only from stored agreements, calls, findings and tasks: a short answer, key points, and source cards (finding badge + the exact quote from the database, linked to its review drawer; tasks, calls, projects). If it isn't in your calls, it says so.
+- Read-only: it never sends, edits or approves anything. Email requests return an editable **draft** (Copy, Open in email). "Revise the project" lists what would change and points to Edit agreement. "Open changes" excludes ones the client already approved or rejected.
+- Voice: push-to-talk with the existing recorder (45 s cap) → `POST /api/ask/transcribe` (`gpt-4o-mini-transcribe`, fallback `OPENAI_TRANSCRIBE_MODEL`, client/project names as spelling hints; audio not stored).
+- `POST /api/ask` (`lib/ask/`): short refs (P1, C2, F3, T4) in the prompt, refs resolved to stored rows on the server (unknown refs dropped), invented amounts redacted, `reasoning_effort: low` on reasoning models. Optional `OPENAI_ASK_MODEL` (default: the analysis model). Best-effort limit of 40 asks per 10 minutes per user (the demo account is shared). Answers take about 3–6 s.
+- Landing hero: the tick sound is now **on by default**; browsers still need one interaction, so it starts on the first click, tap or key press anywhere ("Sound on · tap to hear" until then).
+- Updated `docs/features.md`, `docs/architecture.md`, `docs/design-system.md`, `docs/roadmap.md`, `docs/idea.md`.
+
 ## 2026-11-13 (hero: recording + picker wheel)
 - Landing hero demo (walkthrough version) is now two columns: the call being **recorded** on the left (live timer, the current line written out word by word) and the **check-in call card** on the right. For each line a picker wheel, like a phone's alarm-time picker, spins through In scope / Out of scope / Changed / Unclear / Your task / Idea and lands on the answer: "The contact page looks great." → In scope, "Can we also add Stripe payments…?" → **Out of scope** + Ask client to approve, "I'll need to estimate it first." → Your task. Loops; pauses while off screen; no spin for reduced motion.
 - Optional **tick sound** per row, generated in the browser (no audio file). Off by default, "Sound off/on" toggle, because browsers only allow sound after a click.

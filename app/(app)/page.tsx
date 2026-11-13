@@ -5,7 +5,9 @@ import { SectionHeader } from "@/components/common/layout-bits";
 import { CaptureFlow } from "@/components/capture/capture-flow";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { AskBar } from "@/components/ask/ask-bar";
 import { DemoAutoload } from "@/components/projects/demo-autoload";
+import type { ProjectSummary } from "@/lib/projects/types";
 import { TodoList } from "@/components/projects/todo-list";
 import { ProjectCard } from "@/components/projects/project-bits";
 import { listProjects, listTodo } from "@/lib/projects/data";
@@ -38,6 +40,16 @@ export default function HomePage() {
   );
 }
 
+/** Ready-made questions; the email one names the client with the most to review. */
+function homeSuggestions(projects: ProjectSummary[]) {
+  const busiest = [...projects].sort((a, b) => b.pending_changes - a.pending_changes)[0];
+  return [
+    "What deadlines are coming up?",
+    "Was anything flagged in my last meeting?",
+    `Draft an email to ${busiest.client_name} about the open changes`,
+  ];
+}
+
 async function HomeContent() {
   const [viewer, projects, todo] = await Promise.all([getViewer(), listProjects(), listTodo()]);
   return (
@@ -45,6 +57,11 @@ async function HomeContent() {
       <div className="mx-auto w-full max-w-2xl">
         <CaptureFlow userId={viewer.userId} />
       </div>
+      {projects.length > 0 && (
+        <div className="mx-auto w-full max-w-2xl">
+          <AskBar suggestions={homeSuggestions(projects)} />
+        </div>
+      )}
       {projects.length === 0 && <DemoAutoload />}
       {(todo.tasks.length > 0 || todo.review.length > 0) && (
         <section className="flex flex-col gap-5">

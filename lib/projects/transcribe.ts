@@ -60,3 +60,32 @@ export async function transcribeAudio(bytes: ArrayBuffer, fileName: string, mime
     throw toAIError(e, "transcription");
   }
 }
+
+/**
+ * A short spoken question for "Ask Sera": one speaker, so no diarization.
+ * `vocabulary` (client and project names) helps the model spell them right.
+ */
+export async function transcribeQuestion(bytes: ArrayBuffer, fileName: string, mimeType: string, vocabulary: string[] = []): Promise<string> {
+  const prompt = vocabulary.length ? `A question about client projects. Names: ${vocabulary.slice(0, 40).join(", ")}.` : undefined;
+  const models = ["gpt-4o-mini-transcribe", process.env.OPENAI_TRANSCRIBE_MODEL || "whisper-1"];
+  let last: unknown;
+  for (const model of models) {
+    try {
+      const res = await openai().audio.transcriptions.create({
+        file: await toFile(Buffer.from(bytes), fileName, { type: mimeType }),
+        model,
+        response_format: "json",
+        ...(prompt ? { prompt } : {}),
+      });
+      const text = res.text?.trim();
+      if (!text) throw new AIError("I didn't catch that. Try again, a little closer to the mic.");
+      return text;
+    } catch (e) {
+      if (e instanceof AIError) throw e;
+      last = e;
+      const mapped = toAIError(e, "transcription");
+      if (/credits|key was rejected|isn't configured/.test(mapped.message)) throw mapped;
+    }
+  }
+  throw toAIError(last, "transcription");
+}

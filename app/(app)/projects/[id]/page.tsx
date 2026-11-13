@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ArrowLeft, CalendarDays, FileText, MessagesSquare } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AskBar } from "@/components/ask/ask-bar";
 import { SampleBadge } from "@/components/common/badges";
 import { EmptyState, SectionHeader } from "@/components/common/layout-bits";
 import { AddConversationButton } from "@/components/projects/add-conversation";
@@ -166,6 +167,14 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
           <p className="rounded-card bg-success/25 px-4 py-3 text-sm font-semibold text-success-dark">Nothing waiting for your review.</p>
         ) : null}
       </header>
+
+      {conversations.length > 0 && (
+        <AskBar
+          projectId={p.id}
+          placeholder={`Ask about ${p.name}…`}
+          suggestions={["What are the deadlines and dates for this project?", "Was anything flagged in the last meeting?", "Revise the project and draft an email to the client"]}
+        />
+      )}
 
       {conversations.length > 0 && (
         <ProjectStatus p={p} live={live} tasks={tasks} latest={[...conversations].reverse().find((c) => c.summary)} />
