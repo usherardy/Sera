@@ -2,6 +2,12 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-13 (demo login, cleaner sign-in page)
+- **Demo account:** the Sign in tab comes filled in with a shared demo account (`demo@example.com`, see `lib/demo-account.ts`), so the demo flow is Welcome → Get started → Sign in, no sign-up. `POST /api/demo/login` signs in, creates the account on first use (already confirmed, no email sent) and loads the labeled sample projects when the account is empty. It is public: don't record real client calls on it.
+- Landing "Get started" buttons open the Sign in tab (`/login`) instead of Create account.
+- Login page no longer repeats the landing headline: the left side shows three steps (Agreement, Evidence, Follow-through) as small sample cards; on phones the sign-in card comes first.
+- Demo seeding moved to `lib/sample/seed.ts` (shared by `/api/demo/seed` and the demo login). Updated `docs/features.md`, `docs/architecture.md`.
+
 ## 2026-11-13 (integrations, mentioned)
 - Landing page (both versions) has an **Integrations** section and nav link: Sera works with Google Calendar (available now: Add to calendar links), Notion, Gmail and Outlook (coming soon). Approved change requests will be emailed to the client from your own inbox; nothing is sent until you approve.
 - Settings lists the same integrations with disabled "Coming soon" buttons; the "Ask the client" step says sending from Gmail or Outlook is coming soon.

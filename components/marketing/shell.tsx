@@ -32,7 +32,7 @@ export function MarketingNav({ links = [] }: { links?: { href: string; label: st
           <Link href="/login" className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "hidden sm:inline-flex")}>
             Sign in
           </Link>
-          <Link href="/login?mode=signup" className={buttonVariants({ size: "sm" })}>
+          <Link href="/login" className={buttonVariants({ size: "sm" })}>
             Get started
           </Link>
         </div>
@@ -103,7 +103,7 @@ export function IconTile({ children, tone }: { children: React.ReactNode; tone: 
 
 export function PrimaryCta({ children = "Get started" }: { children?: React.ReactNode }) {
   return (
-    <Link href="/login?mode=signup" className={buttonVariants({ size: "lg" })}>
+    <Link href="/login" className={buttonVariants({ size: "lg" })}>
       {children}
     </Link>
   );

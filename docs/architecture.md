@@ -11,7 +11,9 @@ Update this file when structure, routes, schema, pipeline, or env vars change.
 - Hosting: Vercel ([vercel.json](../vercel.json)).
 
 ## Routing and auth
-`proxy.ts` refreshes the Supabase session. Public paths: `/welcome`, `/login`. A signed-out visitor to `/` is sent to `/welcome`; any other protected page goes to `/login`. Signed-in users visiting `/login` go to `/`.
+`proxy.ts` refreshes the Supabase session. Public paths: `/welcome`, `/login`. A signed-out visitor to `/` is sent to `/welcome`; any other protected page goes to `/login`. Signed-in users visiting `/login` go to `/`. Public paths also include `/brand` (logo concepts).
+
+**Demo account:** the login form is pre-filled with `DEMO_EMAIL` / `DEMO_PASSWORD` from `lib/demo-account.ts` (public, not secrets). Submitting with that email calls `POST /api/demo/login`, which signs in with the normal server client (session cookies), creates the user with the admin client on first use (`email_confirm: true`, so no email), and seeds the sample projects if the account has none. Everyone shares this account.
 
 ## Capture flow (home page, [components/capture/capture-flow.tsx](../components/capture/capture-flow.tsx))
 ```
@@ -65,7 +67,7 @@ The spec's separate `scope_changes` table is folded into `findings` (the review 
 
 Migration `0003_baseline_and_auto_tasks.sql` adds `conversations.is_baseline` (the call that set up its project's agreement; analysis runs in baseline mode and never flags scope changes on it) and `tasks.auto_created` (tasks Sera made from your promises; a re-run deletes only those that are still open before re-creating them).
 
-## API (all require sign-in; RLS enforces ownership)
+## API (all require sign-in except `/api/demo/login`; RLS enforces ownership)
 | Route | Purpose |
 |---|---|
 | `POST /api/projects`, `PATCH/DELETE /api/projects/[id]` | Create, edit agreement, delete |
@@ -76,12 +78,13 @@ Migration `0003_baseline_and_auto_tasks.sql` adds `conversations.is_baseline` (t
 | `POST /api/tasks`, `PATCH/DELETE /api/tasks/[id]` | Follow-up tasks |
 | `POST /api/transcribe` | Transcribe an uploaded recording (own folder only), then delete it (120 s) |
 | `POST /api/intake` | From segments or pasted text: label speakers, match or create the project, add and analyze the conversation (120 s) |
-| `POST/DELETE /api/demo/seed` | Load / remove demo data (two sample projects with example findings and tasks) |
+| `POST/DELETE /api/demo/seed` | Load / remove demo data (two sample projects with example findings and tasks), via `lib/sample/seed.ts` |
+| `POST /api/demo/login` | No sign-in needed: signs in to the shared demo account (creating it on first use) and seeds it when empty |
 
 ## Code layout
 ```
 app/(marketing)/welcome/                public landing page (version picked in lib/landing.ts); /overview and /walkthrough preview each
-app/(auth)/login/                       login hero + form
+app/(auth)/login/                       sign-in card (demo account pre-filled) + Agreement / Evidence / Follow-through cards
 app/(app)/layout.tsx                    top nav (desktop) / bottom nav (mobile)
 app/(app)/page.tsx                      home: record flow + recent projects
 app/(app)/projects/                     dashboard, [id], [id]/conversations/[conversationId]
@@ -96,6 +99,8 @@ components/capture/                     capture-flow.tsx (home record flow), use
 lib/projects/                           types, meta, data, schemas, openai, analyze, run-analysis, process, grounding, message, transcribe, draft, intake
 lib/sample/acme.ts                      Acme project + four conversations (also used by the eval)
 lib/sample/demo.ts                      full demo data: two projects, summaries, example findings, tasks
+lib/sample/seed.ts                      seedDemoData(): inserts the demo data for the signed-in user
+lib/demo-account.ts                     shared demo account email + password (public)
 lib/projects/calendar.ts                Google Calendar "create event" link (no OAuth)
 lib/viewer.ts, auth.ts, dates.ts, format.ts, supabase/, client/api.ts
 scripts/eval-analysis.ts                npm run eval

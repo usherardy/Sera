@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { api } from "@/lib/client/api";
+import { DEMO_EMAIL, DEMO_PASSWORD, isDemoEmail } from "@/lib/demo-account";
 import { createClient } from "@/lib/supabase/browser";
 import { DESIGN_PREVIEW } from "@/lib/preview";
 import { cn } from "@/lib/utils";
@@ -41,7 +43,10 @@ export function LoginForm() {
     setBusy(true);
     try {
       const supabase = createClient();
-      if (mode === "signup") {
+      if (mode === "signin" && isDemoEmail(email)) {
+        // The shared demo account: the server signs in (creating it on first use) and loads sample data.
+        await api("/api/demo/login", "POST");
+      } else if (mode === "signup") {
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -88,25 +93,44 @@ export function LoginForm() {
           </button>
         ))}
       </div>
-      {mode === "signup" && (
+      {mode === "signin" ? (
+        <p className="flex items-center gap-2 rounded-lg bg-dawn/70 px-3 py-2.5 text-sm text-ink/80">
+          <Sparkles className="size-4 shrink-0" />
+          <span>
+            <span className="font-semibold text-ink">Demo account filled in.</span> Just press Sign in.
+          </span>
+        </p>
+      ) : (
         <div className="flex flex-col gap-2">
           <Label htmlFor="name">Your name</Label>
           <Input id="name" name="name" autoComplete="name" placeholder="Alex" />
         </div>
       )}
+      {/* key={mode}: the demo values fill the Sign in tab only; Create account starts empty. */}
       <div className="flex flex-col gap-2">
         <Label htmlFor="email">Email</Label>
-        <Input id="email" name="email" type="email" autoComplete="email" required placeholder="you@example.com" />
+        <Input
+          key={`email-${mode}`}
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          required
+          placeholder="you@example.com"
+          defaultValue={mode === "signin" ? DEMO_EMAIL : undefined}
+        />
       </div>
       <div className="flex flex-col gap-2">
         <Label htmlFor="password">Password</Label>
         <Input
+          key={`password-${mode}`}
           id="password"
           name="password"
           type="password"
           autoComplete={mode === "signin" ? "current-password" : "new-password"}
           required
           minLength={8}
+          defaultValue={mode === "signin" ? DEMO_PASSWORD : undefined}
         />
       </div>
       {error && <p className="rounded-lg bg-error-bg px-3 py-2 text-sm font-medium text-pulse">{error}</p>}
