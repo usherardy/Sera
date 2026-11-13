@@ -6,7 +6,7 @@ Status key: **Built** (code complete, typechecks and builds) · **Untested live*
 
 | Feature | Route | Behavior | Status |
 |---|---|---|---|
-| Landing page | `/welcome` | "Change requests on autopilot", for agencies & studios. Sky-and-clouds split hero with a product preview (transcript line → finding), the problem, six features, who it's for (product & dev studios, design & brand studios, consultancies), four-step how it works, closing CTA. Signed-out visitors to `/` land here. | Built |
+| Landing page | `/welcome` | "Change requests on autopilot", for agencies & studios. Sky-and-clouds split hero with a product preview (transcript line → finding), the problem, six features, who it's for (product & dev studios, design & brand studios, consultancies), four-step how it works, closing CTA. Signed-out visitors to `/` land here. A second version, the **walkthrough** (one call told in four illustrated steps), is kept too: preview both at `/welcome/overview` and `/welcome/walkthrough`; `LANDING_VERSION` in `lib/landing.ts` picks which one `/welcome` shows. | Built |
 | Login | `/login` | Email + password sign-in / sign-up (Supabase Auth). `?mode=signup` opens on Create account. | Built |
 | Record (home) | `/` | Big Record button, upload audio, or paste transcript. Press Stop and Sera does the rest: transcribe → label speakers → match or create the project → analyze → open the result. Recent projects below. | Built · untested live |
 | Projects dashboard | `/projects` | Stats (active projects, changes to review, open follow-ups), project cards (name, client, price, deadline, pending changes), recent activity, New project. | Built · untested live |

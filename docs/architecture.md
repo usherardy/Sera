@@ -77,7 +77,7 @@ The spec's separate `scope_changes` table is folded into `findings` (the review 
 
 ## Code layout
 ```
-app/(marketing)/welcome/                public landing page
+app/(marketing)/welcome/                public landing page (version picked in lib/landing.ts); /overview and /walkthrough preview each
 app/(auth)/login/                       login hero + form
 app/(app)/layout.tsx                    top nav (desktop) / bottom nav (mobile)
 app/(app)/page.tsx                      home: record flow + recent projects
@@ -87,6 +87,7 @@ app/(app)/settings/                     timezone, demo data, sign out
 app/api/                                routes above
 components/projects/                    form dialog, add-conversation, analyze button, workspace, finding review, task list, bits
 components/marketing/sky.tsx            original SVG cloud sky backdrop
+components/marketing/landing-*.tsx      the two landing versions (overview, walkthrough) + shell.tsx (nav, footer, shared pieces)
 components/common/ ui/ nav/ brand/ settings/
 components/capture/                     capture-flow.tsx (home record flow), use-recorder.ts, waveform.tsx
 lib/projects/                           types, meta, data, schemas, openai, analyze, run-analysis, process, grounding, message, transcribe, draft, intake

@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { ArrowDown } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { buttonVariants } from "@/components/ui/button";
+import { Waveform } from "@/components/capture/waveform";
+import { FindingBadge } from "@/components/projects/project-bits";
 import { cn } from "@/lib/utils";
 
 /** Frosted nav used on every landing variant. */
@@ -46,6 +49,42 @@ export function MarketingFooter() {
         <p>Unfair Weekend 2026</p>
       </div>
     </footer>
+  );
+}
+
+/** Dark recording pill: the client's words being captured. */
+export function RecordingPill({ quote, className }: { quote: string; className?: string }) {
+  return (
+    <div
+      className={cn(
+        "flex w-full items-center gap-3 rounded-full bg-[linear-gradient(180deg,#2e2e33_0%,#121214_100%)] py-3 pr-5 pl-4 text-white shadow-[0_0_0_8px_rgba(255,255,255,0.35),0_18px_40px_-16px_rgba(20,30,80,0.6)]",
+        className,
+      )}
+    >
+      <span className="relative flex size-2.5 shrink-0">
+        <span className="absolute inline-flex size-full animate-ping rounded-full bg-flare opacity-75" />
+        <span className="relative inline-flex size-2.5 rounded-full bg-flare" />
+      </span>
+      <Waveform className="h-5 shrink-0" />
+      <span className="truncate font-mono text-[0.8125rem]">“{quote}”</span>
+    </div>
+  );
+}
+
+/** The idea in one picture: what the client said → what Sera flags. */
+export function HeroDemo() {
+  return (
+    <div className="mx-auto flex w-full max-w-md flex-col items-center gap-3">
+      <RecordingPill quote="Can we also add Stripe payments?" />
+      <ArrowDown className="size-4 text-ink/40" />
+      <div className="surface-raised flex w-full items-center justify-between gap-3 px-5 py-4 text-left">
+        <div className="flex flex-col gap-1.5">
+          <FindingBadge category="potential_scope_addition" className="w-fit" />
+          <p className="font-semibold">Not in your agreement</p>
+        </div>
+        <span className="rounded-lg bg-secondary px-3 py-2 text-xs font-semibold whitespace-nowrap text-ink/70">Ask client to approve</span>
+      </div>
+    </div>
   );
 }
 
