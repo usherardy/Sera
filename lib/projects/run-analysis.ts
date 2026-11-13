@@ -2,7 +2,7 @@ import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { isValidTimeZone } from "@/lib/dates";
 import { DEFAULT_TZ, localDateOf } from "@/lib/format";
-import { AnalysisError, analyzeConversation } from "./analyze";
+import { AnalysisError, analyzeConversation, type EarlierChange } from "./analyze";
 import { toFindingRows } from "./process";
 import type { Project } from "./types";
 
@@ -52,11 +52,36 @@ export async function runAnalysis(supabase: SupabaseClient, userId: string, conv
     const timezone = profile?.timezone && isValidTimeZone(profile.timezone) ? profile.timezone : DEFAULT_TZ;
     const transcript: string = claimed.transcript;
 
+    // Changes from EARLIER calls that the client answered (or that are awaiting an answer):
+    // an approved change counts as part of the current scope for this comparison.
+    const { data: earlier } = await supabase
+      .from("findings")
+      .select("title,category,client_status,due_date,conversation:conversations(recorded_at)")
+      .eq("project_id", claimed.project_id)
+      .neq("conversation_id", conversationId)
+      .eq("review_status", "reviewed")
+      .in("client_status", ["approved", "rejected", "sent"])
+      .in("category", ["potential_scope_addition", "scope_modification", "clarification_needed"]);
+    const history: EarlierChange[] = ((earlier ?? []) as unknown as {
+      title: string;
+      category: string;
+      client_status: EarlierChange["client_status"];
+      due_date: string | null;
+      conversation: { recorded_at: string } | null;
+    }[]).map((f) => ({
+      title: f.title,
+      category: f.category,
+      client_status: f.client_status,
+      due_date: f.due_date,
+      date: f.conversation ? localDateOf(f.conversation.recorded_at, timezone) : "earlier",
+    }));
+
     const analysis = await analyzeConversation({
       project: project as Pick<Project, "name" | "client_name" | "original_description" | "agreed_scope" | "exclusions" | "fixed_price" | "currency" | "deadline">,
       transcript,
       conversationDate: localDateOf(claimed.recorded_at, timezone),
       timezone,
+      history,
     });
 
     // Amounts are only allowed if they were actually said or are in the agreement.

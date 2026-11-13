@@ -2,6 +2,11 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-13 (earlier changes count)
+- New calls on a project are compared against the original agreement plus changes the client already approved, so an approved add-on isn't flagged again. Rejected changes are flagged with a note; changes awaiting an answer are marked as already raised.
+- Project page shows "Approved since" under the original agreement; "Where it stands" counts approved changes.
+- `npm run eval` gained a follow-up case (approved Stripe mentioned again). Not run live yet (OpenAI credits).
+
 ## 2026-11-13 (clouds)
 - Clouds redrawn: crisp instead of blurry (then softened to 70% opacity with a lighter shadow), no hard rectangular clipping. Drawn at full resolution with unclipped overflow, light outline texture, one gradient per cloud, and a soft shadow for depth.
 

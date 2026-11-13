@@ -68,6 +68,7 @@ CRITICAL RULES
 14. Be concise. "title" is a short noun phrase. "explanation" says why you classified it that way, referring to the agreement.
 15. confidence: "high" only when the quote clearly supports the classification; "low" when ambiguous.
 16. In the transcript, lines labeled "You:" are the provider (our user) and "Client:" is the client. Write titles, descriptions and explanations addressing the provider as "you" (e.g. "You said the extra work needs an estimate first"). Never use the word "freelancer".
+17. EARLIER CHANGES (if listed): the current scope is the original agreement PLUS the changes the client already approved. If a request matches an APPROVED change, classify it as existing_scope and say in "explanation" that it was approved earlier (give the date). An approved deadline change replaces the original deadline for comparison. If a request matches a REJECTED change, keep it as potential_scope_addition and note the client rejected it before. If it matches a change still AWAITING the client's answer, use the same category as before and say in "description" that it was already raised and is awaiting an answer. Never treat a change as approved unless it is listed as approved.
 
 "summary": two or three neutral sentences on what the conversation was about. Do not infer feelings or intent.`;
 
@@ -80,11 +81,35 @@ export function dateGrid(fromDate: string): string {
   }).join(", ");
 }
 
+/** A change raised in an earlier call on the same project, and what the client did with it. */
+export interface EarlierChange {
+  title: string;
+  category: string;
+  client_status: "approved" | "rejected" | "sent";
+  /** local date of the call it came from */
+  date: string;
+  due_date: string | null;
+}
+
+function earlierChanges(history: EarlierChange[] | undefined): string {
+  if (!history?.length) return "";
+  const line = (c: EarlierChange) => `- ${c.title} (raised ${c.date}${c.due_date ? `; new date ${c.due_date}` : ""})`;
+  const group = (status: EarlierChange["client_status"], label: string) => {
+    const xs = history.filter((c) => c.client_status === status);
+    return xs.length ? `${label}:\n${xs.map(line).join("\n")}\n` : "";
+  };
+  return `
+EARLIER CHANGES ON THIS PROJECT (the original agreement above is NOT edited by these)
+${group("approved", "Approved by the client (part of the current scope)")}${group("rejected", "Rejected by the client")}${group("sent", "Raised with the client, awaiting an answer")}`;
+}
+
 export function buildUserPrompt(args: {
   project: Pick<Project, "name" | "client_name" | "original_description" | "agreed_scope" | "exclusions" | "fixed_price" | "currency" | "deadline">;
   transcript: string;
   conversationDate: string; // local YYYY-MM-DD
   timezone: string;
+  /** changes from earlier calls with a recorded client answer (or still awaiting one) */
+  history?: EarlierChange[];
 }): string {
   const { project: p } = args;
   const list = (items: string[]) => (items.length ? items.map((s) => `- ${s}`).join("\n") : "(none listed)");
@@ -97,7 +122,7 @@ Explicitly not included / constraints:
 ${list(p.exclusions)}
 Fixed price: ${p.fixed_price != null ? `${p.fixed_price} ${p.currency}` : "not stated"}
 Original deadline: ${p.deadline ?? "not stated"}
-
+${earlierChanges(args.history)}
 CONVERSATION DATE: ${args.conversationDate} (${args.timezone}). Next 14 days: ${dateGrid(args.conversationDate)}
 
 TRANSCRIPT

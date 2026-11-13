@@ -87,6 +87,7 @@ function ProjectStatus({
         <Row label="Agreed">
           {p.agreed_scope.length ? p.agreed_scope.join(", ") : "No deliverables recorded yet"} · {formatMoney(p.fixed_price, p.currency)} ·{" "}
           {p.deadline ? `due ${formatDateOnly(p.deadline)}` : "no deadline"}
+          {approved > 0 && ` · plus ${approved} approved change${approved === 1 ? "" : "s"}`}
         </Row>
         <Row label="Since then">
           {changeItems.length === 0 ? (
@@ -132,6 +133,8 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
   const commitments = live.filter((f) => f.category === "commitment");
   const others = live.filter((f) => !isChangeCategory(f.category) && f.category !== "commitment");
   const openTasks = tasks.filter((t) => t.status === "open");
+  // The current scope = original agreement + what the client approved later (shown separately, never merged in).
+  const approvedChanges = changes.filter((f) => f.review_status === "reviewed" && f.client_status === "approved");
 
   // Deadline corrections are surfaced next to, never over, the original deadline.
   const discussedDeadlines = live.filter(
@@ -197,6 +200,22 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
                     <li key={s} className="flex items-start gap-2.5 text-[0.9375rem] text-ink/80">
                       <span className="mt-2 size-1.5 shrink-0 rounded-full bg-pulse" />
                       {s}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+            {approvedChanges.length > 0 && (
+              <>
+                <p className="eyebrow mt-6 mb-1">Approved since</p>
+                <p className="mb-3 text-xs text-ink-muted">Added by the client after the original agreement. Later calls count these as in scope.</p>
+                <ul className="flex flex-col gap-2">
+                  {approvedChanges.map((f) => (
+                    <li key={f.id} className="flex items-start gap-2.5 text-[0.9375rem]">
+                      <span className="mt-2 size-1.5 shrink-0 rounded-full bg-success-dark" />
+                      <span>
+                        {f.title} <span className="text-xs text-ink-muted">· from {f.conversation.title}</span>
+                      </span>
                     </li>
                   ))}
                 </ul>

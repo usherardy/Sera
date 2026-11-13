@@ -38,6 +38,7 @@ Status key: **Built** (code complete, typechecks and builds) · **Untested live*
 | Rules enforced in code | Ideas get no owner, deadline, or task; amounts not stated are redacted; duplicates collapsed | Built (offline-tested) |
 | Deadline corrections | Shown beside the original deadline as "Discussed: … (not confirmed)"; the original is never changed | Built |
 | Re-run analysis | Replaces only unreviewed findings; reviewed and dismissed ones are kept | Built · untested live |
+| Earlier changes count | Each new call on a project is compared against the original agreement **plus** changes the client already approved (shown as "already in scope, approved earlier"); previously rejected changes are flagged again with a note; changes awaiting an answer are marked as already raised. The original agreement is never edited; the project page lists "Approved since" under it | Built · untested live |
 | Failure handling | Failed state with the reason and Retry; stuck analyses show as failed after 3 minutes; empty transcripts rejected | Built · untested live |
 
 ## Follow-through

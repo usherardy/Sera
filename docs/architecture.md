@@ -43,7 +43,7 @@ Add conversation (paste / .txt / from capture)
 Analysis runs inside the request (`maxDuration = 60`). There is no queue or polling; refresh is safe because status lives on `conversations.processing_status`.
 
 ## Analysis ([lib/projects/analyze.ts](../lib/projects/analyze.ts))
-Input: the original agreement, the conversation date and a 14-day date grid in the user's timezone (so "by Friday" resolves correctly), and the transcript. Output (Zod, strict): `summary` and `findings[]` with `category`, `title`, `description`, `source_quote`, `related_scope_item`, `explanation`, `confidence`, `suggested_follow_up`, `owner_label`, `due_phrase`, `due_date`.
+Input: the original agreement, **earlier changes on the same project** (reviewed findings from other calls whose client status is approved, rejected or sent, grouped by status), the conversation date and a 14-day date grid in the user's timezone (so "by Friday" resolves correctly), and the transcript. Approved changes count as part of the current scope for the comparison; the stored agreement is never modified. Output (Zod, strict): `summary` and `findings[]` with `category`, `title`, `description`, `source_quote`, `related_scope_item`, `explanation`, `confidence`, `suggested_follow_up`, `owner_label`, `due_phrase`, `due_date`.
 
 The system prompt encodes the product rules (request ≠ approval, no invented price/owner/deadline, ideas are not commitments, approval statements need human verification, corrections replace earlier dates, no legal claims). Model: `OPENAI_ANALYSIS_MODEL` (default `gpt-4o`). Errors are mapped to user-safe messages, including an explicit "no credits left" case.
 

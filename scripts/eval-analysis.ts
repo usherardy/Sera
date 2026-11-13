@@ -1,6 +1,6 @@
 // Runs the Acme demo conversations through the real analysis pipeline and checks
 // the product rules. Needs OPENAI_API_KEY. Run: npm run eval
-import { analyzeConversation, ANALYSIS_MODEL } from "@/lib/projects/analyze";
+import { analyzeConversation, ANALYSIS_MODEL, type EarlierChange } from "@/lib/projects/analyze";
 import { toFindingRows, type FindingRow } from "@/lib/projects/process";
 import { ACME_CONVERSATIONS, ACME_PROJECT } from "@/lib/sample/acme";
 
@@ -47,6 +47,16 @@ async function main() {
   check("Deadline change flagged as a scope modification", has(by.deadline.rows, "scope_modification", /deadline|deliver|monday|23/i));
   check("Latest date (2026-11-23) is surfaced", by.deadline.rows.some((r) => r.category === "scope_modification" && r.due_date === "2026-11-23"));
   check("Only one deadline modification (correction, not duplicate)", by.deadline.rows.filter((r) => r.category === "scope_modification").length === 1);
+
+  console.log("\nLater call about an already-approved change");
+  const followUp = "Client: How is the Stripe payments integration coming along?\nYou: It's going well, it will be ready next week.";
+  const history: EarlierChange[] = [
+    { title: "Stripe payment integration", category: "potential_scope_addition", client_status: "approved", date: "2026-11-09", due_date: null },
+  ];
+  const later = await analyzeConversation({ project: ACME_PROJECT, transcript: followUp, conversationDate: "2026-11-16", timezone: "Europe/Vilnius", history });
+  const laterRows = toFindingRows(later.findings, followUp, followUp).rows;
+  console.log(`[follow-up] ${laterRows.map((r) => `${r.category}:"${r.title}"`).join(" | ") || "(no findings)"}`);
+  check("Approved Stripe change is not flagged as new work again", !has(laterRows, "potential_scope_addition", /stripe|payment/i));
 
   console.log("\nAll conversations");
   const all = results.flatMap((r) => r.rows.map((row) => ({ key: r.c.key, row, transcript: r.c.transcript })));
