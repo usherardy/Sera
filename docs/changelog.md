@@ -2,6 +2,14 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-13 (record-first flow)
+- Home (`/`) is now a Record button: record in the browser, upload audio, or paste a transcript.
+- Transcription with speaker separation; the user tags which speaker is the client, and lines become `Client:` / `Freelancer:`.
+- The project is set up automatically: SERA matches the call to an existing project or drafts a new agreement from what was said (unstated prices dropped in code), and the freelancer confirms before saving.
+- Audio goes browser → private bucket → transcription, then is deleted.
+- Nav: Record · Projects · Settings. Updated idea, features, architecture, roadmap, design-system.
+- Not verified live (OpenAI credits); typecheck, lint, build pass.
+
 ## 2026-11-13 (pivot to scope protection)
 - Product focus changed from a general AI memory app to **scope protection for freelancers** on fixed-price projects (still named SERA). Rewrote `docs/idea.md`, `features.md`, `architecture.md`, `roadmap.md`.
 - Added migration `0002_projects.sql` (projects, conversations, findings, tasks, all with RLS). **Must be run manually in Supabase.**

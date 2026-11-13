@@ -3,17 +3,19 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { usePathname } from "next/navigation";
-import { FolderKanban, Settings } from "lucide-react";
+import { FolderKanban, Mic, Settings } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { cn } from "@/lib/utils";
 
 const NAV = [
+  { href: "/", label: "Record", icon: Mic },
   { href: "/projects", label: "Projects", icon: FolderKanban },
   { href: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
 function isActive(pathname: string | null, href: string) {
-  return pathname != null && pathname.startsWith(href);
+  if (pathname == null) return false;
+  return href === "/" ? pathname === "/" : pathname.startsWith(href);
 }
 
 // usePathname suspends on routes with request-time params (Cache Components),
@@ -34,7 +36,7 @@ function TopNavView({ pathname }: { pathname: string | null }) {
   return (
     <div className="sticky top-0 z-30 px-4 pt-3 sm:pt-4">
       <nav className="mx-auto flex max-w-5xl items-center justify-between gap-4 rounded-[0.6rem] border-2 border-cream-dark bg-cream/90 py-2 pr-2 pl-4 backdrop-blur-md">
-        <Link href="/projects" aria-label="SERA home">
+        <Link href="/" aria-label="SERA home">
           <Logo />
         </Link>
         <ul className="hidden items-center gap-1 sm:flex">

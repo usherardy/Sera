@@ -16,10 +16,10 @@ EB Garamond for headings with **one italic accent word** per heading ("Here's wh
 Buttons: 0.5rem radius, 2px ink border, lavender fill, weight 600, small press-scale. Cards: 1rem radius, 2px `#E4E4D0` border, no blur shadows (occasionally a hard 2px ink offset shadow). Large containers: 2–2.5rem radius.
 
 ## Navigation
-Desktop: floating bordered cream top bar (max 64rem) with Projects and Settings. Mobile: floating bordered bottom bar with Projects and Settings.
+Desktop: floating bordered cream top bar (max 64rem) with Record, Projects, Settings. Mobile: floating bordered bottom bar with the same three.
 
-## Recording pill
-Removed with the old capture flow. If browser recording returns (Phase 5), it should show a clearly visible recording state with a live waveform and timer.
+## Record screen
+Home is a large ink circle with a lavender mic. While recording, an ink pill shows a pulsing coral dot, the live waveform (Web Audio `AnalyserNode`), a mono timer, Stop and Cancel; it is always visible, which also covers the privacy requirement. Follow-up steps (speakers, transcript, project) sit in a `surface-raised` card with a serif heading and one italic accent word.
 
 ## Light only
 The app is light-only. `@custom-variant dark` in [app/globals.css](../app/globals.css) scopes `dark:` utilities to a `.dark` ancestor, which is never set, so a phone in dark mode can't restyle shadcn components.

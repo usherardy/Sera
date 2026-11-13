@@ -1,8 +1,8 @@
 import "server-only";
-import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
 import { addDays } from "@/lib/dates";
+import { AIError, openai, toAIError } from "./openai";
 import type { Project } from "./types";
 
 // Structured output: every field required (nullable where optional) so the
@@ -36,7 +36,8 @@ export const AnalysisOut = z.object({
 export type AnalysisResult = z.infer<typeof AnalysisOut>;
 export type RawFinding = z.infer<typeof FindingOut>;
 
-export class AnalysisError extends Error {}
+/** Kept as an alias so callers can catch analysis errors by name. */
+export const AnalysisError = AIError;
 
 const SYSTEM_PROMPT = `You help a freelancer or small agency protect a fixed-price project from scope creep. You read ONE conversation with a client and compare what was said against the ORIGINAL agreement. A human reviews everything you report; you never decide anything.
 
@@ -69,7 +70,7 @@ CRITICAL RULES
 
 "summary": two or three neutral sentences on what the conversation was about. Do not infer feelings or intent.`;
 
-function dateGrid(fromDate: string): string {
+export function dateGrid(fromDate: string): string {
   const fmt = new Intl.DateTimeFormat("en-US", { weekday: "short", timeZone: "UTC" });
   return Array.from({ length: 14 }, (_, i) => {
     const d = addDays(fromDate, i);
@@ -102,14 +103,6 @@ TRANSCRIPT
 ${args.transcript}`;
 }
 
-let client: OpenAI | null = null;
-function openai(): OpenAI {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) throw new AnalysisError("OpenAI isn't configured (missing OPENAI_API_KEY).");
-  client ??= new OpenAI({ apiKey, timeout: 50_000, maxRetries: 1 });
-  return client;
-}
-
 export const ANALYSIS_MODEL = () => process.env.OPENAI_ANALYSIS_MODEL || "gpt-4o";
 
 /** One structured-output call. Throws AnalysisError with a user-safe message. */
@@ -124,22 +117,11 @@ export async function analyzeConversation(args: Parameters<typeof buildUserPromp
       response_format: zodResponseFormat(AnalysisOut, "scope_analysis"),
     });
     const message = completion.choices[0]?.message;
-    if (message?.refusal) throw new AnalysisError("The model declined to analyze this conversation.");
+    if (message?.refusal) throw new AIError("The model declined to analyze this conversation.");
     const parsed = message?.parsed;
-    if (!parsed) throw new AnalysisError("The model returned an unreadable result. Try again.");
+    if (!parsed) throw new AIError("The model returned an unreadable result. Try again.");
     return AnalysisOut.parse(parsed);
   } catch (e) {
-    if (e instanceof AnalysisError) throw e;
-    console.error("analyzeConversation failed", e);
-    if (e instanceof OpenAI.APIConnectionTimeoutError) throw new AnalysisError("The analysis timed out. Try again.");
-    if (e instanceof OpenAI.AuthenticationError) throw new AnalysisError("The OpenAI key was rejected. Check OPENAI_API_KEY.");
-    if (e instanceof OpenAI.NotFoundError) throw new AnalysisError("The configured OpenAI model wasn't found. Check OPENAI_ANALYSIS_MODEL.");
-    if (e instanceof OpenAI.RateLimitError) {
-      // OpenAI reports an empty balance as a 429 too; say so instead of "try again".
-      if (e.code === "insufficient_quota" || e.code === "credit_balance_exhausted" || e.type === "insufficient_quota")
-        throw new AnalysisError("The OpenAI account has no credits left. Add billing credit, then retry.");
-      throw new AnalysisError("OpenAI is rate limiting requests. Try again in a moment.");
-    }
-    throw new AnalysisError("The analysis failed. Try again.");
+    throw toAIError(e, "analysis");
   }
 }

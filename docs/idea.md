@@ -10,8 +10,8 @@ Freelance web developers, designers, and small creative or development agencies 
 Clients change requirements during calls and chats. Neither side keeps a reliable record of what was originally agreed, what changed, and what still needs approval. The freelancer absorbs the extra work, or has an awkward "that wasn't in the deal" conversation with no proof.
 
 ## The product
-1. **Record the agreement.** Create a project with the original deliverables, exclusions, fixed price, and deadline.
-2. **Add a client conversation.** Paste or upload a transcript with speaker labels (`Client:` / `Freelancer:`).
+1. **Record the call.** The home screen is a Record button (or upload audio, or paste a transcript). SERA transcribes it, separates the voices, and you tap which speaker is the client.
+2. **The project is set up for you.** SERA matches the call to an existing project, or drafts a new project's agreement (client, deliverables, price, deadline) from what was actually said. You confirm before anything is saved.
 3. **SERA compares.** One structured AI pass finds requests, changes, deadlines, and commitments, classifies each against the original agreement, and attaches the exact quote.
 4. **You review.** Confirm or correct each finding, add notes, create follow-up tasks.
 5. **You ask the client.** SERA drafts a message that *asks* for approval. You send it yourself and record the client's answer by hand.

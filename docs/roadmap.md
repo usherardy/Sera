@@ -9,7 +9,7 @@
 | 2. Detection | Transcript input, OpenAI structured analysis, quote grounding, conversation page | Built; live run blocked until OpenAI has credits |
 | 3. Review and follow-through | Review drawer, tasks, client message, status tracks | Built; untested live |
 | 4. Demo data and eval | Acme sample project, `npm run eval` | Built; eval not yet passing live |
-| 5. Browser recording (P1) | Record, transcribe, map speakers, then analyze | Planned, first to cut |
+| 5. Record-first flow | Home Record button, upload audio, speaker separation and tagging, auto project match / draft | Built; untested live (needs OpenAI credits) |
 | 6. Polish and deploy | Mobile pass, empty/loading states, Vercel env vars, deploy | Planned |
 
 ## Before the demo
@@ -25,7 +25,8 @@
 | Analysis runs inside one request (60 s cap) | Transcripts are short; avoids a job queue and polling. |
 | Four tables, client-approval fields on `findings` | Fewer joins than a separate `scope_changes` table, same guarantees. |
 | Deterministic client message | Cannot invent a price or approval; works without AI credits. |
-| Audio is not stored | No Storage use in the MVP. |
+| Audio is not kept | The browser uploads to the private `recordings` bucket (avoids Vercel's 4.5 MB body limit); the server transcribes and deletes it. |
+| Project draft is confirmed, never auto-saved | Keeps "never invent": the AI pre-fills, the freelancer saves. Unstated prices are dropped in code. |
 
 ## P2: not during the hackathon
 Always-on recording, wearables, invoicing, Stripe, automatic client emails, CRM, complex project management, Google Calendar, Slack, public client approval portals.

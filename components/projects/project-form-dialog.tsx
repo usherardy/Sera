@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/client/api";
+import type { ProjectInputT } from "@/lib/projects/schemas";
 import type { Project } from "@/lib/projects/types";
 
 const lines = (s: string) =>
@@ -28,26 +29,38 @@ function Field({ label, hint, htmlFor, children }: { label: string; hint?: strin
   );
 }
 
-/** Create a project, or (with `project`) explicitly edit its original agreement. */
-function ProjectFormDialog({
+/**
+ * Create a project, or (with `project`) explicitly edit its original agreement.
+ * `initial` pre-fills a new project (e.g. an AI draft from a recording) and
+ * `onCreated` replaces the default "go to the project" behaviour.
+ */
+export function ProjectFormDialog({
   project,
+  initial,
   open,
   onOpenChange,
+  onCreated,
+  drafted = false,
 }: {
   project?: Project;
+  initial?: Partial<ProjectInputT>;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onCreated?: (id: string) => void | Promise<void>;
+  /** show the "drafted from your recording" note */
+  drafted?: boolean;
 }) {
   const router = useRouter();
   const editing = !!project;
-  const [name, setName] = useState(project?.name ?? "");
-  const [client, setClient] = useState(project?.client_name ?? "");
-  const [description, setDescription] = useState(project?.original_description ?? "");
-  const [scope, setScope] = useState(project?.agreed_scope.join("\n") ?? "");
-  const [exclusions, setExclusions] = useState(project?.exclusions.join("\n") ?? "");
-  const [price, setPrice] = useState(project?.fixed_price != null ? String(project.fixed_price) : "");
-  const [currency, setCurrency] = useState(project?.currency ?? "EUR");
-  const [deadline, setDeadline] = useState(project?.deadline ?? "");
+  const src = project ?? initial;
+  const [name, setName] = useState(src?.name ?? "");
+  const [client, setClient] = useState(src?.client_name ?? "");
+  const [description, setDescription] = useState(src?.original_description ?? "");
+  const [scope, setScope] = useState(src?.agreed_scope?.join("\n") ?? "");
+  const [exclusions, setExclusions] = useState(src?.exclusions?.join("\n") ?? "");
+  const [price, setPrice] = useState(src?.fixed_price != null ? String(src.fixed_price) : "");
+  const [currency, setCurrency] = useState(src?.currency ?? "EUR");
+  const [deadline, setDeadline] = useState(src?.deadline ?? "");
   const [busy, setBusy] = useState(false);
 
   const scopeItems = lines(scope);
@@ -77,7 +90,8 @@ function ProjectFormDialog({
         const { id } = await api<{ id: string }>("/api/projects", "POST", body);
         toast.success("Project created.");
         onOpenChange(false);
-        router.push(`/projects/${id}`);
+        if (onCreated) await onCreated(id);
+        else router.push(`/projects/${id}`);
       }
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Couldn't save. Try again.");
@@ -104,7 +118,9 @@ function ProjectFormDialog({
           <DialogDescription className="text-ink-muted">
             {editing
               ? "This changes the ORIGINAL agreement that every conversation is compared against. Do this only if both sides actually agreed to the change."
-              : "Enter what you and the client originally agreed. Every conversation is compared against this."}
+              : drafted
+                ? "SERA drafted this from your recording. Check every field: only what was actually said is filled in. Nothing is saved until you press Create."
+                : "Enter what you and the client originally agreed. Every conversation is compared against this."}
           </DialogDescription>
         </div>
 

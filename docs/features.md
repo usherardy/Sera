@@ -7,6 +7,7 @@ Status key: **Built** (code complete, typechecks and builds) · **Untested live*
 | Feature | Route | Behavior | Status |
 |---|---|---|---|
 | Login | `/login` | Email + password sign-in / sign-up (Supabase Auth). | Built |
+| Record (home) | `/` | Big Record button, upload audio, or paste transcript → tag speakers → check transcript → match or draft the project → analyze. Recent projects below. | Built · untested live |
 | Projects dashboard | `/projects` | Stats (active projects, changes to review, open follow-ups), project cards (name, client, price, deadline, pending changes), recent activity, New project. | Built · untested live |
 | Project detail | `/projects/[id]` | Header with stats and a "needs review" banner; Original agreement; Conversations; Scope changes; Follow-through (commitments, tasks, awaiting client). | Built · untested live |
 | Conversation detail | `/projects/[id]/conversations/[cid]` | Transcript with quote highlighting, summary, findings grouped by type, Analyze / Retry / Re-run. Clicking a finding opens the review drawer. | Built · untested live |
@@ -20,7 +21,11 @@ Status key: **Built** (code complete, typechecks and builds) · **Untested live*
 | Add a conversation by pasting a transcript or uploading a `.txt` | Built · untested live |
 | Duplicate transcript in the same project is detected and reused | Built |
 | Persistence across sessions (Supabase, RLS) | Untested live |
-| Browser audio recording and transcription | Planned (Phase 5, only if time allows) |
+| Browser recording (live waveform, timer, 15 min cap) and audio upload (25 MB) | Built · untested live |
+| Transcription with speaker separation (`gpt-4o-transcribe-diarize`), falling back to plain transcription + manual labels | Built · untested live |
+| Tag which speaker is the client / me; labels become `Client:` / `Freelancer:` | Built |
+| Auto project: AI matches the call to an existing project or drafts a new agreement from what was said; the freelancer confirms in the form | Built · untested live |
+| Audio deleted from storage right after transcription | Built · untested live |
 
 ## Scope change detection
 | Feature | Behavior | Status |

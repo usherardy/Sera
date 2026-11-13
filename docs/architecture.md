@@ -10,9 +10,21 @@ Update this file when structure, routes, schema, pipeline, or env vars change.
 - **Zod 4** for request and model-output validation. **tsx** runs the eval script. **npm** is the package manager.
 - Hosting: Vercel ([vercel.json](../vercel.json)).
 
-## Flow
+## Capture flow (home page, [components/capture/capture-flow.tsx](../components/capture/capture-flow.tsx))
 ```
-Add conversation (paste / .txt)
+Record (MediaRecorder) or upload audio
+  → browser uploads to private bucket recordings/{user_id}/{uuid}.{ext}
+  → POST /api/transcribe   (download as the user, gpt-4o-transcribe-diarize → Speaker A/B; fallback OPENAI_TRANSCRIBE_MODEL; object deleted)
+  → user tags speakers (Client / Me / Someone else) → labeled transcript, editable
+  → POST /api/intake/draft (match an existing project or draft an agreement; nothing saved)
+  → add to the matched/chosen project, or confirm the drafted project in the form (POST /api/projects)
+  → POST /api/projects/[id]/conversations  (analysis below)
+```
+Paste transcript skips the first three steps.
+
+## Analysis flow
+```
+Add conversation (paste / .txt / from capture)
   POST /api/projects/[id]/conversations
     validate → duplicate check → insert conversation (pending)
     runAnalysis():
@@ -55,33 +67,36 @@ The spec's separate `scope_changes` table is folded into `findings` (the review 
 | `PATCH /api/findings/[id]` | Category, notes, review status, client status, saved message. Client status requires `reviewed` |
 | `POST /api/findings/[id]/message` | Generate and save the client confirmation message |
 | `POST /api/tasks`, `PATCH/DELETE /api/tasks/[id]` | Follow-up tasks |
+| `POST /api/transcribe` | Transcribe an uploaded recording (own folder only), then delete it (120 s) |
+| `POST /api/intake/draft` | Suggest the matching project and draft a new agreement; saves nothing (60 s) |
 | `POST/DELETE /api/demo/seed` | Load / remove the Acme sample project |
 
 ## Code layout
 ```
 app/(auth)/login/                       login hero + form
 app/(app)/layout.tsx                    top nav (desktop) / bottom nav (mobile)
-app/(app)/page.tsx                      redirects to /projects
+app/(app)/page.tsx                      home: record flow + recent projects
 app/(app)/projects/                     dashboard, [id], [id]/conversations/[conversationId]
 app/(app)/settings/                     timezone, sample project, sign out
 app/api/                                routes above
 components/projects/                    form dialog, add-conversation, analyze button, workspace, finding review, task list, bits
 components/common/ ui/ nav/ brand/ settings/
-components/capture/                     use-recorder.ts, waveform.tsx (kept for browser recording, Phase 5)
-lib/projects/                           types, meta, data, schemas, analyze, run-analysis, process, grounding, message
+components/capture/                     capture-flow.tsx (home record flow), use-recorder.ts, waveform.tsx
+lib/projects/                           types, meta, data, schemas, openai, analyze, run-analysis, process, grounding, message, transcribe, draft
 lib/sample/acme.ts                      demo project + four conversations
 lib/viewer.ts, auth.ts, dates.ts, format.ts, supabase/, client/api.ts
 scripts/eval-analysis.ts                npm run eval
 ```
 
 ## Environment variables
-`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `OPENAI_API_KEY`, `OPENAI_ANALYSIS_MODEL`, `OPENAI_TRANSCRIBE_MODEL` (Phase 5), `APP_URL`. Without the Supabase keys the app shows a "not configured" notice instead of crashing.
+`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `OPENAI_API_KEY`, `OPENAI_ANALYSIS_MODEL`, `OPENAI_TRANSCRIBE_MODEL` (fallback when speaker separation is unavailable), `APP_URL`. Without the Supabase keys the app shows a "not configured" notice instead of crashing.
 
 ## Verification
 `npx tsc --noEmit`, `npm run lint`, `npm run build`, `npm run eval` (needs the key and credits). Grounding and redaction were checked offline against fabricated and drifted quotes.
 
 ## Known limits
-- Audio is not stored and recording is not built yet; paste a transcript.
-- Speaker attribution comes from the labels in the pasted text.
+- Audio is deleted after transcription; only the transcript is kept.
+- Speaker attribution comes from the user's tagging (recordings) or the labels in pasted text.
+- Recordings are capped at 15 minutes / 25 MB.
 - The model can misjudge scope; every finding is a suggestion for review.
 - Analysis is bounded to 60 s and 60,000 transcript characters.
