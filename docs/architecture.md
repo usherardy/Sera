@@ -42,7 +42,7 @@ TypeScript mirror: [lib/projects/types.ts](../lib/projects/types.ts). RLS on eve
 - `projects`: the **original agreement** (`agreed_scope[]`, `exclusions[]`, `fixed_price`, `currency`, `deadline`, `is_sample`). Changed only by the explicit edit action.
 - `conversations`: `transcript`, `source`, `summary`, `recorded_at`, `processing_status` (`pending | analyzing | completed | failed`), `error_message`, `analysis_started_at`.
 - `findings`: category (6 values), title, description, `source_quote` (required, verified), optional seconds (null for pasted text), `related_scope_item`, explanation, confidence, suggested follow-up, owner, `due_date`/`due_phrase`, `review_status` (`ai_detected | reviewed | dismissed`), `client_status` (`not_sent | sent | approved | rejected`), notes, `client_message`.
-- `follow_up_tasks`: title, owner, due date, status (`open | done`), optional `finding_id`. (Not named `tasks` to avoid colliding with an existing table.)
+- `tasks`: title, owner, due date, status (`open | done`), optional `finding_id`.
 
 The spec's separate `scope_changes` table is folded into `findings` (the review and client-approval columns).
 

@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   }
 
   const { data, error } = await auth.supabase
-    .from("follow_up_tasks")
+    .from("tasks")
     .insert({ project_id: body.project_id, finding_id: body.finding_id ?? null, title: body.title, owner: body.owner || null, due_date: body.due_date ?? null })
     .select("id")
     .single();
