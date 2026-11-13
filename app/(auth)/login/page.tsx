@@ -20,7 +20,7 @@ export default function LoginPage() {
             Your day, <em>remembered.</em>
           </h1>
           <p className="max-w-md text-lg text-ink/75 sm:text-xl">
-            What matters, captured. What you promise, done. Record your conversations; FollowThrough finds the
+            What matters, captured. What you promise, done. Record your conversations; SERA finds the
             decisions and commitments, and helps you keep them.
           </p>
           <div className="flex w-fit items-center gap-3 rounded-full border-2 border-ink bg-ink py-2.5 pr-5 pl-4 text-cream">

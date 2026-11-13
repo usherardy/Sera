@@ -58,7 +58,7 @@ export default function SettingsPage() {
               Sample day <SampleBadge />
             </span>
           }
-          body="Load three labeled sample recordings to explore FollowThrough. They are never mixed up with your own."
+          body="Load three labeled sample recordings to explore SERA. They are never mixed up with your own."
           action={
             <div className="flex gap-2">
               <Button variant="outline">Load</Button>

@@ -52,7 +52,7 @@ async function HomeContent() {
         <EmptyState
           icon={<Mic />}
           title="Start capturing your first moment."
-          body="Record a conversation or upload a voice memo. FollowThrough will summarize it and pull out what matters."
+          body="Record a conversation or upload a voice memo. SERA will summarize it and pull out what matters."
           action={<CaptureCta />}
           className="py-14"
         />

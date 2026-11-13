@@ -130,7 +130,7 @@ export function CaptureProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!isRecording) return;
     const prev = document.title;
-    document.title = "● Recording · FollowThrough";
+    document.title = "● Recording · SERA";
     const warn = (e: BeforeUnloadEvent) => e.preventDefault();
     window.addEventListener("beforeunload", warn);
     return () => {

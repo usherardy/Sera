@@ -42,7 +42,7 @@ function TopNavView({ pathname }: { pathname: string | null }) {
   return (
     <div className="sticky top-0 z-30 px-4 pt-3 sm:pt-4">
       <nav className="mx-auto grid max-w-5xl grid-cols-[1fr_auto] items-center gap-4 rounded-[0.6rem] border-2 border-cream-dark bg-cream/90 py-2 pr-2 pl-4 backdrop-blur-md sm:grid-cols-[1fr_auto_1fr]">
-        <Link href="/" aria-label="FollowThrough home">
+        <Link href="/" aria-label="SERA home">
           <Logo />
         </Link>
 

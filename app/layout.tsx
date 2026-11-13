@@ -21,7 +21,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FollowThrough",
+  title: "SERA",
   description:
     "Your day, remembered. What matters, captured. What you promise, done.",
 };

@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-/** FollowThrough wordmark: a small "thread" mark + serif name with italic accent */
+/** SERA wordmark: a small "thread" mark + serif name */
 export function Logo({ className, compact = false }: { className?: string; compact?: boolean }) {
   return (
     <span className={cn("inline-flex items-center gap-2 text-ink", className)}>
@@ -15,9 +15,7 @@ export function Logo({ className, compact = false }: { className?: string; compa
         />
       </svg>
       {!compact && (
-        <span className="font-serif text-[1.35rem] leading-none tracking-tight">
-          Follow<em>Through</em>
-        </span>
+        <span className="font-serif text-[1.4rem] leading-none tracking-[0.14em]">SERA</span>
       )}
     </span>
   );

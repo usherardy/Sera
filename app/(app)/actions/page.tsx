@@ -14,7 +14,7 @@ export default function ActionsPage() {
             What you <em>promised</em>.
           </>
         }
-        subtitle="Commitments found in your recordings. Nothing leaves FollowThrough until you approve it."
+        subtitle="Commitments found in your recordings. Nothing leaves SERA until you approve it."
       />
       <Suspense
         fallback={
