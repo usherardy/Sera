@@ -16,7 +16,7 @@ EB Garamond for headings with **one italic accent word** per heading ("Here's wh
 Buttons: 0.5rem radius, 2px ink border, lavender fill, weight 600, small press-scale. Cards: 1rem radius, 2px `#E4E4D0` border, no blur shadows (occasionally a hard 2px ink offset shadow). Large containers: 2–2.5rem radius.
 
 ## Navigation
-Desktop: floating bordered cream top bar (max 64rem) with Record, Findings, Settings. Mobile: floating bordered bottom bar with the same three. Projects are reached from the home page and from findings.
+Desktop: floating bordered cream top bar (max 64rem) with Record, Projects, Findings, Settings. Mobile: floating bordered bottom bar with the same four.
 
 ## Record screen
 Home is a large ink circle with a lavender mic. While recording, an ink pill shows a pulsing coral dot, the live waveform (Web Audio `AnalyserNode`), a mono timer, Stop and Cancel; it is always visible, which also covers the privacy requirement. Follow-up steps (speakers, transcript, project) sit in a `surface-raised` card with a serif heading and one italic accent word.

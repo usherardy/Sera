@@ -2,6 +2,9 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-13 (nav)
+- Projects is back in the nav: Record · Projects · Findings · Settings.
+
 ## 2026-11-13 (demo data on first visit)
 - If the account has no projects, the home page loads the labeled demo data automatically (once per browser, remembered in localStorage) and shows a "Load demo data" button. Lets the app be explored while the OpenAI account has no credits.
 
