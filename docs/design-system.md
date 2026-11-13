@@ -33,7 +33,7 @@ Floating **frosted-glass** bar (white/65, `backdrop-blur-xl`, inner highlight, s
 A large dark gradient circle with a white mic, ringed by two soft pastel halos (lavender, peach). While recording: a dark pill with a pulsing coral dot, the live waveform, a mono timer, Stop and Cancel; always visible, which also covers the privacy requirement.
 
 ## Landing page sky
-`components/marketing/sky.tsx`: a soft blue sky gradient with original fluffy SVG clouds (circle clusters roughened by `feTurbulence` + `feDisplacementMap`, then blurred, with a cooler shadow layer), film grain, slow drift (off for reduced motion), and a fade into the page at the bottom. Used for the landing hero and the closing CTA panel. Drawn for Sera; no artwork copied from other sites.
+`components/marketing/sky.tsx`: a soft blue sky gradient with original SVG clouds, drawn at full resolution (800×440 box, `overflow: visible`) so they stay crisp when scaled and are never clipped: circle clusters with a lightly roughened outline (`feTurbulence` + `feDisplacementMap`, three seeds, ~1px smoothing), a white-to-cool-white fill across the whole cloud, and a separate soft blurred shadow underneath, film grain, slow drift (off for reduced motion), and a fade into the page at the bottom. Used for the landing hero and the closing CTA panel. Drawn for Sera; no artwork copied from other sites.
 
 ## Logo
 A lavender tile (`#E3E0FF`) with an ink "thread" mark, and the wordmark "Sera" (not all caps) in EB Garamond.

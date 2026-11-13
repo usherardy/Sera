@@ -2,6 +2,9 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-13 (clouds)
+- Clouds redrawn: crisp and clearly visible instead of blurry, no hard rectangular clipping. Drawn at full resolution with unclipped overflow, light outline texture, one gradient per cloud, and a soft shadow for depth.
+
 ## 2026-11-13 (headline)
 - Landing headline is back to **"Stop doing *free* work."** on both versions (more convincing than "Change requests on autopilot", which is removed from the welcome pages).
 
