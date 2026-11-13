@@ -32,6 +32,9 @@ Floating **frosted-glass** bar (white/65, `backdrop-blur-xl`, inner highlight, s
 ## Record screen
 A large dark gradient circle with a white mic, ringed by two soft pastel halos (lavender, peach). While recording: a dark pill with a pulsing coral dot, the live waveform, a mono timer, Stop and Cancel; always visible, which also covers the privacy requirement.
 
+## Landing hero demo
+`components/marketing/hero-demo.tsx` (client): dark recording pill + the line being said (serif, word-by-word fade) on the left; the call card on the right with a 3D **picker wheel** (12 rows on a CSS cylinder, `perspective` + `rotateX` + `translateZ`, faded top and bottom with a mask). The center band tints on landing: mint for In scope, red for Out of scope, lavender for Your task. Tick sound is a short band-passed noise burst from the Web Audio API, off by default. Respects `prefers-reduced-motion`; pauses off screen.
+
 ## Landing page sky
 `components/marketing/sky.tsx`: a soft blue sky gradient with original SVG clouds, drawn at full resolution (800×440 box, `overflow: visible`) so they stay crisp when scaled and are never clipped: circle clusters with a lightly roughened outline (`feTurbulence` + `feDisplacementMap`, three seeds, ~1px smoothing), a white-to-cool-white fill across the whole cloud, and a separate soft blurred shadow underneath, film grain, slow drift (off for reduced motion), and a fade into the page at the bottom. Used for the landing hero and the closing CTA panel. Drawn for Sera; no artwork copied from other sites.
 

@@ -1,7 +1,8 @@
 import { ArrowRight, Check, FolderKanban, Sparkles } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { EvidenceQuote } from "@/components/common/layout-bits";
-import { HeroDemo, IntegrationsSection, MarketingFooter, MarketingNav, PrimaryCta, ProblemSection, RecordingPill } from "@/components/marketing/shell";
+import { IntegrationsSection, MarketingFooter, MarketingNav, PrimaryCta, ProblemSection, RecordingPill } from "@/components/marketing/shell";
+import { HeroDemo } from "@/components/marketing/hero-demo";
 import { Sky } from "@/components/marketing/sky";
 import { FindingBadge } from "@/components/projects/project-bits";
 import type { FindingCategory } from "@/lib/projects/types";
@@ -183,10 +184,10 @@ export function LandingWalkthrough() {
               See how it works
             </a>
           </div>
-          <div className="mt-10 w-full">
-            <HeroDemo />
-          </div>
         </section>
+        <div className="mx-auto mt-16 w-full max-w-5xl px-6 sm:mt-20">
+          <HeroDemo />
+        </div>
       </Sky>
 
       <main className="flex flex-col gap-28 px-6 pb-24 sm:gap-32">
@@ -200,13 +201,13 @@ export function LandingWalkthrough() {
             </h2>
           </div>
           {STEPS.map((s, i) => (
-            <div key={s.n} className="grid items-center gap-8 md:grid-cols-2 md:gap-16">
+            <div key={s.n} className="grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-16">
               <div className={cn("flex flex-col gap-4", i % 2 === 1 && "md:order-2")}>
                 <span className="font-mono text-sm text-ink-muted">{s.n}</span>
                 <h3 className="display text-4xl sm:text-5xl">{s.t}</h3>
                 <p className="max-w-md text-lg leading-relaxed text-ink-muted">{s.d}</p>
               </div>
-              <div className="relative">
+              <div className="relative min-w-0">
                 <div className="absolute -inset-6 -z-10 rounded-[2.5rem] bg-[radial-gradient(closest-side,rgba(236,230,255,0.8),rgba(255,233,207,0.45),transparent)]" />
                 {s.v}
               </div>

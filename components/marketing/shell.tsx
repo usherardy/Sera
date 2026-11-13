@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { ArrowDown, CalendarDays, Inbox, ListX, Mail, MessageSquarePlus, NotebookPen, Users } from "lucide-react";
+import { CalendarDays, Inbox, ListX, Mail, MessageSquarePlus, NotebookPen, Users } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { buttonVariants } from "@/components/ui/button";
 import { Waveform } from "@/components/capture/waveform";
-import { FindingBadge } from "@/components/projects/project-bits";
 import { cn } from "@/lib/utils";
 
 /** Frosted nav used on every landing variant. */
@@ -67,23 +66,6 @@ export function RecordingPill({ quote, className }: { quote: string; className?:
       </span>
       <Waveform className="h-5 shrink-0" />
       <span className="truncate font-mono text-[0.8125rem]">“{quote}”</span>
-    </div>
-  );
-}
-
-/** The idea in one picture: what the client said → what Sera flags. */
-export function HeroDemo() {
-  return (
-    <div className="mx-auto flex w-full max-w-md flex-col items-center gap-3">
-      <RecordingPill quote="Can we also add Stripe payments?" />
-      <ArrowDown className="size-4 text-ink/40" />
-      <div className="surface-raised flex w-full items-center justify-between gap-3 px-5 py-4 text-left">
-        <div className="flex flex-col gap-1.5">
-          <FindingBadge category="potential_scope_addition" className="w-fit" />
-          <p className="font-semibold">Not in your agreement</p>
-        </div>
-        <span className="rounded-lg bg-secondary px-3 py-2 text-xs font-semibold whitespace-nowrap text-ink/70">Ask client to approve</span>
-      </div>
     </div>
   );
 }

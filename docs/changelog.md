@@ -2,6 +2,12 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-13 (hero: recording + picker wheel)
+- Landing hero demo (walkthrough version) is now two columns: the call being **recorded** on the left (live timer, the current line written out word by word) and the **check-in call card** on the right. For each line a picker wheel, like a phone's alarm-time picker, spins through In scope / Out of scope / Changed / Unclear / Your task / Idea and lands on the answer: "The contact page looks great." → In scope, "Can we also add Stripe payments…?" → **Out of scope** + Ask client to approve, "I'll need to estimate it first." → Your task. Loops; pauses while off screen; no spin for reduced motion.
+- Optional **tick sound** per row, generated in the browser (no audio file). Off by default, "Sound off/on" toggle, because browsers only allow sound after a click.
+- The card says "Check-in call", not "Kickoff call": the first call is the baseline and isn't flagged.
+- Fixed horizontal scrolling on phones in the "How it works" rows (grid columns now shrink). New `components/marketing/hero-demo.tsx`; the old `HeroDemo` left `shell.tsx`. Updated `docs/features.md`, `docs/design-system.md`.
+
 ## 2026-11-13 (demo login, cleaner sign-in page)
 - **Demo account:** the Sign in tab comes filled in with a shared demo account (`demo@example.com`, see `lib/demo-account.ts`), so the demo flow is Welcome → Get started → Sign in, no sign-up. `POST /api/demo/login` signs in, creates the account on first use (already confirmed, no email sent) and loads the labeled sample projects when the account is empty. It is public: don't record real client calls on it.
 - Landing "Get started" buttons open the Sign in tab (`/login`) instead of Create account.
