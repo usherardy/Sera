@@ -2,6 +2,9 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-13 (headline)
+- Landing headline is back to **"Stop doing *free* work."** on both versions (more convincing than "Change requests on autopilot", which is removed from the welcome pages).
+
 ## 2026-11-13 (both landing versions)
 - Restored the walkthrough landing page (version A) alongside the overview (version B), both with the new positioning. Preview at `/welcome/walkthrough` and `/welcome/overview`; switch the live one with `LANDING_VERSION` in `lib/landing.ts` (currently `overview`).
 

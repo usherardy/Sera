@@ -131,7 +131,7 @@ export function LandingWalkthrough() {
         <section className="mx-auto mt-20 flex max-w-3xl flex-col items-center gap-7 px-6 text-center sm:mt-28">
           <p className="eyebrow">For agencies &amp; studios</p>
           <h1 className="display text-[3.1rem] sm:text-[5.5rem]">
-            Change requests on <em>autopilot</em>.
+            Stop doing <em>free</em> work.
           </h1>
           <p className="max-w-xl text-lg text-ink/70 sm:text-xl">
             Record your client calls. Sera checks every request against the agreed scope, shows you the exact words, and gets changes

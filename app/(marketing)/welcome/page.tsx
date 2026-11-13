@@ -4,7 +4,7 @@ import { LandingWalkthrough } from "@/components/marketing/landing-walkthrough";
 import { LANDING_VERSION } from "@/lib/landing";
 
 export const metadata: Metadata = {
-  title: "Sera · Change requests on autopilot",
+  title: "Sera · Stop doing free work",
   description: "Sera listens to your client calls, spots every request outside the agreed scope, and turns it into a change request your client can approve.",
 };
 

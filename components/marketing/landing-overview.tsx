@@ -90,7 +90,7 @@ export function LandingOverview() {
           <div className="flex flex-col gap-6">
             <p className="eyebrow">For agencies &amp; studios</p>
             <h1 className="display text-[3.2rem] sm:text-[5rem]">
-              Change requests on <em>autopilot</em>.
+              Stop doing <em>free</em> work.
             </h1>
             <p className="max-w-lg text-lg text-ink/70 sm:text-xl">
               Sera listens to your client calls, spots every request that isn&apos;t in the agreed scope, and turns it into a change
