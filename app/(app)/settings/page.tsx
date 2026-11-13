@@ -1,4 +1,4 @@
-import { CalendarDays, Database, Globe, LogOut } from "lucide-react";
+import { CalendarDays, Database, Globe, LogOut, Mail, NotebookPen } from "lucide-react";
 import { Suspense, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -30,6 +30,14 @@ function SettingRow({
   );
 }
 
+function ComingSoon() {
+  return (
+    <Button variant="outline" disabled>
+      Coming soon
+    </Button>
+  );
+}
+
 export default function SettingsPage() {
   return (
     <div className="flex flex-col gap-8">
@@ -55,12 +63,20 @@ async function SettingsContent() {
       <SettingRow
         icon={<CalendarDays />}
         title="Google Calendar"
-        body="Add follow-up tasks to your calendar. Not available yet."
-        action={
-          <Button variant="outline" disabled>
-            Connect
-          </Button>
-        }
+        body="Every task with a date has an Add to calendar button that opens Google Calendar with the event filled in. Automatic sync is coming soon."
+        action={<ComingSoon />}
+      />
+      <SettingRow
+        icon={<Mail />}
+        title="Gmail and Outlook"
+        body="When a client asks for more or changes the plan, send the change request from your own inbox once you approve it. Coming soon; for now, copy the message."
+        action={<ComingSoon />}
+      />
+      <SettingRow
+        icon={<NotebookPen />}
+        title="Notion"
+        body="Create tasks and deadlines from your calls in your Notion workspace. Coming soon."
+        action={<ComingSoon />}
       />
       <SettingRow
         icon={<Globe />}

@@ -11,7 +11,7 @@ import {
   Users,
 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { IconTile, MarketingFooter, MarketingNav, PrimaryCta, ProblemSection } from "@/components/marketing/shell";
+import { IconTile, IntegrationsSection, MarketingFooter, MarketingNav, PrimaryCta, ProblemSection } from "@/components/marketing/shell";
 import { Sky } from "@/components/marketing/sky";
 import { FindingBadge } from "@/components/projects/project-bits";
 import { cn } from "@/lib/utils";
@@ -82,6 +82,7 @@ export function LandingOverview() {
             { href: "#features", label: "Features" },
             { href: "#who", label: "Who it's for" },
             { href: "#how", label: "How it works" },
+            { href: "#integrations", label: "Integrations" },
           ]}
         />
         <section className="mx-auto mt-16 grid max-w-6xl items-center gap-12 px-6 sm:mt-24 lg:grid-cols-[1.05fr_1fr]">
@@ -128,6 +129,8 @@ export function LandingOverview() {
             ))}
           </ul>
         </section>
+
+        <IntegrationsSection />
 
         <section id="who" className="mx-auto flex w-full max-w-5xl scroll-mt-24 flex-col gap-10">
           <div className="flex flex-col gap-3">

@@ -2,6 +2,11 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-13 (integrations, mentioned)
+- Landing page (both versions) has an **Integrations** section and nav link: Sera works with Google Calendar (available now: Add to calendar links), Notion, Gmail and Outlook (coming soon). Approved change requests will be emailed to the client from your own inbox; nothing is sent until you approve.
+- Settings lists the same integrations with disabled "Coming soon" buttons; the "Ask the client" step says sending from Gmail or Outlook is coming soon.
+- Nothing new is wired up: no OAuth, no API calls. Updated `docs/idea.md` (integrations section, non-goals), `docs/features.md`, `docs/roadmap.md` (phase 7).
+
 ## 2026-11-13 (logo concepts)
 - New public page `/brand` with six logo concepts (Thread, Evening, In scope, Quote, Approved, Monogram), each shown large, in the nav, on dark, and at tab-icon size. The live logo is unchanged until one is chosen.
 

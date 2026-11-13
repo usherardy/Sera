@@ -192,7 +192,7 @@ export function FindingReview({ finding: f, tasks }: { finding: FindingWithSourc
       )}
 
       {askable && f.review_status !== "dismissed" && (
-        <Block title="3 · Ask the client" hint="Sera drafts a message asking for approval. You send it yourself; nothing is sent automatically.">
+        <Block title="3 · Ask the client" hint="Sera drafts a message asking for approval. Copy it and send it yourself; nothing is sent automatically. Sending from Gmail or Outlook after you approve is coming soon.">
           {!message ? (
             <Button
               variant="outline"

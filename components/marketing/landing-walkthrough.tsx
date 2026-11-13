@@ -1,7 +1,7 @@
 import { ArrowRight, Check, FolderKanban, Sparkles } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { EvidenceQuote } from "@/components/common/layout-bits";
-import { HeroDemo, MarketingFooter, MarketingNav, PrimaryCta, ProblemSection, RecordingPill } from "@/components/marketing/shell";
+import { HeroDemo, IntegrationsSection, MarketingFooter, MarketingNav, PrimaryCta, ProblemSection, RecordingPill } from "@/components/marketing/shell";
 import { Sky } from "@/components/marketing/sky";
 import { FindingBadge } from "@/components/projects/project-bits";
 import type { FindingCategory } from "@/lib/projects/types";
@@ -165,7 +165,7 @@ export function LandingWalkthrough() {
   return (
     <div className="flex min-h-dvh flex-col">
       <Sky className="pb-24 sm:pb-32">
-        <MarketingNav links={[{ href: "#how", label: "How it works" }, { href: "#promise", label: "Our promise" }]} />
+        <MarketingNav links={[{ href: "#how", label: "How it works" }, { href: "#integrations", label: "Integrations" }, { href: "#promise", label: "Our promise" }]} />
         <section className="mx-auto mt-20 flex max-w-3xl flex-col items-center gap-7 px-6 text-center sm:mt-28">
           <p className="eyebrow">For agencies &amp; studios</p>
           <h1 className="display text-[3.1rem] sm:text-[5.5rem]">
@@ -213,6 +213,8 @@ export function LandingWalkthrough() {
             </div>
           ))}
         </section>
+
+        <IntegrationsSection />
 
         <section id="promise" className="mx-auto flex w-full max-w-5xl scroll-mt-24 flex-col items-center gap-10">
           <h2 className="display text-center text-[2.6rem] sm:text-6xl">

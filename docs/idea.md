@@ -20,7 +20,13 @@ You have a lot of clients. Calls blur together, you promise something and forget
 2. **The project is set up for you.** Sera separates the voices, works out who the client is, and files the call under the matching project, or creates one from what was actually said (client, deliverables, price, deadline). It tells you when it created a project so you can check or edit the agreement.
 3. **Sera compares.** One structured AI pass finds requests, changes, deadlines, and commitments, classifies each against the original agreement, and attaches the exact quote.
 4. **You review.** Confirm or correct each finding, add notes, create follow-up tasks.
-5. **You ask the client.** Sera drafts a message that *asks* for approval. You send it yourself and record the client's answer by hand.
+5. **You ask the client.** Sera drafts a message that *asks* for approval. Today you copy it, send it yourself and record the client's answer by hand.
+
+## Integrations (planned)
+Sera should work inside the tools you already use. Only the first is live today; the landing page and Settings label the rest **Coming soon**.
+- **Google Calendar:** deadlines from calls go on your calendar. *Live:* "Add to calendar" opens Google Calendar with the event filled in. *Planned:* automatic sync.
+- **Notion:** tasks and deadlines from every call, created in your Notion workspace. *Planned.*
+- **Gmail and Outlook:** when a client asks for more or changes the plan, Sera drafts the email and, **once you approve it**, sends it to the client from your own inbox. *Planned.* Nothing is ever sent without your approval.
 
 ## Where the value is
 The comparison: what the client asks for now versus what was originally agreed. Everything else supports that.
@@ -40,7 +46,7 @@ The comparison: what the client asks for now versus what was originally agreed. 
 - **Honest labeling.** Demo data is always marked Sample. Failed analyses say so and offer Retry.
 
 ## Non-goals (for now)
-Always-on recording, wearables, invoicing, Stripe payment collection, automatic client emails, CRM, complex project management, Google Calendar, Slack, public client approval portals, speaker diarization of audio.
+Always-on recording, wearables, invoicing, Stripe payment collection, emails sent without your approval, CRM, complex project management, Slack, public client approval portals, speaker diarization of audio.
 
 ## Context
 Built for the **Unfair Weekend** hackathon. Deadline **2026-11-14 20:00 Europe/Vilnius**; feature freeze about 14:00 that day. See [roadmap.md](roadmap.md).

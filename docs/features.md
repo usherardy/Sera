@@ -6,7 +6,7 @@ Status key: **Built** (code complete, typechecks and builds) · **Untested live*
 
 | Feature | Route | Behavior | Status |
 |---|---|---|---|
-| Landing page | `/welcome` | **Live: the walkthrough version** (`LANDING_VERSION = "walkthrough"`): "Stop doing *free* work." hero with the pitch, a clear problem section ("Lots of clients. Lots to *remember*."), four steps matching the pitch (record with one click, projects kept separate, everything to do in one list, new requests flagged), promise, CTA. Overview version also available. Older notes: "Stop doing *free* work.", for agencies & studios. Sky-and-clouds split hero with a product preview (transcript line → finding), the problem, six features, who it's for (product & dev studios, design & brand studios, consultancies), four-step how it works, closing CTA. Signed-out visitors to `/` land here. A second version, the **walkthrough** (one call told in four illustrated steps), is kept too: preview both at `/welcome/overview` and `/welcome/walkthrough`; `LANDING_VERSION` in `lib/landing.ts` picks which one `/welcome` shows. | Built |
+| Landing page | `/welcome` | **Live: the walkthrough version** (`LANDING_VERSION = "walkthrough"`): "Stop doing *free* work." hero with the pitch, a clear problem section ("Lots of clients. Lots to *remember*."), four steps matching the pitch (record with one click, projects kept separate, everything to do in one list, new requests flagged), **Integrations** section (Google Calendar "Available now"; Notion, Gmail, Outlook "Coming soon"; also on the overview version, and in the nav), promise, CTA. Overview version also available. Older notes: "Stop doing *free* work.", for agencies & studios. Sky-and-clouds split hero with a product preview (transcript line → finding), the problem, six features, who it's for (product & dev studios, design & brand studios, consultancies), four-step how it works, closing CTA. Signed-out visitors to `/` land here. A second version, the **walkthrough** (one call told in four illustrated steps), is kept too: preview both at `/welcome/overview` and `/welcome/walkthrough`; `LANDING_VERSION` in `lib/landing.ts` picks which one `/welcome` shows. | Built |
 | Login | `/login` | Email + password sign-in / sign-up (Supabase Auth). `?mode=signup` opens on Create account. | Built |
 | Record (home) | `/` | Big Record button, upload audio, or paste transcript. Press Stop and Sera does the rest: transcribe → label speakers → match or create the project → analyze → open the result. Recent projects below. | Built · untested live |
 | Projects dashboard | `/projects` | Stats (active projects, changes to review, open follow-ups), project cards (name, client, price, deadline, pending changes), recent activity, New project. | Built · untested live |
@@ -14,7 +14,7 @@ Status key: **Built** (code complete, typechecks and builds) · **Untested live*
 | To do | `/todo` | Everything to do across all clients: your open tasks grouped Overdue / Today / This week / Later / No date (project chip, "from call" chip, complete toggle, Add to calendar), changes to review, and what you're waiting on from clients. Home shows "Up next" (5 tasks + changes to review) under the Record button. | Built · needs migration 0003 |
 | Findings | `/findings` | Every finding across all projects with filters: Needs review, Awaiting client, All changes, Commitments, Everything. Each opens its review drawer. | Built · untested live |
 | Conversation detail | `/projects/[id]/conversations/[cid]` | Transcript with quote highlighting, summary, findings grouped by type, Analyze / Retry / Re-run. Clicking a finding opens the review drawer. | Built · untested live |
-| Settings | `/settings` | Timezone, load / remove demo data, sign out. | Built |
+| Settings | `/settings` | Integrations (Google Calendar, Gmail and Outlook, Notion: each says what it will do, with a disabled "Coming soon" button), timezone, load / remove demo data, sign out. | Built |
 
 ## Project memory
 | Feature | Status |
@@ -60,4 +60,4 @@ Status key: **Built** (code complete, typechecks and builds) · **Untested live*
 | `npm run eval`: runs the four conversations through the real pipeline and asserts the expected findings | Built; not yet passing live (OpenAI account had no credits when last run) |
 
 ## Cut / not built
-Public client approval links, automatic emails, invoicing, Stripe, two-way Calendar sync (OAuth), Notion, CRM, audio storage. See [roadmap.md](roadmap.md).
+Public client approval links, invoicing, Stripe, CRM, audio storage. **Planned integrations** (mentioned in the UI as Coming soon, not built): Notion tasks and deadlines, sending approved change requests from Gmail or Outlook, two-way Google Calendar sync (OAuth). See [roadmap.md](roadmap.md).

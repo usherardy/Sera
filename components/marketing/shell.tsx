@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowDown, ListX, MessageSquarePlus, Users } from "lucide-react";
+import { ArrowDown, CalendarDays, Inbox, ListX, Mail, MessageSquarePlus, NotebookPen, Users } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { buttonVariants } from "@/components/ui/button";
 import { Waveform } from "@/components/capture/waveform";
@@ -131,6 +131,64 @@ export function ProblemSection() {
         ))}
       </div>
       <p className="text-lg text-ink/70">Sera keeps it all organized for you.</p>
+    </section>
+  );
+}
+
+/**
+ * The tools Sera connects to. Only Google Calendar works today (pre-filled
+ * "Add to calendar" links); the others are planned and labeled Coming soon.
+ */
+const INTEGRATIONS: { icon: React.ReactNode; name: string; d: string; live?: boolean }[] = [
+  {
+    icon: <CalendarDays />,
+    name: "Google Calendar",
+    d: "Deadlines from your calls go on your calendar. Every task with a date has an Add to calendar button.",
+    live: true,
+  },
+  { icon: <NotebookPen />, name: "Notion", d: "Tasks and deadlines from every call, created in your Notion workspace." },
+  {
+    icon: <Mail />,
+    name: "Gmail",
+    d: "When a client asks for more or changes the plan, Sera drafts the email. Approve it and it goes to your client from your Gmail.",
+  },
+  { icon: <Inbox />, name: "Outlook", d: "The same for Outlook: approved change requests go out from your own inbox." },
+];
+
+export function IntegrationsSection() {
+  return (
+    <section id="integrations" className="mx-auto flex w-full max-w-5xl scroll-mt-24 flex-col items-center gap-10 text-center">
+      <div className="flex flex-col items-center gap-3">
+        <p className="eyebrow">Integrations</p>
+        <h2 className="display max-w-3xl text-[2.6rem] text-balance sm:text-6xl">
+          Works with the tools you <em>already</em> use.
+        </h2>
+        <p className="max-w-xl text-lg text-ink/70">
+          Sera turns each call into tasks and deadlines where you already work, and emails your client once you approve.
+        </p>
+      </div>
+      <ul className="grid w-full gap-3 text-left sm:grid-cols-2">
+        {INTEGRATIONS.map((x) => (
+          <li key={x.name} className="surface flex items-start gap-4 p-5">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-dawn [&_svg]:size-5">{x.icon}</span>
+            <div className="min-w-0 flex-1">
+              <p className="flex flex-wrap items-center gap-2 font-semibold">
+                {x.name}
+                <span
+                  className={cn(
+                    "rounded-full px-2 py-0.5 text-[0.7rem] font-semibold",
+                    x.live ? "bg-success text-success-dark" : "bg-warning text-warning-dark",
+                  )}
+                >
+                  {x.live ? "Available now" : "Coming soon"}
+                </span>
+              </p>
+              <p className="mt-1 text-sm text-ink-muted">{x.d}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <p className="text-sm text-ink/60">Nothing is sent to a client until you approve it.</p>
     </section>
   );
 }
