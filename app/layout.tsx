@@ -1,13 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { EB_Garamond, Figtree, IBM_Plex_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
-const jakarta = Plus_Jakarta_Sans({
-  variable: "--font-jakarta",
+const garamond = EB_Garamond({
+  variable: "--font-garamond",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
   style: ["normal", "italic"],
+});
+
+const figtree = Figtree({
+  variable: "--font-figtree",
+  subsets: ["latin"],
 });
 
 const plexMono = IBM_Plex_Mono({
@@ -33,7 +37,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${jakarta.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${garamond.variable} ${figtree.variable} ${plexMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {children}

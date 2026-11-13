@@ -16,7 +16,7 @@ export default function LoginPage() {
       <main className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-12 px-5 py-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
         <section className="flex flex-col gap-7 animate-in fade-in slide-in-from-bottom-3 duration-700">
           <p className="eyebrow">Scope protection for freelancers</p>
-          <h1 className="display text-[2.8rem] sm:text-[4.6rem]">
+          <h1 className="display text-[3.4rem] sm:text-[5.5rem]">
             Stop doing <em>free</em> work.
           </h1>
           <p className="max-w-md text-lg text-ink/75 sm:text-xl">

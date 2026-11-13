@@ -104,7 +104,7 @@ export function ProjectFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-xl">
         <div className="flex flex-col gap-1">
-          <DialogTitle className="display text-2xl">
+          <DialogTitle className="display text-3xl">
             {editing ? (
               <>
                 Edit the <em>agreement</em>

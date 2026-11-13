@@ -19,7 +19,7 @@ export function PageHeader({
     <header className="flex flex-col gap-4 pt-2 sm:flex-row sm:items-end sm:justify-between">
       <div className="flex flex-col gap-3">
         {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-        <h1 className="display text-[2.3rem] sm:text-[3.3rem]">{title}</h1>
+        <h1 className="display text-[2.75rem] sm:text-6xl">{title}</h1>
         {subtitle && <p className="max-w-xl text-base text-ink-muted sm:text-lg">{subtitle}</p>}
       </div>
       {action}
@@ -40,7 +40,7 @@ export function SectionHeader({
 }) {
   return (
     <div className="flex items-baseline justify-between gap-4">
-      <h2 className="display text-2xl sm:text-[1.8rem]">
+      <h2 className="display text-3xl sm:text-[2.25rem]">
         {title}
         {count != null && (
           <span className="ml-2 align-middle font-mono text-sm tracking-normal text-ink-muted">

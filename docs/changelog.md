@@ -2,6 +2,9 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-13 (fonts)
+- Back to the original fonts on the new look: EB Garamond headings with an italic (gradient-tinted) accent word, Figtree body, IBM Plex Mono labels. Plus Jakarta Sans removed.
+
 ## 2026-11-13 (new look)
 - Redesign inspired by Pexa Studio (aesthetic only): Plus Jakarta Sans, warm white page with soft peach/lavender glows and film grain, white cards with hairline borders and soft shadows, pastel chips, dark gradient buttons, frosted-glass nav with uppercase tracked links, gradient accent word in headings, new logo tile.
 - Replaces the Wispr Flow-style look (Garamond/Figtree, 2px borders, offset shadows). Rewrote `docs/design-system.md`; updated the style rule in `AGENTS.md`.

@@ -30,7 +30,7 @@ export function FindingDetail({ finding: f, project }: { finding: FindingWithSou
         <ConfidenceMeter confidence={f.confidence} />
         {f.is_sample && <SampleBadge />}
       </div>
-      <h3 className="display text-2xl">{f.title}</h3>
+      <h3 className="display text-3xl">{f.title}</h3>
       {f.description && <p className="text-[0.9375rem] text-ink/85">{f.description}</p>}
 
       <div className="flex flex-col gap-2">
@@ -103,7 +103,7 @@ export function ConversationWorkspace({
   return (
     <div className="grid gap-8 lg:grid-cols-[1.15fr_1fr]">
       <section className="flex flex-col gap-4">
-        <h2 className="display text-2xl">Transcript</h2>
+        <h2 className="display text-3xl">Transcript</h2>
         <ol className="surface flex max-h-[38rem] flex-col gap-1 overflow-y-auto p-3 sm:p-4">
           {lines.map((l) => {
             const state = lineState(l.norm);
@@ -129,7 +129,7 @@ export function ConversationWorkspace({
       </section>
 
       <section className="flex flex-col gap-4">
-        <h2 className="display text-2xl">
+        <h2 className="display text-3xl">
           Findings <span className="font-mono text-sm tracking-normal text-ink-muted">{findings.length}</span>
         </h2>
         {findings.length === 0 ? (

@@ -9,7 +9,8 @@
 /*
  * SERA design tokens: clean, warm and soft.
  * Warm white page, white cards with hairline borders and soft navy shadows,
- * pastel chips with deep text, dark gradient buttons, Plus Jakarta Sans.
+ * pastel chips with deep text, dark gradient buttons. Type: EB Garamond
+ * headings with an italic accent word, Figtree body, IBM Plex Mono labels.
  * Token names are kept from v1 so components restyle without edits.
  */
 :root {
@@ -99,10 +100,9 @@
   --color-warning-dark: var(--warning-dark);
   --color-error-bg: var(--error-bg);
 
-  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
-  /* one family everywhere: "serif" utilities now render the display sans */
-  --font-serif: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
-  --font-heading: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-garamond), ui-serif, Georgia, serif;
+  --font-heading: var(--font-garamond), ui-serif, Georgia, serif;
   --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 
   --radius-sm: calc(var(--radius) * 0.6);
@@ -165,26 +165,26 @@
 }
 
 @layer components {
-  /* Display headings: bold, tight. <em> becomes a warm gradient accent, not italics. */
+  /* Serif display headings; one italic accent word in <em>, tinted with a warm gradient */
   .display {
-    font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
-    font-weight: 700;
-    letter-spacing: -0.035em;
-    line-height: 1.04;
+    font-family: var(--font-garamond), ui-serif, Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1;
   }
   .display em {
-    font-style: normal;
+    font-style: italic;
+    padding-right: 0.06em; /* keep the italic's last letter inside the gradient clip */
     background: linear-gradient(120deg, #a86b3d 0%, #c8884f 45%, #5c4a99 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
-  /* Small uppercase tracked label */
+  /* Small uppercase mono label */
   .eyebrow {
-    font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.18em;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--ink-muted);
   }

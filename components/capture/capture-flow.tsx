@@ -143,7 +143,7 @@ export function CaptureFlow({ userId }: { userId: string }) {
     return (
       <section className="surface-raised flex flex-col gap-4 p-5 text-left sm:p-7 animate-in fade-in slide-in-from-bottom-2 duration-300">
         <div className="flex items-start justify-between gap-3">
-          <h2 className="display text-2xl">
+          <h2 className="display text-3xl">
             Paste a <em>transcript</em>
           </h2>
           <Button variant="ghost" size="sm" onClick={() => setStep({ k: "idle" })}>
@@ -189,7 +189,7 @@ export function CaptureFlow({ userId }: { userId: string }) {
         <Mic className="size-12 transition-transform group-hover:scale-110 sm:size-14" />
       </button>
       <div className="flex flex-col gap-1">
-        <p className="display text-2xl sm:text-3xl">Tap to record the call</p>
+        <p className="display text-3xl">Tap to record the call</p>
         <p className="text-sm text-ink-muted">SERA files it under the right project, or creates one from what was said.</p>
       </div>
       {rec.error && <p className="rounded-card bg-error-bg px-4 py-3 text-sm font-semibold text-pulse">{rec.error}</p>}

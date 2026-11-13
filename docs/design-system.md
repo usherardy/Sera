@@ -13,10 +13,10 @@ Token names are kept from v1 so components didn't need renaming.
 - Category styling lives in [lib/projects/meta.ts](../lib/projects/meta.ts).
 
 ## Type
-**Plus Jakarta Sans** for everything (`--font-sans`, and `--font-serif` maps to it too). **IBM Plex Mono** only for timestamps and small sample badges.
-- `.display`: weight 700, tracking −0.035em, line-height 1.04. One accent word per heading in `<em>`, rendered as a caramel→purple gradient (not italic): "What did the client *ask* for?"
-- `.eyebrow`: 11px, weight 600, uppercase, tracking 0.18em, muted.
-- Body 15–16px; quotes in italic.
+Kept from v1 (the user preferred the original fonts over Plus Jakarta Sans):
+- **EB Garamond** for headings (`.display`: weight 400, tracking −0.02em, line-height 1), with one *italic* accent word per heading in `<em>`, tinted with a caramel→purple gradient: "What did the client *ask* for?"
+- **Figtree** for body and UI text.
+- **IBM Plex Mono** for small uppercase eyebrow labels (`.eyebrow`: 12px, tracking 0.08em), timestamps and sample badges.
 
 ## Shape and depth
 - Radius: buttons and inputs `rounded-xl` (0.75rem), cards 1.25rem (`rounded-card`), hero panels 1.75rem (`rounded-panel`), dialogs `rounded-3xl`.
@@ -33,7 +33,7 @@ Floating **frosted-glass** bar (white/65, `backdrop-blur-xl`, inner highlight, s
 A large dark gradient circle with a white mic, ringed by two soft pastel halos (lavender, peach). While recording: a dark pill with a pulsing coral dot, the live waveform, a mono timer, Stop and Cancel; always visible, which also covers the privacy requirement.
 
 ## Logo
-A lavender tile (`#E3E0FF`) with an ink "thread" mark, and the wordmark SERA in bold uppercase with wide tracking.
+A lavender tile (`#E3E0FF`) with an ink "thread" mark, and the wordmark SERA in EB Garamond with wide tracking.
 
 ## Copy and states
 Processing status lines: "Not analyzed yet", "Analyzing…", "Analyzed", "Couldn't analyze". Sample data always carries a visible **Sample** badge. Every list has an empty state; every async action has a loading and a failed state.

@@ -51,7 +51,7 @@ async function ConversationContent({
           {c.is_sample && <SampleBadge />}
         </div>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <h1 className="display text-[1.9rem] sm:text-[2.6rem]">{c.title}</h1>
+          <h1 className="display text-[2.4rem] sm:text-5xl">{c.title}</h1>
           <AnalyzeButton conversationId={c.id} status={c.processing_status} />
         </div>
         {c.summary && <p className="max-w-3xl text-base text-ink-muted sm:text-lg">{c.summary}</p>}

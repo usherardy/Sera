@@ -15,7 +15,7 @@ export function Logo({ className, compact = false }: { className?: string; compa
           />
         </svg>
       </span>
-      {!compact && <span className="text-[0.8125rem] font-bold tracking-[0.22em] uppercase">SERA</span>}
+      {!compact && <span className="font-serif text-[1.4rem] leading-none tracking-[0.14em]">SERA</span>}
     </span>
   );
 }
