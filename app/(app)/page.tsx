@@ -3,6 +3,7 @@ import { AlertCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SectionHeader } from "@/components/common/layout-bits";
 import { CaptureFlow } from "@/components/capture/capture-flow";
+import { DemoAutoload } from "@/components/projects/demo-autoload";
 import { ProjectCard } from "@/components/projects/project-bits";
 import { listProjects } from "@/lib/projects/data";
 import { SUPABASE_ENABLED } from "@/lib/supabase/config";
@@ -41,6 +42,7 @@ async function HomeContent() {
       <div className="mx-auto w-full max-w-2xl">
         <CaptureFlow userId={viewer.userId} />
       </div>
+      {projects.length === 0 && <DemoAutoload />}
       {projects.length > 0 && (
         <section className="flex flex-col gap-5">
           <SectionHeader title="Your projects" count={projects.length} href="/projects" linkLabel="All projects" />

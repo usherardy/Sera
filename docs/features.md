@@ -51,7 +51,7 @@ Status key: **Built** (code complete, typechecks and builds) · **Untested live*
 ## Demo
 | Feature | Status |
 |---|---|
-| Demo data (Settings → Load): "Acme Studio Website" (€500, 4 conversations) and "Nordic Bakery Rebrand" (€1,200, 2 conversations) with summaries, **pre-written example findings** in every state (needs review, sent, client approved, ideas, commitments, deadline change) and tasks. All labeled Sample; quotes verified against transcripts at load time. "Re-run analysis" replaces a conversation's example findings with live AI output | Built |
+| Demo data loads automatically the first time an account with no projects opens the home page (once per browser), and from Settings → Load or the home "Load demo data" button: "Acme Studio Website" (€500, 4 conversations) and "Nordic Bakery Rebrand" (€1,200, 2 conversations) with summaries, **pre-written example findings** in every state (needs review, sent, client approved, ideas, commitments, deadline change) and tasks. All labeled Sample; quotes verified against transcripts at load time. "Re-run analysis" replaces a conversation's example findings with live AI output | Built |
 | `npm run eval`: runs the four conversations through the real pipeline and asserts the expected findings | Built; not yet passing live (OpenAI account had no credits when last run) |
 
 ## Cut / not built
