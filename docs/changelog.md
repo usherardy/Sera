@@ -4,7 +4,7 @@ Newest first. Add an entry for **every** meaningful change, in the same change a
 
 ## 2026-11-13 (pivot to scope protection)
 - Product focus changed from a general AI memory app to **scope protection for freelancers** on fixed-price projects (still named SERA). Rewrote `docs/idea.md`, `features.md`, `architecture.md`, `roadmap.md`.
-- Added migration `0002_projects.sql` (projects, conversations, findings, tasks, all with RLS). **Must be run manually in Supabase.**
+- Added migration `0002_projects.sql` (projects, conversations, findings, follow_up_tasks, all with RLS; the tasks table is `follow_up_tasks` because a `tasks` relation already existed in the Supabase database). **Must be run manually in Supabase.**
 - Projects dashboard, project page (original agreement, conversations, scope changes, follow-through), conversation page with quote-highlighted transcript, review drawer.
 - OpenAI structured analysis with code-enforced rules: verified quotes only, redacted invented amounts, ideas never get deadlines or tasks.
 - Follow-up tasks, deterministic client confirmation message, separate review and client-approval status tracks.

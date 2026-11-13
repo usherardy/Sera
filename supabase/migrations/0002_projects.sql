@@ -84,8 +84,9 @@ create index findings_project_idx on public.findings (project_id);
 create index findings_conversation_idx on public.findings (conversation_id);
 create index findings_user_idx on public.findings (user_id);
 
--- ------------------------------------------------------------------- tasks
-create table public.tasks (
+-- ------------------------------------------------------- follow_up_tasks
+-- (named follow_up_tasks, not tasks, so it can never collide with another "tasks" table)
+create table public.follow_up_tasks (
   id uuid primary key default gen_random_uuid(),
   project_id uuid not null references public.projects (id) on delete cascade,
   finding_id uuid references public.findings (id) on delete set null,
@@ -97,14 +98,14 @@ create table public.tasks (
   is_sample boolean not null default false,
   created_at timestamptz not null default now()
 );
-create index tasks_project_idx on public.tasks (project_id);
-create index tasks_user_idx on public.tasks (user_id);
+create index follow_up_tasks_project_idx on public.follow_up_tasks (project_id);
+create index follow_up_tasks_user_idx on public.follow_up_tasks (user_id);
 
 -- ------------------------------------------------------ row-level security
 alter table public.projects enable row level security;
 alter table public.conversations enable row level security;
 alter table public.findings enable row level security;
-alter table public.tasks enable row level security;
+alter table public.follow_up_tasks enable row level security;
 
 create policy "Own rows" on public.projects
   for all to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
@@ -112,11 +113,11 @@ create policy "Own rows" on public.conversations
   for all to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
 create policy "Own rows" on public.findings
   for all to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
-create policy "Own rows" on public.tasks
+create policy "Own rows" on public.follow_up_tasks
   for all to authenticated using (user_id = (select auth.uid())) with check (user_id = (select auth.uid()));
 
 -- Explicit grants (RLS still filters every row).
 grant select, insert, update, delete on
-  public.projects, public.conversations, public.findings, public.tasks
+  public.projects, public.conversations, public.findings, public.follow_up_tasks
   to authenticated;
-grant all on public.projects, public.conversations, public.findings, public.tasks to service_role;
+grant all on public.projects, public.conversations, public.findings, public.follow_up_tasks to service_role;

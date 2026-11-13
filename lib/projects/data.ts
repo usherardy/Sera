@@ -67,7 +67,7 @@ export async function listProjects(): Promise<ProjectSummary[]> {
     supabase.from("projects").select(PROJECT_COLS).order("created_at", { ascending: false }),
     supabase.from("conversations").select("id,project_id"),
     supabase.from("findings").select("project_id,category,review_status"),
-    supabase.from("tasks").select("project_id,status"),
+    supabase.from("follow_up_tasks").select("project_id,status"),
   ]);
   if (projects.error) fail("projects", projects.error);
   if (conversations.error) fail("conversations", conversations.error);
@@ -102,7 +102,7 @@ export async function getProject(id: string): Promise<ProjectBundle | null> {
   const [conversations, findings, tasks] = await Promise.all([
     supabase.from("conversations").select(CONVERSATION_COLS).eq("project_id", id).order("recorded_at", { ascending: true }),
     supabase.from("findings").select(FINDING_COLS).eq("project_id", id).order("created_at", { ascending: true }),
-    supabase.from("tasks").select(TASK_COLS).eq("project_id", id).order("created_at", { ascending: true }),
+    supabase.from("follow_up_tasks").select(TASK_COLS).eq("project_id", id).order("created_at", { ascending: true }),
   ]);
   if (conversations.error) fail("conversations", conversations.error);
   if (findings.error) fail("findings", findings.error);
@@ -144,7 +144,7 @@ export async function getConversation(projectId: string, conversationId: string)
 
   const [findings, tasks] = await Promise.all([
     supabase.from("findings").select(FINDING_COLS).eq("conversation_id", conversationId).order("created_at", { ascending: true }),
-    supabase.from("tasks").select(TASK_COLS).eq("project_id", projectId).order("created_at", { ascending: true }),
+    supabase.from("follow_up_tasks").select(TASK_COLS).eq("project_id", projectId).order("created_at", { ascending: true }),
   ]);
   if (findings.error) fail("findings", findings.error);
   if (tasks.error) fail("tasks", tasks.error);
