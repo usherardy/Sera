@@ -1,6 +1,6 @@
 # Sera
 
-Scope protection for freelancers on fixed-price projects. Sera remembers what a client asked for, compares it with what was originally agreed, and shows the exact words as evidence. You review every finding; nothing is sent or approved automatically.
+Change requests on autopilot for agencies and studios on fixed-price projects. Sera remembers what a client asked for, compares it with what was originally agreed, and shows the exact words as evidence. You review every finding; nothing is sent or approved automatically.
 
 Built for the Unfair Weekend hackathon. Docs: [docs/](docs/README.md).
 

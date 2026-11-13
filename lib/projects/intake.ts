@@ -91,7 +91,7 @@ export async function runIntake(
     transcript = joinSegments(input.segments, (s) => {
       if (!s) return null;
       const role = roles.get(s);
-      return role === "client" ? "Client" : role === "freelancer" ? "Freelancer" : `Speaker ${s}`;
+      return role === "client" ? "Client" : role === "freelancer" ? "You" : `Speaker ${s}`;
     });
   }
 

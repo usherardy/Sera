@@ -30,7 +30,7 @@ async function main() {
 
   console.log("\nStripe conversation");
   check("Stripe flagged as a possible scope addition", has(by.stripe.rows, "potential_scope_addition", /stripe|payment/i));
-  check("No finding claims the freelancer approved it", !by.stripe.rows.some((r) => /\b(approved|agreed to|accepted)\b/i.test(r.description) && r.category === "potential_scope_addition" && /stripe/i.test(r.title) && /freelancer (approved|agreed|accepted)/i.test(r.description)));
+  check("No finding claims you approved it", !by.stripe.rows.some((r) => /\b(approved|agreed to|accepted)\b/i.test(r.description) && r.category === "potential_scope_addition" && /stripe/i.test(r.title) && /\b(you|freelancer) (approved|agreed to|accepted)\b/i.test(r.description)));
   check("Responsive request is not extra work", !has(by.stripe.rows, "potential_scope_addition", /phone|responsive|mobile/i));
 
   console.log("\nLogin conversation");

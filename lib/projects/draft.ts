@@ -22,10 +22,10 @@ const DraftOut = z.object({
 });
 export type DraftResult = z.infer<typeof DraftOut>;
 
-const SYSTEM = `A freelancer just recorded a conversation with a client. Work out who is who, decide which of the freelancer's existing projects it belongs to, and draft a project agreement from it in case it's a new project. The freelancer can correct everything afterwards.
+const SYSTEM = `Our user (a studio, agency or independent professional: the "provider") just recorded a conversation with a client. Work out who is who, decide which of the provider's existing projects it belongs to, and draft a project agreement from it in case it's a new project. The provider can correct everything afterwards. Never use the word "freelancer" in any text you write.
 
 SPEAKERS
-- If transcript lines start with "Speaker A:", "Speaker B:", … assign each speaker a role in speaker_roles: "freelancer" (the person delivering the work, usually the one who recorded), "client" (the person paying / asking for work), or "other". Use the content: who asks for deliverables, who promises to build or estimate. If lines have no speaker labels, return an empty list.
+- If transcript lines start with "Speaker A:", "Speaker B:", … assign each speaker a role in speaker_roles: "freelancer" (the provider: the person delivering the work, usually the one who recorded), "client" (the person paying / asking for work), or "other". Use the content: who asks for deliverables, who promises to build or estimate. If lines have no speaker labels, return an empty list.
 
 MATCHING
 - matched_project_id: the id of an existing project ONLY if the conversation is clearly about it (same client or clearly the same work). Otherwise null. Never guess.
@@ -34,7 +34,7 @@ MATCHING
 DRAFT (always fill it, even when matched)
 - Only include what was actually said. NEVER invent deliverables, a price, a currency, or a deadline.
 - name: a short project name, e.g. "Acme Studio Website". client_name: the client's or company's name if said, else null.
-- deliverables: concrete things the freelancer agreed or was asked to deliver, one short phrase each.
+- deliverables: concrete things the provider agreed or was asked to deliver, one short phrase each.
 - exclusions: things explicitly said to be NOT included.
 - fixed_price: only if an amount was stated for the project; currency as a 3-letter code (EUR, USD, GBP) only if stated or obvious from the symbol.
 - deadline: YYYY-MM-DD only if a delivery date was stated; resolve relative dates against the conversation date given.

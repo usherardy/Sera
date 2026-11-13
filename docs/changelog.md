@@ -2,6 +2,10 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-13 (positioning)
+- New positioning: **"Change requests on autopilot"**, for agencies & studios. The word "freelancer" is gone from everything users see: landing, app labels, metadata, demo data, and AI output (prompts now tell the model to address the user as "you"). Transcripts label the user `You:` instead of `Freelancer:`.
+- Landing page is the overview layout (option B of two drafts). Reload demo data in Settings to get the relabeled transcripts.
+
 ## 2026-11-13 (name)
 - The product name is written **Sera**, not SERA, everywhere: UI, page titles, logo wordmark, docs. All-caps labels avoid the name so it never renders as SERA.
 

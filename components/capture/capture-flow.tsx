@@ -152,13 +152,13 @@ export function CaptureFlow({ userId }: { userId: string }) {
           </Button>
         </div>
         <p className="text-sm text-ink-muted">
-          Speaker labels like <span className="font-mono text-ink">Client:</span> and <span className="font-mono text-ink">Freelancer:</span> help Sera
+          Speaker labels like <span className="font-mono text-ink">Client:</span> and <span className="font-mono text-ink">You:</span> help Sera
           tell who asked from who agreed.
         </p>
         <Textarea
           value={step.text}
           onChange={(e) => setStep({ k: "paste", text: e.target.value })}
-          placeholder={"Client: Can we also add Stripe payments to the website?\nFreelancer: I can look into it, but I'll need to estimate the extra work first."}
+          placeholder={"Client: Can we also add Stripe payments to the website?\nYou: I can look into it, but I'll need to estimate the extra work first."}
           className="max-h-96 min-h-48 font-mono text-[0.8125rem]"
           autoFocus
         />

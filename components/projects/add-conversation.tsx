@@ -79,7 +79,7 @@ function AddConversationDialog({ projectId, open, onOpenChange }: { projectId: s
           </DialogTitle>
           <DialogDescription className="text-ink-muted">
             Paste a transcript with speaker labels like <span className="font-mono text-ink">Client:</span> and{" "}
-            <span className="font-mono text-ink">Freelancer:</span>. Labels let Sera tell who asked from who agreed.
+            <span className="font-mono text-ink">You:</span>. Labels let Sera tell who asked from who agreed.
           </DialogDescription>
         </div>
 
@@ -110,7 +110,7 @@ function AddConversationDialog({ projectId, open, onOpenChange }: { projectId: s
               setTranscript(e.target.value);
               setSource("paste");
             }}
-            placeholder={'Client: Can we also add Stripe payments to the website?\nFreelancer: I can look into it, but I\'ll need to estimate the extra work first.'}
+            placeholder={'Client: Can we also add Stripe payments to the website?\nYou: I can look into it, but I\'ll need to estimate the extra work first.'}
             className="max-h-72 min-h-44 font-mono text-[0.8125rem]"
             aria-invalid={tooLong}
           />

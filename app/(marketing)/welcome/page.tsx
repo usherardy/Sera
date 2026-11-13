@@ -1,96 +1,192 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowDown, ArrowRight, ClipboardCheck, Mic, Sparkles } from "lucide-react";
-import { Logo } from "@/components/brand/logo";
+import {
+  ArrowRight,
+  Brush,
+  CalendarDays,
+  Code2,
+  FileText,
+  FolderKanban,
+  Mail,
+  MessageSquareQuote,
+  Mic,
+  ScrollText,
+  Sparkles,
+  Users,
+} from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { Waveform } from "@/components/capture/waveform";
+import { IconTile, MarketingFooter, MarketingNav, PrimaryCta } from "@/components/marketing/shell";
 import { Sky } from "@/components/marketing/sky";
 import { FindingBadge } from "@/components/projects/project-bits";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Sera · Stop doing free work",
-  description: "Sera listens to your client calls and flags anything that isn't in the deal.",
+  title: "Sera · Change requests on autopilot",
+  description: "Sera listens to your client calls, spots every request outside the agreed scope, and turns it into a change request your client can approve.",
 };
 
-/** The idea in one picture: what the client said → what Sera flags. */
-function HeroDemo() {
+/** A small product preview: transcript with the flagged line, and the finding next to it. */
+function ProductPreview() {
+  const lines: { who: string; text: string; hit?: boolean }[] = [
+    { who: "Client", text: "The contact page looks great." },
+    { who: "Client", text: "Can we also add Stripe payments to the website?", hit: true },
+    { who: "You", text: "I can look into it, but I'll need to estimate it first." },
+  ];
   return (
-    <div className="mx-auto flex w-full max-w-md flex-col items-center gap-3">
-      <div className="flex w-full items-center gap-3 rounded-full bg-[linear-gradient(180deg,#2e2e33_0%,#121214_100%)] py-3 pr-5 pl-4 text-white shadow-[0_0_0_8px_rgba(255,255,255,0.35),0_18px_40px_-16px_rgba(20,30,80,0.6)]">
-        <span className="relative flex size-2.5 shrink-0">
-          <span className="absolute inline-flex size-full animate-ping rounded-full bg-flare opacity-75" />
-          <span className="relative inline-flex size-2.5 rounded-full bg-flare" />
-        </span>
-        <Waveform className="h-5 shrink-0" />
-        <span className="truncate font-mono text-[0.8125rem]">“Can we also add Stripe payments?”</span>
+    <div className="surface-raised flex flex-col gap-4 p-4 sm:p-5">
+      <div className="flex items-center justify-between">
+        <span className="eyebrow">Kickoff call · Acme Studio</span>
+        <span className="rounded-full bg-success/40 px-2.5 py-0.5 text-[0.7rem] font-semibold text-success-dark">Analyzed</span>
       </div>
-      <ArrowDown className="size-4 text-ink/40" />
-      <div className="surface-raised flex w-full items-center justify-between gap-3 px-5 py-4 text-left">
-        <div className="flex flex-col gap-1.5">
-          <FindingBadge category="potential_scope_addition" className="w-fit" />
-          <p className="font-semibold">Not in your agreement</p>
+      <ol className="flex flex-col gap-1 rounded-xl bg-cream/60 p-2">
+        {lines.map((l) => (
+          <li key={l.text} className={cn("rounded-lg px-3 py-2 text-[0.875rem]", l.hit && "bg-dawn ring-1 ring-purple/25")}>
+            <span className="mr-2 font-mono text-[0.65rem] tracking-wide text-ink-muted uppercase">{l.who}</span>
+            {l.text}
+          </li>
+        ))}
+      </ol>
+      <div className="flex flex-col gap-2 rounded-xl border border-cream-dark p-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <FindingBadge category="potential_scope_addition" />
+          <span className="rounded-md bg-warning px-2 py-1 text-xs font-semibold text-warning-dark">Needs your review</span>
         </div>
-        <span className="rounded-lg bg-secondary px-3 py-2 text-xs font-semibold whitespace-nowrap text-ink/70">Ask client to approve</span>
+        <p className="font-semibold">Stripe payment integration</p>
+        <p className="text-sm text-ink-muted">
+          Agreement: <span className="font-semibold text-ink">Payment integration</span> is listed as not included.
+        </p>
       </div>
     </div>
   );
 }
 
+const FEATURES = [
+  { icon: <Mic />, t: "Record or upload", d: "Record in the browser, upload audio, or paste a transcript." },
+  { icon: <FolderKanban />, t: "Projects set up for you", d: "Sera files each call under the right client, or creates the project." },
+  { icon: <ScrollText />, t: "Checked against the deal", d: "Every request is compared with what was originally agreed." },
+  { icon: <MessageSquareQuote />, t: "Exact quotes as proof", d: "Each finding shows the words that were said, never a paraphrase." },
+  { icon: <Mail />, t: "Change requests, drafted", d: "A ready-to-send message that asks your client to approve the change." },
+  { icon: <CalendarDays />, t: "Tasks and calendar", d: "Turn promises into follow-ups and add them to your calendar." },
+];
+
+const AUDIENCE = [
+  { icon: <Code2 />, tone: "violet" as const, t: "Product & dev studios", d: "Fixed-price builds where “just one more feature” adds up." },
+  { icon: <Brush />, tone: "peach" as const, t: "Design & brand studios", d: "Extra rounds and new deliverables, kept in check." },
+  { icon: <Users />, tone: "mint" as const, t: "Consultancies", d: "Scope agreed on calls, captured and confirmed in writing." },
+];
+
 const STEPS = [
-  { n: "01", icon: <Mic />, t: "Record", d: "Press record on any client call." },
-  { n: "02", icon: <Sparkles />, t: "Compare", d: "Sera checks every request against the deal." },
-  { n: "03", icon: <ClipboardCheck />, t: "Confirm", d: "Send the change for approval in one tap." },
+  { n: "01", t: "Record", d: "Press record on the call." },
+  { n: "02", t: "File", d: "Sera finds the client and project." },
+  { n: "03", t: "Compare", d: "Requests are checked against the deal." },
+  { n: "04", t: "Approve", d: "Your client approves the change request." },
 ];
 
 export default function WelcomePage() {
   return (
     <div className="flex min-h-dvh flex-col">
-      <Sky className="pb-24 sm:pb-32">
-        <header className="px-4 pt-4 sm:pt-6">
-          <nav className="mx-auto flex max-w-5xl items-center justify-between gap-3 rounded-2xl border border-white/70 bg-white/45 py-2 pr-2 pl-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_10px_30px_-14px_rgba(20,30,80,0.25)] backdrop-blur-xl backdrop-saturate-150">
-            <Link href="/welcome" aria-label="Sera">
-              <Logo />
-            </Link>
-            <div className="flex items-center gap-1.5">
-              <Link href="/login" className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "hidden sm:inline-flex")}>
-                Sign in
-              </Link>
-              <Link href="/login?mode=signup" className={buttonVariants({ size: "sm" })}>
-                Get started
-              </Link>
+      <Sky className="pb-24 sm:pb-28">
+        <MarketingNav
+          links={[
+            { href: "#features", label: "Features" },
+            { href: "#who", label: "Who it's for" },
+            { href: "#how", label: "How it works" },
+          ]}
+        />
+        <section className="mx-auto mt-16 grid max-w-6xl items-center gap-12 px-6 sm:mt-24 lg:grid-cols-[1.05fr_1fr]">
+          <div className="flex flex-col gap-6">
+            <p className="eyebrow">For agencies &amp; studios</p>
+            <h1 className="display text-[3.2rem] sm:text-[5rem]">
+              Change requests on <em>autopilot</em>.
+            </h1>
+            <p className="max-w-lg text-lg text-ink/70 sm:text-xl">
+              Sera listens to your client calls, spots every request that isn&apos;t in the agreed scope, and turns it into a change
+              request your client can approve.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <PrimaryCta>
+                Get started <ArrowRight />
+              </PrimaryCta>
+              <a href="#how" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "bg-white/70 backdrop-blur")}>
+                How it works
+              </a>
             </div>
-          </nav>
-        </header>
-
-        <section className="mx-auto mt-20 flex max-w-3xl flex-col items-center gap-7 px-6 text-center sm:mt-28">
-          <p className="eyebrow">For freelancers</p>
-          <h1 className="display text-[3.6rem] sm:text-[6.5rem]">
-            Stop doing <em>free</em> work.
-          </h1>
-          <p className="max-w-md text-lg text-ink/70 sm:text-xl">Sera listens to your client calls and flags anything that isn&apos;t in the deal.</p>
-          <Link href="/login?mode=signup" className={buttonVariants({ size: "lg" })}>
-            Get started
-            <ArrowRight />
-          </Link>
-          <div className="mt-10 w-full">
-            <HeroDemo />
+            <p className="text-sm text-ink/60">No forms to fill in. Nothing is sent to your client without you.</p>
           </div>
+          <ProductPreview />
         </section>
       </Sky>
 
-      <main className="flex flex-col gap-28 px-6 pb-24 sm:gap-36">
-        <section className="mx-auto flex w-full max-w-5xl flex-col items-center gap-12">
-          <h2 className="display text-center text-[2.6rem] sm:text-6xl">
-            Three steps. <em>Zero</em> forms.
+      <main className="flex flex-col gap-28 px-6 pb-24 sm:gap-32">
+        <section className="mx-auto flex w-full max-w-5xl flex-col items-center gap-10 text-center">
+          <h2 className="display max-w-3xl text-[2.6rem] sm:text-6xl">
+            Extra work rarely arrives in <em>writing</em>.
           </h2>
-          <ol className="grid w-full gap-4 sm:grid-cols-3">
+          <div className="grid w-full gap-3 sm:grid-cols-3">
+            {[
+              { icon: <MessageSquareQuote />, t: "It's said on a call", d: "“Can you just add…” sounds small at the time." },
+              { icon: <FileText />, t: "The deal gets forgotten", d: "The original scope is buried in an old email." },
+              { icon: <Sparkles />, t: "It never gets billed", d: "You do the work, and argue about it later." },
+            ].map((p) => (
+              <div key={p.t} className="surface flex flex-col items-center gap-2.5 px-5 py-6">
+                <span className="flex size-10 items-center justify-center rounded-xl bg-dawn [&_svg]:size-5">{p.icon}</span>
+                <p className="font-semibold">{p.t}</p>
+                <p className="text-sm text-ink-muted">{p.d}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="features" className="mx-auto flex w-full max-w-5xl scroll-mt-24 flex-col gap-10">
+          <div className="flex flex-col gap-3">
+            <p className="eyebrow">Features</p>
+            <h2 className="display text-[2.6rem] sm:text-6xl">
+              Everything after <em>“can we also…”</em>
+            </h2>
+          </div>
+          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {FEATURES.map((f) => (
+              <li key={f.t} className="surface flex flex-col gap-3 p-6">
+                <span className="flex size-10 items-center justify-center rounded-xl bg-dawn text-ink [&_svg]:size-5">{f.icon}</span>
+                <p className="text-lg font-semibold">{f.t}</p>
+                <p className="text-sm text-ink-muted">{f.d}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section id="who" className="mx-auto flex w-full max-w-5xl scroll-mt-24 flex-col gap-10">
+          <div className="flex flex-col gap-3">
+            <p className="eyebrow">Who it&apos;s for</p>
+            <h2 className="display text-[2.6rem] sm:text-6xl">
+              Built for <em>fixed-price</em> work.
+            </h2>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            {AUDIENCE.map((a) => (
+              <div key={a.t} className="surface flex items-start gap-4 p-6">
+                <IconTile tone={a.tone}>{a.icon}</IconTile>
+                <div>
+                  <p className="font-semibold">{a.t}</p>
+                  <p className="mt-1 text-sm text-ink-muted">{a.d}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="how" className="mx-auto flex w-full max-w-5xl scroll-mt-24 flex-col gap-10">
+          <div className="flex flex-col gap-3">
+            <p className="eyebrow">How it works</p>
+            <h2 className="display text-[2.6rem] sm:text-6xl">
+              From call to <em>approved</em> change.
+            </h2>
+          </div>
+          <ol className="grid gap-px overflow-hidden rounded-card border border-[var(--hairline)] bg-[var(--hairline)] shadow-[var(--sera-shadow-soft)] sm:grid-cols-4">
             {STEPS.map((s) => (
-              <li key={s.n} className="surface flex flex-col items-center gap-3 px-6 py-8 text-center">
-                <span className="flex size-11 items-center justify-center rounded-xl bg-dawn text-ink [&_svg]:size-5">{s.icon}</span>
-                <span className="font-mono text-xs text-ink-muted">{s.n}</span>
-                <p className="display text-4xl">{s.t}</p>
-                <p className="max-w-[14rem] text-[0.9375rem] text-ink-muted">{s.d}</p>
+              <li key={s.n} className="flex flex-col gap-2 bg-paper p-6">
+                <span className="font-mono text-sm text-ink-muted">{s.n}</span>
+                <p className="display text-3xl">{s.t}</p>
+                <p className="text-sm text-ink-muted">{s.d}</p>
               </li>
             ))}
           </ol>
@@ -102,22 +198,15 @@ export default function WelcomePage() {
               <h2 className="display text-[2.6rem] sm:text-6xl">
                 Protect your <em>next</em> project.
               </h2>
-              <p className="text-ink/70">Nothing is sent to your client without you.</p>
-              <Link href="/login?mode=signup" className={buttonVariants({ size: "lg" })}>
-                Get started
-                <ArrowRight />
-              </Link>
+              <p className="text-ink/70">Record your next client call and see what Sera finds.</p>
+              <PrimaryCta>
+                Get started <ArrowRight />
+              </PrimaryCta>
             </div>
           </Sky>
         </section>
       </main>
-
-      <footer className="px-6 py-8">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 text-sm text-ink-muted">
-          <Logo />
-          <p>Unfair Weekend 2026</p>
-        </div>
-      </footer>
+      <MarketingFooter />
     </div>
   );
 }
