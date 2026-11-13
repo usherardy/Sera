@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { FolderKanban, ListChecks, Quote } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { Waveform } from "@/components/capture/waveform";
@@ -8,7 +9,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 pt-5">
-        <Link href="/">
+        <Link href="/welcome">
           <Logo />
         </Link>
       </header>
@@ -54,7 +55,9 @@ export default function LoginPage() {
             </h2>
             <p className="text-sm text-ink-muted">Sign in or create an account to protect your next project.</p>
           </div>
-          <LoginForm />
+          <Suspense fallback={<div className="h-80" />}>
+            <LoginForm />
+          </Suspense>
         </section>
       </main>
     </div>

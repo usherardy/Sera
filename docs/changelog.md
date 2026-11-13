@@ -2,6 +2,10 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-13 (landing page)
+- New public landing page at `/welcome` describing SERA, with an original sky-and-clouds hero (SVG clouds drawn in code), frosted nav, feature pills, problem, 4-step how it works, example finding, before/after, control and CTA sections.
+- Signed-out visitors to `/` now see the landing page; `/login?mode=signup` opens on Create account.
+
 ## 2026-11-13 (fonts)
 - Back to the original fonts on the new look: EB Garamond headings with an italic (gradient-tinted) accent word, Figtree body, IBM Plex Mono labels. Plus Jakarta Sans removed.
 

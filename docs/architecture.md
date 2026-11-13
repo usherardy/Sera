@@ -10,6 +10,9 @@ Update this file when structure, routes, schema, pipeline, or env vars change.
 - **Zod 4** for request and model-output validation. **tsx** runs the eval script. **npm** is the package manager.
 - Hosting: Vercel ([vercel.json](../vercel.json)).
 
+## Routing and auth
+`proxy.ts` refreshes the Supabase session. Public paths: `/welcome`, `/login`. A signed-out visitor to `/` is sent to `/welcome`; any other protected page goes to `/login`. Signed-in users visiting `/login` go to `/`.
+
 ## Capture flow (home page, [components/capture/capture-flow.tsx](../components/capture/capture-flow.tsx))
 ```
 Record (MediaRecorder) or upload audio
@@ -74,6 +77,7 @@ The spec's separate `scope_changes` table is folded into `findings` (the review 
 
 ## Code layout
 ```
+app/(marketing)/welcome/                public landing page
 app/(auth)/login/                       login hero + form
 app/(app)/layout.tsx                    top nav (desktop) / bottom nav (mobile)
 app/(app)/page.tsx                      home: record flow + recent projects
@@ -82,6 +86,7 @@ app/(app)/findings/                     all findings across projects, filterable
 app/(app)/settings/                     timezone, demo data, sign out
 app/api/                                routes above
 components/projects/                    form dialog, add-conversation, analyze button, workspace, finding review, task list, bits
+components/marketing/sky.tsx            original SVG cloud sky backdrop
 components/common/ ui/ nav/ brand/ settings/
 components/capture/                     capture-flow.tsx (home record flow), use-recorder.ts, waveform.tsx
 lib/projects/                           types, meta, data, schemas, openai, analyze, run-analysis, process, grounding, message, transcribe, draft, intake

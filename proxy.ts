@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { SUPABASE_ENABLED, SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "@/lib/supabase/config";
 
-const PUBLIC_PATHS = ["/login"];
+const PUBLIC_PATHS = ["/login", "/welcome"];
 
 /**
  * Keeps the Supabase session cookie fresh and sends signed-out visitors to /login.
@@ -35,7 +35,8 @@ export async function proxy(request: NextRequest) {
 
   if (!signedIn && !isPublic && !isApi) {
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
+    // Visitors to the home page see the landing page; deep links go to sign-in.
+    url.pathname = pathname === "/" ? "/welcome" : "/login";
     url.search = "";
     return NextResponse.redirect(url);
   }
