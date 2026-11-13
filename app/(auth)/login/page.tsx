@@ -16,14 +16,14 @@ export default function LoginPage() {
       <main className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-12 px-5 py-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
         <section className="flex flex-col gap-7 animate-in fade-in slide-in-from-bottom-3 duration-700">
           <p className="eyebrow">Scope protection for freelancers</p>
-          <h1 className="display text-[3.4rem] sm:text-[5.5rem]">
+          <h1 className="display text-[2.8rem] sm:text-[4.6rem]">
             Stop doing <em>free</em> work.
           </h1>
           <p className="max-w-md text-lg text-ink/75 sm:text-xl">
             SERA remembers what your client asked for, compares it with what you originally agreed, and
             shows the exact words, so scope creep becomes a conversation, not a surprise.
           </p>
-          <div className="flex w-fit items-center gap-3 rounded-full border-2 border-ink bg-ink py-2.5 pr-5 pl-4 text-cream">
+          <div className="flex w-fit items-center gap-3 rounded-full border border-ink bg-ink py-2.5 pr-5 pl-4 text-cream">
             <span className="relative flex size-2.5">
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-flare opacity-75" />
               <span className="relative inline-flex size-2.5 rounded-full bg-flare" />

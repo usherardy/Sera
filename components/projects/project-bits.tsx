@@ -74,7 +74,7 @@ export function ProjectCard({ project: p }: { project: ProjectSummary }) {
   return (
     <Link
       href={`/projects/${p.id}`}
-      className="surface group flex flex-col gap-4 p-5 transition-colors hover:border-ink/40"
+      className="surface group flex flex-col gap-4 p-5 transition-colors hover:border-ink/20"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
@@ -91,7 +91,7 @@ export function ProjectCard({ project: p }: { project: ProjectSummary }) {
         </span>
         {p.is_sample && <SampleBadge />}
       </div>
-      <div className="flex items-center justify-between border-t-2 border-cream-dark pt-3 text-sm">
+      <div className="flex items-center justify-between border-t border-cream-dark pt-3 text-sm">
         <span className="text-ink-muted">
           {p.conversation_count} conversation{p.conversation_count === 1 ? "" : "s"}
         </span>

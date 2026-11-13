@@ -3,22 +3,21 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "cn"
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border-2 border-transparent font-semibold leading-none whitespace-nowrap transition-[transform,background-color,border-color,color] duration-200 outline-none select-none focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-xl border border-transparent font-semibold leading-none whitespace-nowrap transition-[transform,background-color,border-color,color,box-shadow,filter] duration-200 outline-none select-none focus-visible:ring-3 focus-visible:ring-ring/40 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
-        /* Lavender fill + ink border: the signature primary button */
-        default: "border-ink bg-dawn text-ink hover:bg-dawn-strong",
-        /* Solid ink, for high-emphasis actions on cream */
-        ink: "border-ink bg-ink text-cream hover:bg-ink/85",
-        /* Cream on dark (teal) surfaces */
-        cream: "border-cream bg-cream text-ink hover:bg-paper",
+        /* Dark gradient pill: the primary action */
+        default:
+          "bg-[linear-gradient(180deg,#3a3a3f_0%,#121214_100%)] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_22px_-12px_rgba(20,30,80,0.55)] hover:brightness-125",
+        ink: "bg-[linear-gradient(180deg,#3a3a3f_0%,#121214_100%)] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_22px_-12px_rgba(20,30,80,0.55)] hover:brightness-125",
+        /* White on dark surfaces */
+        cream: "bg-white text-ink hover:bg-white/90",
         outline:
-          "border-cream-dark bg-paper text-ink hover:border-ink/40 aria-expanded:border-ink/40",
-        secondary: "bg-secondary text-ink hover:bg-cream-dark/70",
-        ghost: "text-ink hover:bg-ink/5 aria-expanded:bg-ink/5",
-        destructive:
-          "bg-error-bg text-pulse hover:bg-[#f3d3d3] focus-visible:ring-pulse/20",
+          "border-[rgba(20,30,80,0.12)] bg-white text-ink shadow-[0_1px_2px_rgba(20,30,80,0.05)] hover:border-[rgba(20,30,80,0.24)] aria-expanded:border-[rgba(20,30,80,0.24)]",
+        secondary: "bg-secondary text-ink hover:bg-[#ebe5db]",
+        ghost: "text-ink hover:bg-ink/[0.05] aria-expanded:bg-ink/[0.05]",
+        destructive: "bg-error-bg text-pulse hover:bg-[#fad6d6] focus-visible:ring-pulse/20",
         link: "border-0 px-0 text-ink underline-offset-4 hover:underline active:scale-100",
       },
       size: {

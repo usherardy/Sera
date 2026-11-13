@@ -37,7 +37,7 @@ export function TaskList({ tasks, projectName }: { tasks: Task[]; projectName?: 
             aria-label={t.status === "done" ? "Mark as open" : "Mark as done"}
             disabled={busyId === t.id}
             onClick={() => toggle(t)}
-            className={cn("mt-0.5 flex size-5 shrink-0 items-center justify-center rounded border-2 border-ink disabled:opacity-50", t.status === "done" && "bg-fathom text-cream")}
+            className={cn("mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border border-ink/30 disabled:opacity-50", t.status === "done" && "bg-fathom text-cream")}
           >
             {t.status === "done" && <Check className="size-3.5" />}
           </button>

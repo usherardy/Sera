@@ -74,7 +74,7 @@ function AddConversationDialog({ projectId, open, onOpenChange }: { projectId: s
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
       <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
         <div className="flex flex-col gap-1">
-          <DialogTitle className="display text-3xl">
+          <DialogTitle className="display text-2xl">
             Add a <em>conversation</em>
           </DialogTitle>
           <DialogDescription className="text-ink-muted">

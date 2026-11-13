@@ -14,7 +14,7 @@ export default function HomePage() {
     <div className="flex flex-col gap-10 sm:gap-14">
       <header className="flex flex-col items-center gap-4 pt-2 text-center animate-in fade-in slide-in-from-bottom-2 duration-500">
         <p className="eyebrow">Scope protection for freelancers</p>
-        <h1 className="display text-[2.7rem] sm:text-7xl">
+        <h1 className="display text-[2.4rem] sm:text-[4.1rem]">
           What did the client <em>ask</em> for?
         </h1>
         <p className="max-w-xl text-base text-ink-muted sm:text-lg">

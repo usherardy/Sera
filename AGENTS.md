@@ -24,5 +24,5 @@ Rules: docs describe reality, so mark planned things as planned; if code and doc
 
 ## Working conventions
 - Package manager is **npm** (not pnpm).
-- Match the Wispr Flow-inspired style in [`docs/design-system.md`](docs/design-system.md).
+- Match the clean, warm style (Pexa Studio-inspired) in [`docs/design-system.md`](docs/design-system.md).
 - Never invent data: no made-up commitments, dates, times, or timestamps.

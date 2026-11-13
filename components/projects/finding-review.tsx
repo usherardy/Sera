@@ -17,7 +17,7 @@ import { CalendarLink } from "./calendar-link";
 
 function Block({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
   return (
-    <section className="flex flex-col gap-3 border-t-2 border-cream-dark pt-5">
+    <section className="flex flex-col gap-3 border-t border-cream-dark pt-5">
       <div>
         <p className="eyebrow">{title}</p>
         {hint && <p className="mt-1 text-xs text-ink-muted">{hint}</p>}
@@ -81,8 +81,8 @@ export function FindingReview({ finding: f, tasks }: { finding: FindingWithSourc
               onClick={() => c !== f.category && patch("category", { category: c }, "Classification updated.")}
               aria-pressed={c === f.category}
               className={cn(
-                "rounded-full border-2 px-3 py-1.5 text-xs font-semibold transition-colors",
-                c === f.category ? "border-ink bg-dawn" : "border-cream-dark bg-paper text-ink/70 hover:border-ink/40",
+                "rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors",
+                c === f.category ? "border-dawn-strong bg-dawn" : "border-cream-dark bg-paper text-ink/70 hover:border-ink/20",
               )}
             >
               {FINDING_META[c].label}
@@ -138,7 +138,7 @@ export function FindingReview({ finding: f, tasks }: { finding: FindingWithSourc
                     aria-label={t.status === "done" ? "Mark as open" : "Mark as done"}
                     disabled={!!busy}
                     onClick={() => run(`t-${t.id}`, () => api(`/api/tasks/${t.id}`, "PATCH", { status: t.status === "done" ? "open" : "done" }).then(() => undefined))}
-                    className={cn("mt-0.5 flex size-5 shrink-0 items-center justify-center rounded border-2 border-ink", t.status === "done" && "bg-fathom text-cream")}
+                    className={cn("mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border border-ink/30", t.status === "done" && "bg-fathom text-cream")}
                   >
                     {t.status === "done" && <Check className="size-3.5" />}
                   </button>
@@ -236,7 +236,7 @@ export function FindingReview({ finding: f, tasks }: { finding: FindingWithSourc
 
           <div className="flex flex-col gap-2">
             <Label>What the client has done</Label>
-            <div className="grid grid-cols-2 gap-1 rounded-lg border-2 border-cream-dark bg-paper p-1 sm:grid-cols-4">
+            <div className="grid grid-cols-2 gap-1 rounded-lg border border-cream-dark bg-paper p-1 sm:grid-cols-4">
               {CLIENT_STATES.map((s) => (
                 <button
                   key={s}

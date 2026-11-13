@@ -51,7 +51,7 @@ async function ConversationContent({
           {c.is_sample && <SampleBadge />}
         </div>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <h1 className="display text-[2.4rem] sm:text-5xl">{c.title}</h1>
+          <h1 className="display text-[1.9rem] sm:text-[2.6rem]">{c.title}</h1>
           <AnalyzeButton conversationId={c.id} status={c.processing_status} />
         </div>
         {c.summary && <p className="max-w-3xl text-base text-ink-muted sm:text-lg">{c.summary}</p>}
@@ -67,7 +67,7 @@ async function ConversationContent({
         </div>
       )}
       {created === "1" && (
-        <div className="flex flex-col gap-3 rounded-card border-2 border-ink bg-dawn/40 p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 rounded-card border border-dawn-strong bg-dawn/40 p-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="font-semibold">
               SERA created the project “{project.name}” from this call.
@@ -79,7 +79,7 @@ async function ConversationContent({
             </p>
           </div>
           <div className="flex shrink-0 gap-2">
-            <Link href={`/projects/${project.id}`} className="inline-flex h-9 items-center rounded-lg border-2 border-cream-dark bg-paper px-3.5 text-sm font-semibold hover:border-ink/40">
+            <Link href={`/projects/${project.id}`} className="inline-flex h-9 items-center rounded-lg border border-cream-dark bg-paper px-3.5 text-sm font-semibold hover:border-ink/20">
               Open project
             </Link>
             <EditAgreementButton project={project} />
@@ -87,7 +87,7 @@ async function ConversationContent({
         </div>
       )}
       {c.is_sample && c.processing_status === "completed" && (
-        <p className="rounded-card border-2 border-ink/15 bg-warning px-4 py-3 text-sm font-semibold text-warning-dark">
+        <p className="rounded-card border border-ink/15 bg-warning px-4 py-3 text-sm font-semibold text-warning-dark">
           Sample conversation. The findings below are pre-written examples, not live AI output. Press Re-run analysis to analyze it with the real AI.
         </p>
       )}

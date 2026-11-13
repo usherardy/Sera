@@ -68,7 +68,7 @@ export function LoginForm() {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
-      <div className="grid grid-cols-2 gap-1 rounded-lg border-2 border-cream-dark bg-paper p-1">
+      <div className="grid grid-cols-2 gap-1 rounded-lg border border-cream-dark bg-paper p-1">
         {(["signin", "signup"] as const).map((m) => (
           <button
             key={m}

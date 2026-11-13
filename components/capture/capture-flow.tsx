@@ -107,7 +107,7 @@ export function CaptureFlow({ userId }: { userId: string }) {
     return (
       <section className="flex flex-col items-center gap-8 py-10 text-center">
         <p className="eyebrow">Recording · everyone on the call should know</p>
-        <div className="flex items-center gap-4 rounded-full border-2 border-ink bg-ink py-3 pr-3 pl-5 text-cream shadow-[0_10px_30px_-12px_rgba(26,26,26,0.7)]">
+        <div className="flex items-center gap-4 rounded-full bg-[linear-gradient(180deg,#2e2e33_0%,#121214_100%)] py-3 pr-3 pl-5 text-white shadow-[0_0_0_8px_rgba(236,230,255,0.7),0_18px_40px_-16px_rgba(20,30,80,0.6)]">
           <span className="relative flex size-2.5">
             <span className="absolute inline-flex size-full animate-ping rounded-full bg-flare opacity-75" />
             <span className="relative inline-flex size-2.5 rounded-full bg-flare" />
@@ -143,7 +143,7 @@ export function CaptureFlow({ userId }: { userId: string }) {
     return (
       <section className="surface-raised flex flex-col gap-4 p-5 text-left sm:p-7 animate-in fade-in slide-in-from-bottom-2 duration-300">
         <div className="flex items-start justify-between gap-3">
-          <h2 className="display text-3xl">
+          <h2 className="display text-2xl">
             Paste a <em>transcript</em>
           </h2>
           <Button variant="ghost" size="sm" onClick={() => setStep({ k: "idle" })}>
@@ -179,17 +179,17 @@ export function CaptureFlow({ userId }: { userId: string }) {
 
   // idle
   return (
-    <section className="flex flex-col items-center gap-7 py-6 text-center sm:py-10">
+    <section className="flex flex-col items-center gap-9 py-8 text-center sm:py-12">
       <button
         type="button"
         onClick={() => void rec.start()}
         aria-label="Start recording"
-        className="group flex size-36 items-center justify-center rounded-full border-2 border-ink bg-ink text-dawn shadow-[0_18px_40px_-16px_rgba(26,26,26,0.75)] transition-transform hover:scale-[1.03] active:scale-95 sm:size-44"
+        className="group flex size-36 items-center justify-center rounded-full bg-[linear-gradient(180deg,#3a3a3f_0%,#121214_100%)] text-white shadow-[0_0_0_10px_rgba(236,230,255,0.85),0_0_0_22px_rgba(255,233,207,0.6),0_28px_56px_-20px_rgba(20,30,80,0.55)] transition-transform hover:scale-[1.03] active:scale-95 sm:size-44"
       >
         <Mic className="size-12 transition-transform group-hover:scale-110 sm:size-14" />
       </button>
       <div className="flex flex-col gap-1">
-        <p className="display text-3xl">Tap to record the call</p>
+        <p className="display text-2xl sm:text-3xl">Tap to record the call</p>
         <p className="text-sm text-ink-muted">SERA files it under the right project, or creates one from what was said.</p>
       </div>
       {rec.error && <p className="rounded-card bg-error-bg px-4 py-3 text-sm font-semibold text-pulse">{rec.error}</p>}

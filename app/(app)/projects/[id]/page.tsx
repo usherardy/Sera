@@ -33,7 +33,7 @@ export default function ProjectPage({ params }: PageProps<"/projects/[id]">) {
 function Stat({ value, label, tone }: { value: number; label: string; tone?: "alert" }) {
   return (
     <div className="surface px-4 py-3">
-      <p className={`font-serif text-3xl leading-none ${tone === "alert" && value > 0 ? "text-[#8a4d00]" : ""}`}>{value}</p>
+      <p className={`text-3xl font-semibold leading-none tracking-tight ${tone === "alert" && value > 0 ? "text-[#8a4d00]" : ""}`}>{value}</p>
       <p className="mt-1 text-xs font-semibold text-ink-muted">{label}</p>
     </div>
   );
@@ -80,7 +80,7 @@ function ProjectStatus({
 
   return (
     <section className="flex flex-col gap-5 rounded-panel bg-fathom p-6 text-cream sm:p-8">
-      <h2 className="display text-3xl sm:text-4xl">
+      <h2 className="display text-2xl sm:text-[2rem]">
         Where it <em>stands</em>
       </h2>
       <dl className="flex flex-col gap-3.5">
@@ -147,7 +147,7 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
           <span className="eyebrow">{p.client_name}</span>
           {p.is_sample && <SampleBadge />}
         </div>
-        <h1 className="display text-[2.6rem] sm:text-6xl">{p.name}</h1>
+        <h1 className="display text-[2.2rem] sm:text-[3.1rem]">{p.name}</h1>
         {p.original_description && <p className="max-w-2xl text-base text-ink-muted sm:text-lg">{p.original_description}</p>}
         <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3">
           <Stat value={conversations.length} label="Conversations" />
@@ -206,11 +206,11 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
           <dl className="flex flex-col gap-4">
             <div>
               <dt className="eyebrow">Fixed price</dt>
-              <dd className="font-serif text-3xl">{formatMoney(p.fixed_price, p.currency)}</dd>
+              <dd className="text-2xl font-semibold tracking-tight">{formatMoney(p.fixed_price, p.currency)}</dd>
             </div>
             <div>
               <dt className="eyebrow">Original deadline</dt>
-              <dd className="inline-flex items-center gap-2 font-serif text-3xl">
+              <dd className="inline-flex items-center gap-2 text-2xl font-semibold tracking-tight">
                 <CalendarDays className="size-5" />
                 {p.deadline ? formatDateOnly(p.deadline) : "Not set"}
               </dd>
@@ -237,7 +237,7 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
             action={<AddConversationButton projectId={p.id} />}
           />
         ) : (
-          <ul className="surface divide-y-2 divide-cream-dark">
+          <ul className="surface divide-y divide-cream-dark">
             {conversations.map((c) => (
               <li key={c.id}>
                 <Link href={`/projects/${p.id}/conversations/${c.id}`} className="flex flex-col gap-1.5 p-4 transition-colors hover:bg-cream/60">
@@ -266,7 +266,7 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
             body="Possible additions, changes and open questions from your conversations appear here, each with its evidence."
           />
         ) : (
-          <ul className="surface divide-y-2 divide-cream-dark">
+          <ul className="surface divide-y divide-cream-dark">
             {sortedChanges.map((f) => (
               <FindingRow key={f.id} f={f} projectId={p.id} />
             ))}
@@ -278,7 +278,7 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
               Also noted <span className="font-mono text-ink-muted">{others.length}</span>
               <span className="ml-2 text-ink-muted">already in scope, ideas for later</span>
             </summary>
-            <ul className="divide-y-2 divide-cream-dark border-t-2 border-cream-dark">
+            <ul className="divide-y divide-cream-dark border-t border-cream-dark">
               {others.map((f) => (
                 <FindingRow key={f.id} f={f} projectId={p.id} />
               ))}

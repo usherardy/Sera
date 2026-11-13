@@ -33,8 +33,8 @@ export function FindingsBrowser({ findings }: { findings: FindingWithProject[] }
               onClick={() => setActive(f.key)}
               aria-pressed={active === f.key}
               className={cn(
-                "shrink-0 rounded-full border-2 px-3.5 py-1.5 text-sm font-semibold transition-colors",
-                active === f.key ? "border-ink bg-dawn" : "border-cream-dark bg-paper text-ink/70 hover:border-ink/40",
+                "shrink-0 rounded-full border px-3.5 py-1.5 text-sm font-semibold transition-colors",
+                active === f.key ? "border-dawn-strong bg-dawn" : "border-cream-dark bg-paper text-ink/70 hover:border-ink/20",
               )}
             >
               {f.label} <span className="font-mono text-xs text-ink-muted">{count}</span>
@@ -45,7 +45,7 @@ export function FindingsBrowser({ findings }: { findings: FindingWithProject[] }
       {shown.length === 0 ? (
         <EmptyState icon={<ListChecks />} title="Nothing here." body="Findings from your conversations appear here, each with the exact words that were said." />
       ) : (
-        <ul className="surface divide-y-2 divide-cream-dark">
+        <ul className="surface divide-y divide-cream-dark">
           {shown.map((f) => (
             <FindingListItem
               key={f.id}

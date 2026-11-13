@@ -90,7 +90,7 @@ async function DashboardContent() {
       {recent.length > 0 && (
         <section className="flex flex-col gap-5">
           <SectionHeader title="Recent activity" />
-          <ul className="surface divide-y-2 divide-cream-dark">
+          <ul className="surface divide-y divide-cream-dark">
             {recent.map(({ conversation: c, project }) => (
               <li key={c.id}>
                 <Link
