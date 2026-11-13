@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "eval": "tsx --env-file=.env.local --conditions=react-server scripts/eval-analysis.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -16,6 +17,7 @@
     "cn": "^0.5.2",
     "lucide-react": "^1.72.0",
     "next": "16.4.6",
+    "openai": "^7.56.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "server-only": "^0.0.1",
@@ -32,6 +34,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
     "tailwindcss": "4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }

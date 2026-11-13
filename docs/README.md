@@ -12,4 +12,4 @@ Source of truth for what SERA is, how it is built, and where it stands.
 | [roadmap.md](roadmap.md) | Phases, deadline, scope cuts, what is next | A phase starts or finishes, or scope is cut or added |
 | [changelog.md](changelog.md) | Dated log of every meaningful change | **Every change** |
 
-Product name: **SERA** (the hackathon brief calls it "FollowThrough"; renamed on 2026-11-13 "for now").
+Product name: **SERA** (the hackathon brief calls it "FollowThrough"; kept as SERA). Product: scope protection for freelancers on fixed-price projects.

@@ -1,28 +1,31 @@
 # Roadmap
 
-**Deadline:** 2026-11-14 20:00 Europe/Vilnius. **Feature freeze:** about 14:00 that day; after that, rehearse the 2–3 minute demo and fix bugs only.
+**Deadline:** 2026-11-14 20:00 Europe/Vilnius. **Feature freeze:** about 14:00 that day; after that, rehearse the 2 minute demo and fix bugs only.
 
 | Phase | Scope | Status |
 |---|---|---|
-| 1a. Design checkpoint | Scaffold, tokens and fonts, shadcn restyled, both navs, recording pill, all screens + login hero on static sample data. | Done |
-| Differentiation UI | Promise ledger, check-in variant, "Hear it" clip button, Close your day flow, all on sample data (see [idea.md](idea.md#positioning)). | Done (UI); wired in phases 2–4 |
-| 1b. Foundation | Supabase clients and auth, migration + RLS, real queries, mutation APIs, sample-day seed, sign-in redirect. | Done in code; apply `0001_init.sql` in Supabase to go live |
-| 2. Capture and Memory | Recorder, upload, signed uploads, register + process, transcription, recording detail, status polling, retry, delete, daily summary. | Planned |
-| 3. Moments and Follow-through | Prompts, schemas, grounding, persistence function; wire Actions, ledger and Close your day to the API. | Planned |
-| 4. Google Calendar | OAuth, encrypted tokens, idempotent insert, check-in event titles, Close your day batch add. Cut line: if not working by Saturday 10:00, drop it. | Planned |
-| 5. Polish and deploy | Loading/error states, mobile QA on real phones, demo fixtures and seed, Vercel deploy, prod OAuth redirect. | Planned |
+| 0. Prep | `openai` SDK, Next docs read | Done |
+| 1. Projects | Migration 0002, project CRUD, dashboard, project page | Built; migration must be run by hand in Supabase |
+| 2. Detection | Transcript input, OpenAI structured analysis, quote grounding, conversation page | Built; live run blocked until OpenAI has credits |
+| 3. Review and follow-through | Review drawer, tasks, client message, status tracks | Built; untested live |
+| 4. Demo data and eval | Acme sample project, `npm run eval` | Built; eval not yet passing live |
+| 5. Browser recording (P1) | Record, transcribe, map speakers, then analyze | Planned, first to cut |
+| 6. Polish and deploy | Mobile pass, empty/loading states, Vercel env vars, deploy | Planned |
 
-## Deliberate scope cuts
-| Brief says | We do | Why |
-|---|---|---|
-| Chunk large files | 25 MB upload cap, no chunking | Needs ffmpeg, which Vercel lacks. Seam left in `transcribe.ts`. |
-| Small job table | Status on `recordings` plus atomic claim | Same guarantees, one table fewer. |
-| googleapis SDK | Plain `fetch` | Too large for two endpoints. |
-| Speaker labels | Nullable `speaker_label`, unused | whisper-1 doesn't diarize. |
-| (new) Recording kind | `conversation` / `voice_note` at capture | Without diarization, "I" is only clear in a voice note. |
+## Before the demo
+1. Run `supabase/migrations/0002_projects.sql` in the Supabase SQL editor (after 0001).
+2. Add OpenAI billing credit (the key returned `credit_balance_exhausted`) and confirm `OPENAI_ANALYSIS_MODEL` is a model that supports structured outputs.
+3. `npm run eval`, then walk the demo: Settings → Load sample project → Analyze each conversation.
+4. Set the Supabase and OpenAI env vars on Vercel.
 
-## Demo dataset
-Three scripts the team records on a phone: **R1** launch decision with a correction (Wednesday → Friday), **R2** an unaccepted suggestion plus "investor meeting moved to Thursday", **R3** a voice note with a personal plan and a reminder-worthy task. Outputs are saved as fixtures; Settings → Load sample day seeds them with the Sample badge.
+## Scope decisions
+| Decision | Why |
+|---|---|
+| Paste transcript is the base input | Pasted labels (`Client:`, `Freelancer:`) tell who asked from who agreed. Audio transcription has no speaker labels. |
+| Analysis runs inside one request (60 s cap) | Transcripts are short; avoids a job queue and polling. |
+| Four tables, client-approval fields on `findings` | Fewer joins than a separate `scope_changes` table, same guarantees. |
+| Deterministic client message | Cannot invent a price or approval; works without AI credits. |
+| Audio is not stored | No Storage use in the MVP. |
 
-## Open items / user setup
-Supabase project (email confirm off), OpenAI key with billing, Google Cloud project with Calendar API and a Testing-mode OAuth client (Phase 4).
+## P2: not during the hackathon
+Always-on recording, wearables, invoicing, Stripe, automatic client emails, CRM, complex project management, Google Calendar, Slack, public client approval portals.

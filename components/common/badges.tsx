@@ -1,30 +1,7 @@
 import { cn } from "@/lib/utils";
-import { CATEGORY_META } from "@/lib/categories";
 import { formatDateOnly, formatOwner } from "@/lib/format";
-import type { Confidence, MomentCategory, RecordingStatus } from "@/lib/types";
-import { AlertTriangle, CalendarDays, Loader2, User, UserRoundX } from "lucide-react";
-
-export function CategoryBadge({
-  category,
-  className,
-}: {
-  category: MomentCategory;
-  className?: string;
-}) {
-  const meta = CATEGORY_META[category];
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold",
-        meta.badge,
-        className,
-      )}
-    >
-      <span className={cn("size-1.5 rounded-full", meta.dot)} />
-      {meta.label}
-    </span>
-  );
-}
+import type { Confidence } from "@/lib/projects/types";
+import { CalendarDays, User, UserRoundX } from "lucide-react";
 
 export function SampleBadge({ className }: { className?: string }) {
   return (
@@ -36,32 +13,6 @@ export function SampleBadge({ className }: { className?: string }) {
       )}
     >
       Sample
-    </span>
-  );
-}
-
-const STATUS_COPY: Record<RecordingStatus, string> = {
-  uploaded: "Queued…",
-  transcribing: "Transcribing…",
-  analyzing: "Finding moments…",
-  completed: "Processed",
-  failed: "Couldn't process",
-};
-
-export function StatusLine({ status }: { status: RecordingStatus }) {
-  if (status === "completed") return null;
-  if (status === "failed") {
-    return (
-      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-pulse">
-        <AlertTriangle className="size-3.5" />
-        {STATUS_COPY[status]}
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-purple">
-      <Loader2 className="size-3.5 animate-spin" />
-      {STATUS_COPY[status]}
     </span>
   );
 }

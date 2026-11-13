@@ -23,7 +23,7 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "SERA",
   description:
-    "Your day, remembered. What matters, captured. What you promise, done.",
+    "Scope protection for freelancers: compare what clients ask for with what was originally agreed, with the exact words as evidence.",
 };
 
 export const viewport: Viewport = {

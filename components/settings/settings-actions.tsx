@@ -69,9 +69,9 @@ export function SampleDayButtons() {
           DESIGN_PREVIEW
             ? previewNote()
             : run("load", async () => {
-                await api("/api/demo/seed", "POST");
-                toast.success("Sample day loaded. Every item is labeled Sample.");
-                router.push("/");
+                const { id } = await api<{ id: string }>("/api/demo/seed", "POST");
+                toast.success("Sample project loaded. Every item is labeled Sample.");
+                router.push(`/projects/${id}`);
                 router.refresh();
               })
         }
@@ -87,7 +87,7 @@ export function SampleDayButtons() {
             ? previewNote()
             : run("remove", async () => {
                 await api("/api/demo/seed", "DELETE");
-                toast.success("Sample day removed.");
+                toast.success("Sample project removed.");
                 router.refresh();
               })
         }

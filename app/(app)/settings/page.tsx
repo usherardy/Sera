@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/common/layout-bits";
 import { SampleBadge } from "@/components/common/badges";
 import { SampleDayButtons, SignOutButton, TimezoneButton } from "@/components/settings/settings-actions";
-import { getViewer } from "@/lib/data";
+import { getViewer } from "@/lib/viewer";
 
 function SettingRow({
   icon,
@@ -55,7 +55,7 @@ async function SettingsContent() {
       <SettingRow
         icon={<CalendarDays />}
         title="Google Calendar"
-        body="Add approved tasks and check-ins to your calendar. Nothing is created without your confirmation. Coming next."
+        body="Add follow-up tasks to your calendar. Not available yet."
         action={
           <Button variant="outline" disabled>
             Connect
@@ -67,7 +67,7 @@ async function SettingsContent() {
         title="Timezone"
         body={
           <>
-            Places recordings on the right day and resolves deadlines like “by Friday”. Currently{" "}
+            Places conversations on the right day and resolves deadlines like “by Friday”. Currently{" "}
             <span className="font-mono text-ink">{viewer.timezone}</span>.
           </>
         }
@@ -77,16 +77,16 @@ async function SettingsContent() {
         icon={<Database />}
         title={
           <span className="inline-flex items-center gap-2">
-            Sample day <SampleBadge />
+            Sample project <SampleBadge />
           </span>
         }
-        body="Load three labeled sample recordings into today to explore SERA, or remove them. They're never mixed up with your own."
+        body="Load a labeled demo project (Acme Studio Website, €500) with four client conversations to try SERA, or remove it. It's never mixed up with your own projects."
         action={<SampleDayButtons />}
       />
       <SettingRow
         icon={<LogOut />}
         title="Sign out"
-        body="You'll need to sign in again to see your memories."
+        body="You'll need to sign in again to see your projects."
         action={<SignOutButton />}
       />
     </div>

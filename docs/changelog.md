@@ -2,6 +2,16 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-13 (pivot to scope protection)
+- Product focus changed from a general AI memory app to **scope protection for freelancers** on fixed-price projects (still named SERA). Rewrote `docs/idea.md`, `features.md`, `architecture.md`, `roadmap.md`.
+- Added migration `0002_projects.sql` (projects, conversations, findings, tasks, all with RLS). **Must be run manually in Supabase.**
+- Projects dashboard, project page (original agreement, conversations, scope changes, follow-through), conversation page with quote-highlighted transcript, review drawer.
+- OpenAI structured analysis with code-enforced rules: verified quotes only, redacted invented amounts, ideas never get deadlines or tasks.
+- Follow-up tasks, deterministic client confirmation message, separate review and client-approval status tracks.
+- Acme Studio Website sample project (labeled Sample) and `npm run eval`.
+- Removed the old recordings / moments / commitments screens, API routes, and sample day. Nav is now Projects and Settings.
+- Not verified live: migration not yet run and the OpenAI key returned `credit_balance_exhausted`, so end-to-end analysis has not been run. Typecheck, lint, build, and offline grounding checks pass.
+
 ## 2026-11-13
 - Phase 1b: Supabase sign-in (email + password), `proxy.ts` session refresh and sign-in redirect, schema with RLS and a private audio bucket (`supabase/migrations/0001_init.sql`), real queries behind the same data-layer signatures, and APIs to update tasks and moments, delete recordings, and load/remove the sample day. Without Supabase env vars the app stays in design-preview mode, so Vercel keeps working until the vars are added.
 - Verified Phase 1b end to end against the real Supabase project (27/27 checks): sign-up creates a profile, sample day load/remove, approvals and owner confirmation persist across reloads, moment dismiss, recording delete cascades, and a second account can't read, update, delete or insert another user's rows, audio, or `integration_secrets`. The live data layer now calls `connection()` before reading the clock, which Cache Components requires.

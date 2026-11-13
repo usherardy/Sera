@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SERA
 
-## Getting Started
+Scope protection for freelancers on fixed-price projects. SERA remembers what a client asked for, compares it with what was originally agreed, and shows the exact words as evidence. You review every finding; nothing is sent or approved automatically.
 
-First, run the development server:
+Built for the Unfair Weekend hackathon. Docs: [docs/](docs/README.md).
+
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Create `.env.local` with:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Variable | Purpose |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY` | Supabase project |
+| `OPENAI_API_KEY`, `OPENAI_ANALYSIS_MODEL` | Analysis (the model must support structured outputs) |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Database
 
-## Learn More
+In the Supabase SQL editor, run `supabase/migrations/0001_init.sql`, then `supabase/migrations/0002_projects.sql`.
 
-To learn more about Next.js, take a look at the following resources:
+## Try the demo
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Settings → **Load sample project** → open a conversation → **Analyze**. Sample data is always labeled.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Checks
 
-## Deploy on Vercel
+```bash
+npx tsc --noEmit && npm run lint && npm run build
+npm run eval       # runs the demo conversations through the real AI (needs OpenAI credits)
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Package manager: npm.

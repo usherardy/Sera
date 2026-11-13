@@ -16,10 +16,10 @@ EB Garamond for headings with **one italic accent word** per heading ("Here's wh
 Buttons: 0.5rem radius, 2px ink border, lavender fill, weight 600, small press-scale. Cards: 1rem radius, 2px `#E4E4D0` border, no blur shadows (occasionally a hard 2px ink offset shadow). Large containers: 2–2.5rem radius.
 
 ## Navigation
-Desktop: floating bordered cream top bar (max 64rem). Mobile: floating bordered bottom bar: Home · Memory · [record] · Moments · Actions.
+Desktop: floating bordered cream top bar (max 64rem) with Projects and Settings. Mobile: floating bordered bottom bar with Projects and Settings.
 
 ## Recording pill
-Floating ink pill with live waveform (Web Audio `AnalyserNode`), mono timer, stop button. Always visible while recording, which also satisfies the privacy requirement.
+Removed with the old capture flow. If browser recording returns (Phase 5), it should show a clearly visible recording state with a live waveform and timer.
 
 ## Light only
 The app is light-only. `@custom-variant dark` in [app/globals.css](../app/globals.css) scopes `dark:` utilities to a `.dark` ancestor, which is never set, so a phone in dark mode can't restyle shadcn components.
@@ -28,4 +28,4 @@ The app is light-only. `@custom-variant dark` in [app/globals.css](../app/global
 Entry card on Home: solid ink, lavender moon icon, "Close your *day*". The flow is one raised card at a time with a segmented progress bar; the end card is ink with "Day *closed*." Receipts use the small "Hear it" pill (play icon + seconds).
 
 ## Copy and states
-Processing shown as status lines: "Transcribing…", "Finding moments…", "Commitment identified". Sample data always carries a visible **Sample** badge. Every list has an empty state; every async action has a loading and failed state.
+Processing shown as status lines: "Not analyzed yet", "Analyzing…", "Analyzed", "Couldn't analyze". Sample data always carries a visible **Sample** badge. Every list has an empty state; every async action has a loading and failed state.

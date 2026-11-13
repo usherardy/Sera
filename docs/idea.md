@@ -1,56 +1,42 @@
 # The idea
 
 ## One line
-SERA is an AI memory and follow-through app. You record audio, and it gives you a daily summary, the moments that mattered, and the commitments you made, which you can approve and push to Google Calendar.
+SERA protects freelancers from scope creep: it remembers what clients asked for, compares it with what was originally agreed, and shows the exact words as evidence.
+
+## Who it's for
+Freelance web developers, designers, and small creative or development agencies (1 to 10 people) working on **fixed-price client projects**.
 
 ## The problem
-People talk all day: meetings, calls, hallway conversations, voice notes to themselves. Decisions get made and promises get given, then forgotten. Notes apps need effort at the moment you have none. Transcripts alone are too long to reread.
+Clients change requirements during calls and chats. Neither side keeps a reliable record of what was originally agreed, what changed, and what still needs approval. The freelancer absorbs the extra work, or has an awkward "that wasn't in the deal" conversation with no proof.
 
 ## The product
-1. **Capture.** Record in the browser (or upload a file) from a phone or laptop.
-2. **Understand.** The server transcribes the audio with timestamps, then one structured AI pass produces three outputs from the transcript:
-   - **Memory:** a summary of each recording and a daily summary.
-   - **Moments:** evidence-backed highlights (decisions, commitments, important information, personal notes).
-   - **Actions:** proposed tasks the user reviews. Only approved tasks can go to Google Calendar.
-3. **Follow through.** The user approves, edits, or dismisses each proposed task, marks tasks done, and syncs approved ones to Calendar.
+1. **Record the agreement.** Create a project with the original deliverables, exclusions, fixed price, and deadline.
+2. **Add a client conversation.** Paste or upload a transcript with speaker labels (`Client:` / `Freelancer:`).
+3. **SERA compares.** One structured AI pass finds requests, changes, deadlines, and commitments, classifies each against the original agreement, and attaches the exact quote.
+4. **You review.** Confirm or correct each finding, add notes, create follow-up tasks.
+5. **You ask the client.** SERA drafts a message that *asks* for approval. You send it yourself and record the client's answer by hand.
 
 ## Where the value is
-The UI is the easy part. The value is **judgment plus grounding**:
-- Telling an accepted commitment from a request or a suggestion.
-- Resolving "by Friday" to a real date.
-- Treating a mid-conversation correction ("actually, Friday") as an update, not a duplicate.
-- Tying every claim to a verbatim transcript quote with a real timestamp.
-
-## Positioning
-**Pocket and Fieldy remember what was said. SERA makes sure what was promised gets done.**
-
-Our "extra touch" is follow-through: SERA closes the loop instead of stopping at a list of action items. Comparison from the competitors' public pages as of 2026-11-13. "Not mentioned" means their site doesn't claim it, not that it is proven absent; say it that way in the pitch.
-
-| | Pocket | Fieldy | SERA |
-|---|---|---|---|
-| Capture | $99–139 card clipped to the phone, press-to-record | Pendant or watch; always-on on the paid tier | The phone you already have, press-to-record; wearable later |
-| Action items | "Organize themselves"; pushed to task apps | "Become action items automatically" | Proposed, then confirmed by you; owner, date and time never guessed |
-| Evidence | Not mentioned | Not mentioned | Every moment and task links to the exact quote; replay the clip |
-| Judgment | Not mentioned | Not mentioned | Ideas aren't tasks; a correction updates the task instead of duplicating it |
-| Others' promises | Not mentioned | Not mentioned | Waiting on others, with a check-in reminder when they're due |
-| Closing the loop | Syncs to your task app | Reminders, calendar sync | Close your day: a one-minute evening review, then one confirmed step into Google Calendar |
-| Consent | Light and vibration while recording | Privacy light | Explicit start/stop, visible recording bar, consent notice, delete anything |
-
-Sources: [heypocket.com](https://heypocket.com/), [Pocket product page](https://heypocket.com/pages/pocket-ai-voice-recorder), [fieldy.ai](https://www.fieldy.ai/), [Fieldy memberships](https://www.fieldy.ai/memberships).
+The comparison: what the client asks for now versus what was originally agreed. Everything else supports that.
+- A client *requesting* something is not the freelancer *accepting* it.
+- A possible addition is not automatically billable work.
+- "Maybe we can add a blog later" is an idea, not a scope change.
+- "Actually, make it Monday" corrects an earlier date; it does not silently overwrite the original agreement.
+- Every finding is tied to a verbatim quote from the transcript.
 
 ## Principles
-- **Never invent.** No made-up commitments, deadlines, times, or timestamps. If a time was not stated, ask the user or leave it empty.
-- **Evidence for everything.** Every moment and commitment links to the quote and the place in the audio it came from.
-- **User approves before anything leaves the app.** Nothing syncs to Calendar without approval.
-- **No psychological or emotional inference.** The AI reports what was said, not what people felt.
-- **Private by default.** Per-user data under row-level security, a private audio bucket, short-lived signed URLs, OAuth tokens encrypted at rest. Recording is always visibly indicated.
-- **Honest limits.** Documented caps (e.g. 25 MB uploads), clear failed states with Retry, and sample data always labeled as sample.
+- **Never invent.** No made-up price, owner, deadline, approval, or contractual obligation. Amounts that were not said are redacted in code.
+- **Evidence for everything.** A finding without a quote that exists in the transcript is dropped, not shown.
+- **Humans decide.** Every AI finding needs the freelancer's review. Client approval is only ever recorded by the freelancer, by hand, after the client actually says yes.
+- **The original agreement is never silently rewritten.** It changes only through an explicit "Edit agreement" action. Discussed changes appear next to it, labeled unconfirmed.
+- **Not legal advice.** Findings are never described as legally verified or binding.
+- **Private by default.** Per-user data under row-level security. Recording consent is the freelancer's responsibility; the UI reminds them.
+- **Honest labeling.** Demo data is always marked Sample. Failed analyses say so and offer Retry.
 
 ## Non-goals (for now)
-- Speaker diarization (who said it). The schema has a nullable seam for it.
-- Server-side audio chunking for long recordings.
-- Wearable capture. The ingest contract is device-agnostic so a wearable can be added later.
-- Multi-user or team features.
+Always-on recording, wearables, invoicing, Stripe payment collection, automatic client emails, CRM, complex project management, Google Calendar, Slack, public client approval portals, speaker diarization of audio.
 
 ## Context
 Built for the **Unfair Weekend** hackathon. Deadline **2026-11-14 20:00 Europe/Vilnius**; feature freeze about 14:00 that day. See [roadmap.md](roadmap.md).
+
+The idea moved from a general "AI memory" app to this niche after comparing it with funded general recorders (Pocket, Vexo); a narrow, painful, priced problem is a stronger position than a generic memory product.
