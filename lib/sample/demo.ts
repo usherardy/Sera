@@ -33,6 +33,8 @@ export interface SampleTask {
   status: "open" | "done";
   /** title of the finding it belongs to */
   finding?: string;
+  /** created by Sera from a promise you made on the call */
+  auto?: boolean;
 }
 
 export interface SampleProject {
@@ -194,9 +196,11 @@ const acme: SampleProject = {
     },
   ],
   tasks: [
-    { title: "Estimate the Stripe integration work", owner: "Me", due_date: "2026-11-16", status: "open", finding: "Stripe payment integration" },
-    { title: "Share the staging link", owner: "Me", due_date: "2026-11-14", status: "open", finding: "Send the staging link" },
-    { title: "Show homepage layout to the client", owner: "Me", due_date: "2026-11-09", status: "done" },
+    { title: "Estimate the Stripe integration work", owner: "You", due_date: "2026-11-16", status: "open", finding: "Stripe payment integration" },
+    { title: "Share the staging link", owner: "You", due_date: "2026-11-14", status: "open", finding: "Send the staging link", auto: true },
+    { title: "Send the updated proposal", owner: "You", due_date: null, status: "open", finding: "Prepare an updated proposal", auto: true },
+    { title: "Email the client confirming Monday, Nov 23", owner: "You", due_date: null, status: "open", finding: "Confirm the new date in writing", auto: true },
+    { title: "Show homepage layout to the client", owner: "You", due_date: "2026-11-09", status: "done" },
   ],
 };
 
@@ -327,8 +331,9 @@ You: Let me check what we agreed and get back to you.`,
     },
   ],
   tasks: [
-    { title: "Send the refined logo", owner: "Me", due_date: "2026-11-16", status: "open", finding: "Send the refined logo" },
-    { title: "Quote the bread bag labels", owner: "Me", due_date: "2026-11-12", status: "done", finding: "Bread bag labels (packaging)" },
+    { title: "Send the refined logo", owner: "You", due_date: "2026-11-16", status: "open", finding: "Send the refined logo", auto: true },
+    { title: "Reply to the client about menu boards", owner: "You", due_date: null, status: "open", finding: "Check the agreement about menu boards", auto: true },
+    { title: "Quote the bread bag labels", owner: "You", due_date: "2026-11-12", status: "done", finding: "Bread bag labels (packaging)" },
   ],
 };
 

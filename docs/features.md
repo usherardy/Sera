@@ -6,11 +6,12 @@ Status key: **Built** (code complete, typechecks and builds) · **Untested live*
 
 | Feature | Route | Behavior | Status |
 |---|---|---|---|
-| Landing page | `/welcome` | "Stop doing *free* work.", for agencies & studios. Sky-and-clouds split hero with a product preview (transcript line → finding), the problem, six features, who it's for (product & dev studios, design & brand studios, consultancies), four-step how it works, closing CTA. Signed-out visitors to `/` land here. A second version, the **walkthrough** (one call told in four illustrated steps), is kept too: preview both at `/welcome/overview` and `/welcome/walkthrough`; `LANDING_VERSION` in `lib/landing.ts` picks which one `/welcome` shows. | Built |
+| Landing page | `/welcome` | **Live: the walkthrough version** (`LANDING_VERSION = "walkthrough"`): "Stop doing *free* work." hero with the pitch, a clear problem section ("Lots of clients. Lots to *remember*."), four steps matching the pitch (record with one click, projects kept separate, everything to do in one list, new requests flagged), promise, CTA. Overview version also available. Older notes: "Stop doing *free* work.", for agencies & studios. Sky-and-clouds split hero with a product preview (transcript line → finding), the problem, six features, who it's for (product & dev studios, design & brand studios, consultancies), four-step how it works, closing CTA. Signed-out visitors to `/` land here. A second version, the **walkthrough** (one call told in four illustrated steps), is kept too: preview both at `/welcome/overview` and `/welcome/walkthrough`; `LANDING_VERSION` in `lib/landing.ts` picks which one `/welcome` shows. | Built |
 | Login | `/login` | Email + password sign-in / sign-up (Supabase Auth). `?mode=signup` opens on Create account. | Built |
 | Record (home) | `/` | Big Record button, upload audio, or paste transcript. Press Stop and Sera does the rest: transcribe → label speakers → match or create the project → analyze → open the result. Recent projects below. | Built · untested live |
 | Projects dashboard | `/projects` | Stats (active projects, changes to review, open follow-ups), project cards (name, client, price, deadline, pending changes), recent activity, New project. | Built · untested live |
 | Project detail | `/projects/[id]` | Header with stats and a "needs review" banner; **"Where it stands" summary card** (agreed vs. what changed, client responses, discussed deadline, next follow-up, latest call summary; built from stored data, no AI); Original agreement; Conversations; Scope changes; Follow-through. | Built · untested live |
+| To do | `/todo` | Everything to do across all clients: your open tasks grouped Overdue / Today / This week / Later / No date (project chip, "from call" chip, complete toggle, Add to calendar), changes to review, and what you're waiting on from clients. Home shows "Up next" (5 tasks + changes to review) under the Record button. | Built · needs migration 0003 |
 | Findings | `/findings` | Every finding across all projects with filters: Needs review, Awaiting client, All changes, Commitments, Everything. Each opens its review drawer. | Built · untested live |
 | Conversation detail | `/projects/[id]/conversations/[cid]` | Transcript with quote highlighting, summary, findings grouped by type, Analyze / Retry / Re-run. Clicking a finding opens the review drawer. | Built · untested live |
 | Settings | `/settings` | Timezone, load / remove demo data, sign out. | Built |
@@ -45,7 +46,9 @@ Status key: **Built** (code complete, typechecks and builds) · **Untested live*
 | Feature | Status |
 |---|---|
 | Review a finding: confirm or correct the category, add notes, mark reviewed, dismiss, restore | Built · untested live |
-| Follow-up tasks with owner and due date (owner never auto-filled), complete toggle | Built · untested live |
+| Follow-up tasks with owner and due date, complete toggle | Built · untested live |
+| **Auto-created tasks:** every promise *you* make on a call becomes a task (date only if stated), tagged "from call". Client promises stay "waiting on client". Re-running an analysis replaces only Sera's untouched open tasks | Built · offline-tested · needs migration 0003 |
+| **Baseline call:** the call that created a project sets up its agreement and only lists promises, questions and ideas; every later call is compared against it | Built · offline-tested · needs migration 0003 |
 | "Add to calendar" on open tasks and dated commitments: opens Google Calendar with an all-day event pre-filled (no Google sign-in; not a sync) | Built |
 | Client confirmation message (deterministic template, asks for approval, no price) with edit and copy | Built · untested live |
 | Two status tracks: AI detected → Reviewed, and Not sent → Sent → Client approved / rejected. Client status can only be set after review, by hand | Built · untested live |

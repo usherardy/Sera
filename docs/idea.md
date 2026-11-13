@@ -6,8 +6,14 @@
 ## Who it's for
 **Agencies and studios** selling fixed-price client projects: product & dev studios, design & brand studios, and consultancies. (We deliberately don't say "freelancers" in the product or pitch: it sounds small. In the UI the user is simply "you", and transcripts label them `You:`.)
 
-## The problem
-Clients change requirements during calls and chats. Neither side keeps a reliable record of what was originally agreed, what changed, and what still needs approval. The studio absorbs the extra work, or has an awkward "that wasn't in the deal" conversation with no proof.
+## The problem (how we pitch it)
+You have a lot of clients. Calls blur together, you promise something and forget to write the task down, and clients ask for more than you agreed. Extra work rarely arrives in writing; it's said on a call.
+
+## The promise
+- **Record the call with one click.**
+- **Projects are created automatically and kept separate**, one per client.
+- **Everything to do in one list:** promises you make on a call become tasks automatically.
+- **Every later call is compared with what came before**, and anything extra the client asks for is flagged, with the exact quote, as a change request to approve.
 
 ## The product
 1. **Record the call.** The home screen is a Record button (or upload audio, or paste a transcript). Press Stop when the call ends; there is no form to fill in.

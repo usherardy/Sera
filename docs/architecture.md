@@ -36,7 +36,8 @@ Add conversation (paste / .txt / from capture)
       load project agreement + user timezone
       analyzeConversation()  → OpenAI structured output (summary + findings)
       toFindingRows()        → ground quotes, redact invented amounts, enforce rules
-      delete this conversation's unreviewed findings, insert new ones (reviewed/dismissed kept)
+      delete this conversation's unreviewed findings (and Sera's open tasks made from them), insert new ones (reviewed/dismissed kept)
+      autoTasksFrom(): your commitments → tasks (auto_created)
       status → completed   (any failure → failed + message, Retry available)
   → page shows findings → review drawer → tasks / client message / client status
 ```
@@ -61,6 +62,8 @@ TypeScript mirror: [lib/projects/types.ts](../lib/projects/types.ts). RLS on eve
 - `tasks`: title, owner, due date, status (`open | done`), optional `finding_id`.
 
 The spec's separate `scope_changes` table is folded into `findings` (the review and client-approval columns).
+
+Migration `0003_baseline_and_auto_tasks.sql` adds `conversations.is_baseline` (the call that set up its project's agreement; analysis runs in baseline mode and never flags scope changes on it) and `tasks.auto_created` (tasks Sera made from your promises; a re-run deletes only those that are still open before re-creating them).
 
 ## API (all require sign-in; RLS enforces ownership)
 | Route | Purpose |

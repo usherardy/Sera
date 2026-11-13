@@ -2,6 +2,14 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-13 ("organize every client")
+- Pitch: lots of clients, forgotten tasks, clients asking for more. Rewrote `docs/idea.md`.
+- Promises you make on a call become tasks automatically ("from call"); client promises show as "waiting on client".
+- The call that creates a project is its **baseline call**: it sets up the agreement and isn't compared against itself; later calls are.
+- New **To do** page (all clients) and **Up next** on Home. Nav: Record · To do · Projects · Findings · Settings.
+- Landing: the walkthrough version is live, with a clear problem section and four steps that match the pitch.
+- Demo data: tasks marked as created from calls. **Run migration 0003, then reload demo data.**
+
 ## 2026-11-13 (earlier changes count)
 - New calls on a project are compared against the original agreement plus changes the client already approved, so an approved add-on isn't flagged again. Rejected changes are flagged with a note; changes awaiting an answer are marked as already raised.
 - Project page shows "Approved since" under the original agreement; "Where it stands" counts approved changes.

@@ -11,6 +11,7 @@
 | 4. Demo data and eval | Acme sample project, `npm run eval` | Built; eval not yet passing live |
 | 5. Record-first flow | Home Record button, upload audio, speaker separation and tagging, auto project match / draft | Built; untested live (needs OpenAI credits) |
 | 5b. Visibility | Project "Where it stands" card, Findings page, Add to Google Calendar links, full demo data | Built |
+| 5c. "Organize every client" pitch | Auto tasks from promises, baseline first calls, To do page + Home "Up next", walkthrough landing with problem section, demo data refresh | Built (needs migration 0003) |
 | 6. Polish and deploy | Mobile pass, empty/loading states, Vercel env vars, deploy | Planned |
 
 ## Before the demo

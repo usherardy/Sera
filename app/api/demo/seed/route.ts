@@ -88,6 +88,7 @@ export async function POST() {
           owner: t.owner,
           due_date: t.due_date,
           status: t.status,
+          auto_created: t.auto ?? false,
           is_sample: true,
         })),
       );
