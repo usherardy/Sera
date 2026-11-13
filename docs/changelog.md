@@ -2,6 +2,9 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-13 (logo concepts)
+- New public page `/brand` with six logo concepts (Thread, Evening, In scope, Quote, Approved, Monogram), each shown large, in the nav, on dark, and at tab-icon size. The live logo is unchanged until one is chosen.
+
 ## 2026-11-13 ("organize every client")
 - Pitch: lots of clients, forgotten tasks, clients asking for more. Rewrote `docs/idea.md`.
 - Promises you make on a call become tasks automatically ("from call"); client promises show as "waiting on client".

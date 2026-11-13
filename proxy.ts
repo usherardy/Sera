@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { SUPABASE_ENABLED, SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "@/lib/supabase/config";
 
-const PUBLIC_PATHS = ["/login", "/welcome"];
+const PUBLIC_PATHS = ["/login", "/welcome", "/brand"];
 
 /**
  * Keeps the Supabase session cookie fresh and sends signed-out visitors to /login.
