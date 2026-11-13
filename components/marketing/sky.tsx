@@ -44,7 +44,7 @@ function Cloud({ x, y, w, opacity = 1, flip = false, drift = "a", seed = 1 }: Cl
       aria-hidden
     >
       {/* soft cool shadow underneath for depth */}
-      <g filter="url(#sky-shadow)" fill="#b9d3ea" opacity="0.55" transform="translate(18 34)">
+      <g filter="url(#sky-shadow)" fill="#b9d3ea" opacity="0.4" transform="translate(18 34)">
         {PUFFS.map(([cx, cy, r], i) => (
           <circle key={i} cx={cx} cy={cy} r={r} />
         ))}
@@ -99,7 +99,7 @@ export function Sky({ className, children }: { className?: string; children?: Re
           </linearGradient>
         </defs>
       </svg>
-      <div className="pointer-events-none absolute inset-0 -z-10 [mask-image:linear-gradient(to_bottom,black_62%,transparent_100%)]">
+      <div className="pointer-events-none absolute inset-0 -z-10 opacity-70 [mask-image:linear-gradient(to_bottom,black_62%,transparent_100%)]">
         {CLOUDS.map((c, i) => (
           <Cloud key={i} {...c} />
         ))}
