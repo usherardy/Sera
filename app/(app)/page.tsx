@@ -39,7 +39,7 @@ async function HomeContent() {
   return (
     <>
       <div className="mx-auto w-full max-w-2xl">
-        <CaptureFlow userId={viewer.userId} projects={projects.map(({ id, name, client_name }) => ({ id, name, client_name }))} />
+        <CaptureFlow userId={viewer.userId} />
       </div>
       {projects.length > 0 && (
         <section className="flex flex-col gap-5">

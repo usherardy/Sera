@@ -85,7 +85,8 @@ function ProjectStatus({
       </h2>
       <dl className="flex flex-col gap-3.5">
         <Row label="Agreed">
-          {p.agreed_scope.join(", ")} · {formatMoney(p.fixed_price, p.currency)} · {p.deadline ? `due ${formatDateOnly(p.deadline)}` : "no deadline"}
+          {p.agreed_scope.length ? p.agreed_scope.join(", ") : "No deliverables recorded yet"} · {formatMoney(p.fixed_price, p.currency)} ·{" "}
+          {p.deadline ? `due ${formatDateOnly(p.deadline)}` : "no deadline"}
         </Row>
         <Row label="Since then">
           {changeItems.length === 0 ? (
@@ -175,6 +176,11 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
         <div className="surface grid gap-6 p-5 sm:grid-cols-[1fr_1fr] sm:p-6">
           <div>
             <p className="eyebrow mb-3">Agreed deliverables</p>
+            {p.agreed_scope.length === 0 && (
+              <p className="rounded-md bg-warning px-3 py-2 text-sm font-semibold text-warning-dark">
+                No deliverables recorded yet. Add them with Edit agreement so SERA has something to compare against.
+              </p>
+            )}
             <ul className="flex flex-col gap-2">
               {p.agreed_scope.map((s) => (
                 <li key={s} className="flex items-start gap-2.5 text-[0.9375rem]">

@@ -2,6 +2,13 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-13 (fully automatic capture)
+- Record → Stop is now the whole flow: SERA transcribes, works out speaker roles, files the call under the matching project or creates one from what was said, analyzes it, and opens the result. Removed the speaker-tagging, transcript-check and project-confirm steps.
+- New `POST /api/intake` replaces `/api/intake/draft`. Unstated price and deadline stay empty; a project with no clear deliverables says so.
+- Result page shows "SERA created this project" with Edit agreement. Projects page leads with Record a call; manual setup is a fallback.
+- Nav: Record · Findings · Settings.
+- Not verified live (OpenAI credits); typecheck, lint, build pass.
+
 ## 2026-11-13 (demo data, findings page, calendar)
 - Demo data: two labeled sample projects with summaries, pre-written example findings in every state, and tasks, so every screen can be seen without live AI. Re-run analysis replaces example findings with real ones.
 - New Findings page (`/findings`) with filters; nav is Record · Projects · Findings · Settings.

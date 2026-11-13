@@ -15,12 +15,13 @@ Update this file when structure, routes, schema, pipeline, or env vars change.
 Record (MediaRecorder) or upload audio
   → browser uploads to private bucket recordings/{user_id}/{uuid}.{ext}
   → POST /api/transcribe   (download as the user, gpt-4o-transcribe-diarize → Speaker A/B; fallback OPENAI_TRANSCRIBE_MODEL; object deleted)
-  → user tags speakers (Client / Me / Someone else) → labeled transcript, editable
-  → POST /api/intake/draft (match an existing project or draft an agreement; nothing saved)
-  → add to the matched/chosen project, or confirm the drafted project in the form (POST /api/projects)
-  → POST /api/projects/[id]/conversations  (analysis below)
+  → POST /api/intake  (lib/projects/intake.ts, one request, 120 s):
+       AI call 1: speaker roles + matching project or a drafted agreement + title
+       label lines Client / Freelancer, create the project if none matched
+       insert the conversation → runAnalysis (AI call 2)
+  → open the conversation (?created=1 shows "SERA created this project" + Edit agreement)
 ```
-Paste transcript skips the first three steps.
+Paste transcript skips the upload and transcription steps.
 
 ## Analysis flow
 ```
@@ -68,7 +69,7 @@ The spec's separate `scope_changes` table is folded into `findings` (the review 
 | `POST /api/findings/[id]/message` | Generate and save the client confirmation message |
 | `POST /api/tasks`, `PATCH/DELETE /api/tasks/[id]` | Follow-up tasks |
 | `POST /api/transcribe` | Transcribe an uploaded recording (own folder only), then delete it (120 s) |
-| `POST /api/intake/draft` | Suggest the matching project and draft a new agreement; saves nothing (60 s) |
+| `POST /api/intake` | From segments or pasted text: label speakers, match or create the project, add and analyze the conversation (120 s) |
 | `POST/DELETE /api/demo/seed` | Load / remove demo data (two sample projects with example findings and tasks) |
 
 ## Code layout
@@ -83,7 +84,7 @@ app/api/                                routes above
 components/projects/                    form dialog, add-conversation, analyze button, workspace, finding review, task list, bits
 components/common/ ui/ nav/ brand/ settings/
 components/capture/                     capture-flow.tsx (home record flow), use-recorder.ts, waveform.tsx
-lib/projects/                           types, meta, data, schemas, openai, analyze, run-analysis, process, grounding, message, transcribe, draft
+lib/projects/                           types, meta, data, schemas, openai, analyze, run-analysis, process, grounding, message, transcribe, draft, intake
 lib/sample/acme.ts                      Acme project + four conversations (also used by the eval)
 lib/sample/demo.ts                      full demo data: two projects, summaries, example findings, tasks
 lib/projects/calendar.ts                Google Calendar "create event" link (no OAuth)

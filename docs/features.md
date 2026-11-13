@@ -7,7 +7,7 @@ Status key: **Built** (code complete, typechecks and builds) · **Untested live*
 | Feature | Route | Behavior | Status |
 |---|---|---|---|
 | Login | `/login` | Email + password sign-in / sign-up (Supabase Auth). | Built |
-| Record (home) | `/` | Big Record button, upload audio, or paste transcript → tag speakers → check transcript → match or draft the project → analyze. Recent projects below. | Built · untested live |
+| Record (home) | `/` | Big Record button, upload audio, or paste transcript. Press Stop and SERA does the rest: transcribe → label speakers → match or create the project → analyze → open the result. Recent projects below. | Built · untested live |
 | Projects dashboard | `/projects` | Stats (active projects, changes to review, open follow-ups), project cards (name, client, price, deadline, pending changes), recent activity, New project. | Built · untested live |
 | Project detail | `/projects/[id]` | Header with stats and a "needs review" banner; **"Where it stands" summary card** (agreed vs. what changed, client responses, discussed deadline, next follow-up, latest call summary; built from stored data, no AI); Original agreement; Conversations; Scope changes; Follow-through. | Built · untested live |
 | Findings | `/findings` | Every finding across all projects with filters: Needs review, Awaiting client, All changes, Commitments, Everything. Each opens its review drawer. | Built · untested live |
@@ -24,8 +24,8 @@ Status key: **Built** (code complete, typechecks and builds) · **Untested live*
 | Persistence across sessions (Supabase, RLS) | Untested live |
 | Browser recording (live waveform, timer, 15 min cap) and audio upload (25 MB) | Built · untested live |
 | Transcription with speaker separation (`gpt-4o-transcribe-diarize`), falling back to plain transcription + manual labels | Built · untested live |
-| Tag which speaker is the client / me; labels become `Client:` / `Freelancer:` | Built |
-| Auto project: AI matches the call to an existing project or drafts a new agreement from what was said; the freelancer confirms in the form | Built · untested live |
+| Speaker roles worked out by the AI from context; lines become `Client:` / `Freelancer:` | Built · untested live |
+| Auto project: AI files the call under the matching project or creates one from what was said (unstated price/deadline left empty); a banner on the result offers Edit agreement | Built · untested live |
 | Audio deleted from storage right after transcription | Built · untested live |
 
 ## Scope change detection

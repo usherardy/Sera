@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Mic } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 import { Suspense } from "react";
 import { AlertCircle, CheckSquare, FolderKanban, ListChecks } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -21,8 +23,13 @@ export default function ProjectsPage() {
             Your <em>projects</em>
           </>
         }
-        subtitle="Compare what clients ask for against what was originally agreed, with the exact words as evidence."
-        action={<NewProjectButton size="lg" />}
+        subtitle="SERA creates a project the first time you record a call with a new client. Each one keeps the original agreement that later calls are compared against."
+        action={
+          <Link href="/" className={buttonVariants({ size: "lg" })}>
+            <Mic />
+            Record a call
+          </Link>
+        }
       />
       {SUPABASE_ENABLED ? (
         <Suspense fallback={<DashboardSkeleton />}>
@@ -46,10 +53,18 @@ async function DashboardContent() {
   if (projects.length === 0) {
     return (
       <EmptyState
-        icon={<FolderKanban />}
-        title="Create your first project."
-        body="Enter the original agreement, paste a client conversation, and SERA flags anything that goes beyond it."
-        action={<NewProjectButton />}
+        icon={<Mic />}
+        title="Record your first call."
+        body="Press record during a client call. SERA works out who the client is, sets up the project from what was said, and flags anything beyond the agreement."
+        action={
+          <div className="flex flex-wrap justify-center gap-2">
+            <Link href="/" className={buttonVariants()}>
+              <Mic />
+              Record a call
+            </Link>
+            <NewProjectButton variant="ghost" label="Set one up by hand" />
+          </div>
+        }
         className="py-14"
       />
     );

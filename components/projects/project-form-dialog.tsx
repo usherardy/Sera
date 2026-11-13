@@ -171,13 +171,21 @@ export function ProjectFormDialog({
   );
 }
 
-export function NewProjectButton({ size = "default" }: { size?: "default" | "lg" | "sm" }) {
+export function NewProjectButton({
+  size = "default",
+  variant = "default",
+  label = "New project",
+}: {
+  size?: "default" | "lg" | "sm";
+  variant?: "default" | "outline" | "ghost";
+  label?: string;
+}) {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <Button size={size} onClick={() => setOpen(true)}>
+      <Button size={size} variant={variant} onClick={() => setOpen(true)}>
         <Plus />
-        New project
+        {label}
       </Button>
       {open && <ProjectFormDialog open={open} onOpenChange={setOpen} />}
     </>

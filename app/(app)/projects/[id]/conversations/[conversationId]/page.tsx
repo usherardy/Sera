@@ -5,6 +5,7 @@ import { AlertTriangle, ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SampleBadge } from "@/components/common/badges";
 import { AnalyzeButton } from "@/components/projects/analyze-button";
+import { EditAgreementButton } from "@/components/projects/project-form-dialog";
 import { ConversationWorkspace } from "@/components/projects/conversation-workspace";
 import { ProcessingLine } from "@/components/projects/project-bits";
 import { getViewer } from "@/lib/viewer";
@@ -29,7 +30,7 @@ async function ConversationContent({
   searchParams: PageProps<"/projects/[id]/conversations/[conversationId]">["searchParams"];
 }) {
   const { id, conversationId } = await params;
-  const { finding } = await searchParams;
+  const { finding, created } = await searchParams;
   const [data, viewer] = await Promise.all([getConversation(id, conversationId), getViewer()]);
   if (!data) notFound();
   const { project, conversation: c, findings, tasks } = data;
@@ -62,6 +63,26 @@ async function ConversationContent({
           <div>
             <p className="font-semibold">We couldn&apos;t analyze this conversation.</p>
             {c.error_message && <p className="mt-1 text-sm">{c.error_message}</p>}
+          </div>
+        </div>
+      )}
+      {created === "1" && (
+        <div className="flex flex-col gap-3 rounded-card border-2 border-ink bg-dawn/40 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-semibold">
+              SERA created the project “{project.name}” from this call.
+            </p>
+            <p className="text-sm text-ink-muted">
+              {project.agreed_scope.length
+                ? `It recorded ${project.agreed_scope.length} deliverable${project.agreed_scope.length === 1 ? "" : "s"} from what was said. Check the agreement; later calls are compared against it.`
+                : "No deliverables were clearly stated, so there's nothing to compare against yet. Add them to the agreement."}
+            </p>
+          </div>
+          <div className="flex shrink-0 gap-2">
+            <Link href={`/projects/${project.id}`} className="inline-flex h-9 items-center rounded-lg border-2 border-cream-dark bg-paper px-3.5 text-sm font-semibold hover:border-ink/40">
+              Open project
+            </Link>
+            <EditAgreementButton project={project} />
           </div>
         </div>
       )}

@@ -5,6 +5,7 @@ import { ANALYSIS_MODEL, dateGrid } from "./analyze";
 import { AIError, openai, toAIError } from "./openai";
 
 const DraftOut = z.object({
+  speaker_roles: z.array(z.object({ speaker: z.string(), role: z.enum(["client", "freelancer", "other"]) })),
   matched_project_id: z.string().nullable(),
   match_reason: z.string(),
   conversation_title: z.string(),
@@ -21,7 +22,10 @@ const DraftOut = z.object({
 });
 export type DraftResult = z.infer<typeof DraftOut>;
 
-const SYSTEM = `A freelancer just recorded a conversation with a client. Decide which of the freelancer's existing projects it belongs to, and draft a project agreement from it in case it's a new project. The freelancer reviews your draft before anything is saved.
+const SYSTEM = `A freelancer just recorded a conversation with a client. Work out who is who, decide which of the freelancer's existing projects it belongs to, and draft a project agreement from it in case it's a new project. The freelancer can correct everything afterwards.
+
+SPEAKERS
+- If transcript lines start with "Speaker A:", "Speaker B:", … assign each speaker a role in speaker_roles: "freelancer" (the person delivering the work, usually the one who recorded), "client" (the person paying / asking for work), or "other". Use the content: who asks for deliverables, who promises to build or estimate. If lines have no speaker labels, return an empty list.
 
 MATCHING
 - matched_project_id: the id of an existing project ONLY if the conversation is clearly about it (same client or clearly the same work). Otherwise null. Never guess.
