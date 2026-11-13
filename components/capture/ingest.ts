@@ -1,5 +1,6 @@
 "use client";
 
+import { DESIGN_PREVIEW } from "@/lib/preview";
 import type { RecordingKind, RecordingStatus } from "@/lib/types";
 
 export interface IngestInput {
@@ -77,6 +78,9 @@ export async function previewIngest(
   _input: IngestInput,
   onStage: (stage: IngestStage) => void,
 ): Promise<IngestResult> {
+  if (!DESIGN_PREVIEW) {
+    throw new Error("Saving recordings is being wired up next. Nothing was uploaded.");
+  }
   onStage("uploading");
   await wait(900);
   onStage("transcribing");

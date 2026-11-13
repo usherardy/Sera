@@ -7,13 +7,13 @@ Keep this table current; it is how we see what is left.
 
 | Feature | Route | Behavior | Status |
 |---|---|---|---|
-| Login / hero | `/login` | One-screen hero with serif headline and the sign-in form. Email + password. | UI done; auth not wired |
+| Login / hero | `/login` | One-screen hero with serif headline and the sign-in form. Email + password via Supabase Auth; sign-up stores the device timezone. Signed-out visitors are redirected here. | Done (needs "Confirm email" off in Supabase) |
 | Home | `/` | Daily Memory card (summary, topics, decisions, outstanding items), top moments preview, items needing review. | Done (sample data) |
 | Memory | `/memory` | Recordings grouped by day. | Done (sample data) |
 | Recording detail | `/memory/[id]` | Audio player, transcript with timestamps, summary, the moments and commitments from this recording, delete. | Done (sample data) |
 | Moments | `/moments` | Timeline of moments with category filters; detail sheet showing the evidence quote and timestamp; dismiss. | Done (sample data) |
 | Actions | `/actions` | Commitments in Needs Review / Upcoming / Completed. Edit title, owner, date; approve, dismiss, complete. | Done (sample data) |
-| Settings | `/settings` | Google Calendar connect, timezone, load/remove sample day. | UI done; not wired |
+| Settings | `/settings` | Timezone ("use this device's"), load/remove sample day, sign out. Google Calendar connect is a disabled placeholder. | Done except Calendar (Phase 4) |
 
 ## Capture
 | Feature | Behavior | Status |
@@ -36,21 +36,21 @@ Keep this table current; it is how we see what is left.
 ## Follow-through
 | Feature | Behavior | Status |
 |---|---|---|
-| Review commitments | Approve / dismiss / edit / mark done. Low confidence and unclear ownership are flagged for review. | Done (UI, sample data) |
+| Review commitments | Approve / dismiss / edit / mark done. Low confidence and unclear ownership are flagged for review. Saved via `PATCH /api/commitments/[id]` with optimistic updates and rollback. | Done |
 | Google Calendar sync | Approved tasks only. Date without time prompts for a time or all-day. Idempotent event id prevents duplicates. | Planned |
 | Promise ledger | Each Actions tab splits into **You promised** (owner is me, or unassigned) and **Waiting on others** (someone else owns it). Logic in [lib/ledger.ts](../lib/ledger.ts). | Done (UI, sample data) |
 | Check-in reminders | Waiting-on tasks get "Remind me to check in": a calendar event titled "Check in with {name}: {task}" on the due date. Time or all-day is still the user's choice. | UI done; calendar sync Planned (Phase 4) |
 | Play the receipt | "Hear it" on moments and tasks plays exactly start_ms → end_ms of the recording ([components/common/play-clip.tsx](../components/common/play-clip.tsx)). Hidden for sample data (no audio). | UI done; needs `GET /api/recordings/[id]/audio` (Phase 2) |
 | Close your day | `/close`: one card at a time. Pending promises: Approve (owner check if unassigned), Fix, Not a promise, Decide later. Top 3 moments: Keep / Not important. Ends on "Day closed": your list, waiting on, next up, and one confirmed step adding dated items to Calendar (all-day where no time was said). Home shows the entry card. | Done (UI, sample data) |
-| Sample day | Labeled sample data (badge on every item) with a remove button; fallback for a slow demo network. | Sample data in code; seed/remove Planned |
+| Sample day | Labeled sample data (badge on every item). Settings → Load copies it into the user's today (tasks start in Needs review); Remove deletes every sample row. Fallback for a slow demo network. | Done (`/api/demo/seed`) |
 
 ## Privacy and safety
 | Feature | Status |
 |---|---|
-| Per-user RLS on all tables | Planned |
-| Private audio bucket, signed URLs | Planned |
+| Per-user RLS on all tables | Done in `0001_init.sql` |
+| Private audio bucket, signed URLs | Bucket + per-folder policies done; signed playback URLs in `getRecording` |
 | OAuth tokens AES-GCM encrypted, service-role only | Planned |
-| Delete recording removes row, audio object, derived rows, regenerates daily summary | Planned |
+| Delete recording removes row, audio object, derived rows | Done (`DELETE /api/recordings/[id]`); summary regeneration comes with Phase 2 |
 
 ## Cut for the deadline
 Server-side chunking (25 MB cap instead), a separate job table (status on `recordings`), the `googleapis` SDK (plain `fetch`), speaker labels. Details in [roadmap.md](roadmap.md).

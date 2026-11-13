@@ -3,6 +3,10 @@
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
 ## 2026-11-13
+- Phase 1b: Supabase sign-in (email + password), `proxy.ts` session refresh and sign-in redirect, schema with RLS and a private audio bucket (`supabase/migrations/0001_init.sql`), real queries behind the same data-layer signatures, and APIs to update tasks and moments, delete recordings, and load/remove the sample day. Without Supabase env vars the app stays in design-preview mode, so Vercel keeps working until the vars are added.
+- Commitments now store a local `due_time` ("HH:MM") instead of a `due_at` timestamp, so a stated time can't shift with UTC.
+- Added `.env.example` (git now tracks it; `.env.local` stays ignored). Env names follow Supabase's current keys: `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`.
+- Docs updated: architecture, features, roadmap.
 - Positioned SERA against Pocket and Fieldy: "they remember what was said; SERA makes sure what was promised gets done." Added the comparison to `idea.md`.
 - Built the differentiation UI on sample data: promise ledger (You promised / Waiting on others) in Actions, "Remind me to check in" for others' promises, "Hear it" clip replay on moments and tasks, and Close your day (`/close`) with a Home entry card. Commitment review logic moved into `useCommitments` so both screens share it.
 - Fixed: shadcn `dark:` styles followed the OS dark mode (the `@custom-variant dark` line was dropped from `globals.css`), so dark-mode phones got grey tabs and inputs. Restored it.

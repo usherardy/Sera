@@ -10,6 +10,8 @@ import { CategoryBadge, ConfidenceMeter, SampleBadge } from "@/components/common
 import { PlayClip } from "@/components/common/play-clip";
 import { EmptyState, EvidenceQuote } from "@/components/common/layout-bits";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { api } from "@/lib/client/api";
+import { DESIGN_PREVIEW } from "@/lib/preview";
 import { CATEGORY_META, CATEGORY_ORDER } from "@/lib/categories";
 import { formatMomentClock, formatOffset } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -45,15 +47,19 @@ export function MomentList({
   );
   const open = moments.find((m) => m.id === openId) ?? null;
 
-  const dismiss = (id: string) => {
-    setMoments((ms) => ms.map((m) => (m.id === id ? { ...m, dismissed: true } : m)));
-    setOpenId(null);
-    toast("Moment dismissed", {
-      action: {
-        label: "Undo",
-        onClick: () => setMoments((ms) => ms.map((m) => (m.id === id ? { ...m, dismissed: false } : m))),
-      },
+  const setDismissed = (id: string, dismissed: boolean) => {
+    setMoments((ms) => ms.map((m) => (m.id === id ? { ...m, dismissed } : m)));
+    if (DESIGN_PREVIEW) return;
+    api(`/api/moments/${id}`, "PATCH", { dismissed }).catch(() => {
+      setMoments((ms) => ms.map((m) => (m.id === id ? { ...m, dismissed: !dismissed } : m)));
+      toast.error("Couldn't save. Try again.");
     });
+  };
+
+  const dismiss = (id: string) => {
+    setDismissed(id, true);
+    setOpenId(null);
+    toast("Moment dismissed", { action: { label: "Undo", onClick: () => setDismissed(id, false) } });
   };
 
   const counts = useMemo(() => {

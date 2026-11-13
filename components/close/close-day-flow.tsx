@@ -13,6 +13,8 @@ import type { C } from "@/components/actions/commitment-card";
 import { useCommitments } from "@/components/actions/use-commitments";
 import { formatDateOnly, formatMomentClock } from "@/lib/format";
 import { calendarEventTitle, isWaitingOn, splitLedger } from "@/lib/ledger";
+import { api } from "@/lib/client/api";
+import { DESIGN_PREVIEW } from "@/lib/preview";
 import { cn } from "@/lib/utils";
 import type { Moment, WithSource } from "@/lib/types";
 
@@ -97,6 +99,8 @@ export function CloseDayFlow({
           onDismiss={(m) => {
             setMoments((ms) => ms.map((x) => (x.id === m.id ? { ...x, dismissed: true } : x)));
             setMomentChoice((x) => ({ ...x, [m.id]: "dismissed" }));
+            if (!DESIGN_PREVIEW)
+              api(`/api/moments/${m.id}`, "PATCH", { dismissed: true }).catch(() => toast.error("Couldn't save that. Try again."));
           }}
         />
       ) : (
@@ -106,7 +110,11 @@ export function CloseDayFlow({
           decideLater={later.size}
           nothingToReview={steps.length === 0}
           onSchedule={(cs) => {
-            cs.forEach((c) => store.schedule(c, { allDay: !c.due_at, time: c.due_at ? c.due_at.slice(11, 16) : null }, { quiet: true }));
+            if (!DESIGN_PREVIEW) {
+              toast("Google Calendar sync is the next thing we're wiring up. Your approvals are saved.");
+              return;
+            }
+            cs.forEach((c) => store.schedule(c, { allDay: !c.due_time, time: c.due_time }, { quiet: true }));
             toast.success(`Added ${cs.length} event${cs.length === 1 ? "" : "s"} to Google Calendar (preview).`);
           }}
         />
@@ -323,7 +331,7 @@ function DayClosed({
               <li key={c.id} className="flex flex-col gap-0.5 px-4 py-3">
                 <span className="text-sm font-semibold">{calendarEventTitle(c)}</span>
                 <span className="font-mono text-xs text-ink-muted">
-                  {formatDateOnly(c.due_date!)} · {c.due_at ? c.due_at.slice(11, 16) : "all-day"}
+                  {formatDateOnly(c.due_date!)} · {c.due_time ?? "all-day"}
                 </span>
               </li>
             ))}

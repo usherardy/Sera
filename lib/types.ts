@@ -75,8 +75,8 @@ export interface Commitment {
   owner_label: string | null;
   /** YYYY-MM-DD, only when a deadline was actually stated */
   due_date: string | null;
-  /** ISO timestamp, only when a time was actually stated or chosen */
-  due_at: string | null;
+  /** local wall-clock time "HH:MM" in the user's timezone, only when stated or chosen */
+  due_time: string | null;
   /** the words that were said, e.g. "by Friday" */
   due_phrase: string | null;
   all_day: boolean;

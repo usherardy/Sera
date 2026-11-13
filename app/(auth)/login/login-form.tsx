@@ -6,28 +6,61 @@ import { ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { createClient } from "@/lib/supabase/browser";
 import { DESIGN_PREVIEW } from "@/lib/preview";
 import { cn } from "@/lib/utils";
+
+function friendly(message: string) {
+  if (/invalid login credentials/i.test(message)) return "That email and password don't match. Try again or create an account.";
+  if (/already registered/i.test(message)) return "There's already an account with that email. Sign in instead.";
+  if (/password should be at least/i.test(message)) return "Use a password of at least 8 characters.";
+  if (/email not confirmed/i.test(message)) return "Confirm your email first. Check your inbox for the link.";
+  return message;
+}
 
 export function LoginForm() {
   const router = useRouter();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+    setNotice(null);
+    if (DESIGN_PREVIEW) {
+      router.push("/");
+      return;
+    }
+    const form = new FormData(e.currentTarget);
+    const email = String(form.get("email") ?? "").trim();
+    const password = String(form.get("password") ?? "");
+    const name = String(form.get("name") ?? "").trim();
     setBusy(true);
     try {
-      if (DESIGN_PREVIEW) {
-        router.push("/");
-        return;
+      const supabase = createClient();
+      if (mode === "signup") {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { display_name: name || null, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone },
+          },
+        });
+        if (error) throw error;
+        if (!data.session) {
+          setNotice("Check your email to confirm your account, then sign in.");
+          return;
+        }
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
       }
-      // Phase 1b: Supabase email + password auth.
-      throw new Error("Auth not wired yet.");
+      router.replace("/");
+      router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(friendly(err instanceof Error ? err.message : "Something went wrong. Try again."));
     } finally {
       setBusy(false);
     }
@@ -40,7 +73,11 @@ export function LoginForm() {
           <button
             key={m}
             type="button"
-            onClick={() => setMode(m)}
+            onClick={() => {
+              setMode(m);
+              setError(null);
+              setNotice(null);
+            }}
             className={cn(
               "rounded-md py-2 text-sm font-semibold transition-colors",
               mode === m ? "bg-dawn text-ink" : "text-ink/60 hover:text-ink",
@@ -72,6 +109,7 @@ export function LoginForm() {
         />
       </div>
       {error && <p className="rounded-lg bg-error-bg px-3 py-2 text-sm font-medium text-pulse">{error}</p>}
+      {notice && <p className="rounded-lg bg-success px-3 py-2 text-sm font-medium text-success-dark">{notice}</p>}
       <Button type="submit" size="lg" disabled={busy} className="mt-1">
         {busy ? <Loader2 className="animate-spin" /> : null}
         {mode === "signin" ? "Sign in" : "Create account"}

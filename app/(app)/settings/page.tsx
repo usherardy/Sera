@@ -1,8 +1,11 @@
 import { CalendarDays, Database, Globe, LogOut } from "lucide-react";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/common/layout-bits";
 import { SampleBadge } from "@/components/common/badges";
+import { SampleDayButtons, SignOutButton, TimezoneButton } from "@/components/settings/settings-actions";
+import { getViewer } from "@/lib/data";
 
 function SettingRow({
   icon,
@@ -12,7 +15,7 @@ function SettingRow({
 }: {
   icon: ReactNode;
   title: ReactNode;
-  body: string;
+  body: ReactNode;
   action: ReactNode;
 }) {
   return (
@@ -38,36 +41,54 @@ export default function SettingsPage() {
           </>
         }
       />
-      <div className="flex flex-col gap-3">
-        <SettingRow
-          icon={<CalendarDays />}
-          title="Google Calendar"
-          body="Add approved tasks to your calendar. Nothing is created without your confirmation."
-          action={<Button variant="outline">Connect</Button>}
-        />
-        <SettingRow
-          icon={<Globe />}
-          title="Timezone"
-          body="Used to place recordings on the right day and resolve deadlines like “by Friday”. Currently Europe/Vilnius."
-          action={<Button variant="ghost">Use this device&apos;s</Button>}
-        />
-        <SettingRow
-          icon={<Database />}
-          title={
-            <span className="inline-flex items-center gap-2">
-              Sample day <SampleBadge />
-            </span>
-          }
-          body="Load three labeled sample recordings to explore SERA. They are never mixed up with your own."
-          action={
-            <div className="flex gap-2">
-              <Button variant="outline">Load</Button>
-              <Button variant="ghost">Remove</Button>
-            </div>
-          }
-        />
-        <SettingRow icon={<LogOut />} title="Sign out" body="You'll need to sign in again to see your memories." action={<Button variant="ghost">Sign out</Button>} />
-      </div>
+      <Suspense fallback={<Skeleton className="h-96 rounded-card bg-cream-dark/60" />}>
+        <SettingsContent />
+      </Suspense>
+    </div>
+  );
+}
+
+async function SettingsContent() {
+  const viewer = await getViewer();
+  return (
+    <div className="flex flex-col gap-3">
+      <SettingRow
+        icon={<CalendarDays />}
+        title="Google Calendar"
+        body="Add approved tasks and check-ins to your calendar. Nothing is created without your confirmation. Coming next."
+        action={
+          <Button variant="outline" disabled>
+            Connect
+          </Button>
+        }
+      />
+      <SettingRow
+        icon={<Globe />}
+        title="Timezone"
+        body={
+          <>
+            Places recordings on the right day and resolves deadlines like “by Friday”. Currently{" "}
+            <span className="font-mono text-ink">{viewer.timezone}</span>.
+          </>
+        }
+        action={<TimezoneButton current={viewer.timezone} />}
+      />
+      <SettingRow
+        icon={<Database />}
+        title={
+          <span className="inline-flex items-center gap-2">
+            Sample day <SampleBadge />
+          </span>
+        }
+        body="Load three labeled sample recordings into today to explore SERA, or remove them. They're never mixed up with your own."
+        action={<SampleDayButtons />}
+      />
+      <SettingRow
+        icon={<LogOut />}
+        title="Sign out"
+        body="You'll need to sign in again to see your memories."
+        action={<SignOutButton />}
+      />
     </div>
   );
 }

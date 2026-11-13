@@ -6,7 +6,7 @@
 |---|---|---|
 | 1a. Design checkpoint | Scaffold, tokens and fonts, shadcn restyled, both navs, recording pill, all screens + login hero on static sample data. | Done |
 | Differentiation UI | Promise ledger, check-in variant, "Hear it" clip button, Close your day flow, all on sample data (see [idea.md](idea.md#positioning)). | Done (UI); wired in phases 2–4 |
-| 1b. Foundation | Supabase clients and auth, migration + RLS, swap sample data for real queries, empty states. | Next |
+| 1b. Foundation | Supabase clients and auth, migration + RLS, real queries, mutation APIs, sample-day seed, sign-in redirect. | Done in code; apply `0001_init.sql` in Supabase to go live |
 | 2. Capture and Memory | Recorder, upload, signed uploads, register + process, transcription, recording detail, status polling, retry, delete, daily summary. | Planned |
 | 3. Moments and Follow-through | Prompts, schemas, grounding, persistence function; wire Actions, ledger and Close your day to the API. | Planned |
 | 4. Google Calendar | OAuth, encrypted tokens, idempotent insert, check-in event titles, Close your day batch add. Cut line: if not working by Saturday 10:00, drop it. | Planned |

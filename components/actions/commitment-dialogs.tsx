@@ -72,7 +72,7 @@ export function EditCommitmentDialog({
   const [mode, setMode] = useState<OwnerMode>(ownerModeOf(commitment.owner_label));
   const [name, setName] = useState(mode === "other" ? (commitment.owner_label ?? "") : "");
   const [dueDate, setDueDate] = useState(commitment.due_date ?? "");
-  const [dueTime, setDueTime] = useState(commitment.due_at ? commitment.due_at.slice(11, 16) : "");
+  const [dueTime, setDueTime] = useState(commitment.due_time ?? "");
 
   const owner = mode === "me" ? "me" : mode === "other" ? name.trim() || null : null;
   const ownerMissing = requireOwner && !owner;
@@ -183,10 +183,10 @@ export function SyncCalendarDialog({
   onConfirm: (choice: SyncChoice) => void;
   onEditDeadline: () => void;
 }) {
-  const hasTime = !!commitment.due_at;
+  const hasTime = !!commitment.due_time;
   const waitingOn = isWaitingOn(commitment.owner_label);
   const [allDay, setAllDay] = useState<boolean | null>(hasTime ? false : null);
-  const [time, setTime] = useState(hasTime ? commitment.due_at!.slice(11, 16) : "");
+  const [time, setTime] = useState(commitment.due_time ?? "");
   const ready = !!commitment.due_date && (hasTime || allDay === true || (allDay === false && !!time));
 
   return (

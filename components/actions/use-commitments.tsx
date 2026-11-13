@@ -2,21 +2,38 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { api } from "@/lib/client/api";
 import { isWaitingOn } from "@/lib/ledger";
+import { DESIGN_PREVIEW } from "@/lib/preview";
 import type { C } from "./commitment-card";
 import { EditCommitmentDialog, SyncCalendarDialog, type CommitmentEdits, type SyncChoice } from "./commitment-dialogs";
 
 /**
  * Shared commitment state + review actions for Actions and Close your day.
- * DESIGN PREVIEW: changes live in local state. Phase 3/4 wire these to
- * PATCH /api/commitments/[id] and POST /api/commitments/[id]/sync-calendar.
+ * Changes show instantly (optimistic) and are saved with PATCH /api/commitments/[id];
+ * a failed save rolls back. In the design preview they stay in local state.
+ * Calendar sync (POST /api/commitments/[id]/sync-calendar) arrives in Phase 4.
  */
 export function useCommitments(initial: C[]) {
   const [items, setItems] = useState(initial);
   const [editing, setEditing] = useState<{ id: string; requireOwner: boolean } | null>(null);
   const [syncing, setSyncing] = useState<string | null>(null);
 
-  const patch = (id: string, p: Partial<C>) => setItems((xs) => xs.map((x) => (x.id === id ? { ...x, ...p } : x)));
+  const setLocal = (id: string, p: Partial<C>) => setItems((xs) => xs.map((x) => (x.id === id ? { ...x, ...p } : x)));
+
+  /** Optimistic update + save. `p` must only contain saveable fields. */
+  const patch = (id: string, p: Partial<C>) => {
+    const before = items.find((x) => x.id === id);
+    setLocal(id, p);
+    if (DESIGN_PREVIEW || !before) return;
+    const { recording: _r, ...saveable } = p as C;
+    void _r;
+    api(`/api/commitments/${id}`, "PATCH", saveable).catch((e: Error) => {
+      const revert = Object.fromEntries(Object.keys(p).map((k) => [k, before[k as keyof C]])) as Partial<C>;
+      setLocal(id, revert);
+      toast.error(e.message || "Couldn't save. Try again.");
+    });
+  };
 
   /** Returns false when the owner must be confirmed first (dialog opens instead). */
   const approve = (c: C, opts: { quiet?: boolean } = {}) => {
@@ -43,7 +60,7 @@ export function useCommitments(initial: C[]) {
       title: e.title,
       owner_label: e.owner_label,
       due_date: e.due_date,
-      due_at: e.due_date && e.due_time ? `${e.due_date}T${e.due_time}:00` : null,
+      due_time: e.due_date && e.due_time ? e.due_time : null,
       ...(andApprove ? { approval_status: "approved" as const } : {}),
     });
     setEditing(null);
@@ -51,9 +68,14 @@ export function useCommitments(initial: C[]) {
   };
 
   const schedule = (c: C, choice: SyncChoice, opts: { quiet?: boolean } = {}) => {
-    patch(c.id, {
+    if (!DESIGN_PREVIEW) {
+      setSyncing(null);
+      if (!opts.quiet) toast("Google Calendar sync is the next thing we're wiring up. Your approval is saved.");
+      return;
+    }
+    setLocal(c.id, {
       all_day: choice.allDay,
-      due_at: choice.time && c.due_date ? `${c.due_date}T${choice.time}:00` : c.due_at,
+      due_time: choice.time ?? c.due_time,
       external_event_id: "preview-event",
     });
     setSyncing(null);
