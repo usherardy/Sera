@@ -69,7 +69,7 @@ The spec's separate `scope_changes` table is folded into `findings` (the review 
 | `POST /api/tasks`, `PATCH/DELETE /api/tasks/[id]` | Follow-up tasks |
 | `POST /api/transcribe` | Transcribe an uploaded recording (own folder only), then delete it (120 s) |
 | `POST /api/intake/draft` | Suggest the matching project and draft a new agreement; saves nothing (60 s) |
-| `POST/DELETE /api/demo/seed` | Load / remove the Acme sample project |
+| `POST/DELETE /api/demo/seed` | Load / remove demo data (two sample projects with example findings and tasks) |
 
 ## Code layout
 ```
@@ -77,13 +77,16 @@ app/(auth)/login/                       login hero + form
 app/(app)/layout.tsx                    top nav (desktop) / bottom nav (mobile)
 app/(app)/page.tsx                      home: record flow + recent projects
 app/(app)/projects/                     dashboard, [id], [id]/conversations/[conversationId]
-app/(app)/settings/                     timezone, sample project, sign out
+app/(app)/findings/                     all findings across projects, filterable
+app/(app)/settings/                     timezone, demo data, sign out
 app/api/                                routes above
 components/projects/                    form dialog, add-conversation, analyze button, workspace, finding review, task list, bits
 components/common/ ui/ nav/ brand/ settings/
 components/capture/                     capture-flow.tsx (home record flow), use-recorder.ts, waveform.tsx
 lib/projects/                           types, meta, data, schemas, openai, analyze, run-analysis, process, grounding, message, transcribe, draft
-lib/sample/acme.ts                      demo project + four conversations
+lib/sample/acme.ts                      Acme project + four conversations (also used by the eval)
+lib/sample/demo.ts                      full demo data: two projects, summaries, example findings, tasks
+lib/projects/calendar.ts                Google Calendar "create event" link (no OAuth)
 lib/viewer.ts, auth.ts, dates.ts, format.ts, supabase/, client/api.ts
 scripts/eval-analysis.ts                npm run eval
 ```

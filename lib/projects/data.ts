@@ -185,3 +185,20 @@ export async function listRecentConversations(limit = 5): Promise<ActivityItem[]
     return project ? [{ conversation: toConversation(conv), project }] : [];
   });
 }
+
+export interface FindingWithProject extends FindingWithSource {
+  project: Pick<Project, "id" | "name" | "client_name">;
+}
+
+/** Every finding across all projects, newest first, for the Findings page. */
+export async function listAllFindings(): Promise<FindingWithProject[]> {
+  const supabase = await createClient();
+  await requireUserId(supabase);
+  const { data, error } = await supabase
+    .from("findings")
+    .select(`${FINDING_COLS},project:projects(id,name,client_name),conversation:conversations(id,title,recorded_at)`)
+    .order("created_at", { ascending: false })
+    .limit(500);
+  if (error) fail("findings", error);
+  return ((data ?? []) as unknown as FindingWithProject[]).filter((f) => f.project && f.conversation);
+}

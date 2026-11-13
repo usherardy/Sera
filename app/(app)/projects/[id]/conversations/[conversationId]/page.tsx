@@ -65,6 +65,11 @@ async function ConversationContent({
           </div>
         </div>
       )}
+      {c.is_sample && c.processing_status === "completed" && (
+        <p className="rounded-card border-2 border-ink/15 bg-warning px-4 py-3 text-sm font-semibold text-warning-dark">
+          Sample conversation. The findings below are pre-written examples, not live AI output. Press Re-run analysis to analyze it with the real AI.
+        </p>
+      )}
       {c.processing_status === "pending" && (
         <p className="rounded-card bg-warning px-4 py-3 text-sm font-semibold text-warning-dark">
           This conversation hasn&apos;t been analyzed yet. Press Analyze to compare it with the original agreement.

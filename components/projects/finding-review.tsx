@@ -13,6 +13,7 @@ import { formatDateOnly } from "@/lib/format";
 import { CLIENT_LABEL, FINDING_META, FINDING_ORDER, isChangeCategory } from "@/lib/projects/meta";
 import type { ClientStatus, FindingCategory, FindingWithSource, Task } from "@/lib/projects/types";
 import { cn } from "@/lib/utils";
+import { CalendarLink } from "./calendar-link";
 
 function Block({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
   return (
@@ -143,9 +144,12 @@ export function FindingReview({ finding: f, tasks }: { finding: FindingWithSourc
                   </button>
                   <span className="min-w-0">
                     <span className={cn("block font-semibold", t.status === "done" && "line-through opacity-60")}>{t.title}</span>
-                    <span className="text-xs text-ink-muted">
+                    <span className="block text-xs text-ink-muted">
                       {t.owner ?? "Unassigned"} · {t.due_date ? formatDateOnly(t.due_date) : "No due date"}
                     </span>
+                    {t.status === "open" && (
+                      <CalendarLink title={t.title} date={t.due_date} details={`${f.title}\n“${f.source_quote}”\n(from SERA)`} className="-ml-1.5" />
+                    )}
                   </span>
                 </li>
               ))}

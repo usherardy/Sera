@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FileText } from "lucide-react";
-import { ConfidenceMeter } from "@/components/common/badges";
+import { ConfidenceMeter, SampleBadge } from "@/components/common/badges";
 import { EmptyState, EvidenceQuote } from "@/components/common/layout-bits";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { FindingReview } from "@/components/projects/finding-review";
@@ -28,6 +28,7 @@ export function FindingDetail({ finding: f, project }: { finding: FindingWithSou
         <FindingBadge category={f.category} />
         <StatusPills review={f.review_status} client={f.client_status} />
         <ConfidenceMeter confidence={f.confidence} />
+        {f.is_sample && <SampleBadge />}
       </div>
       <h3 className="display text-3xl">{f.title}</h3>
       {f.description && <p className="text-[0.9375rem] text-ink/85">{f.description}</p>}
@@ -152,6 +153,7 @@ export function ConversationWorkspace({
                   <span className="flex flex-wrap items-center gap-2">
                     <FindingBadge category={f.category} />
                     <StatusPills review={f.review_status} client={f.client_status} show="review" />
+                    {f.is_sample && <SampleBadge />}
                   </span>
                   <span className="font-semibold">{f.title}</span>
                   <span className="text-xs text-ink-muted">{FINDING_META[f.category].hint}</span>

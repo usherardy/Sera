@@ -3,7 +3,7 @@ import { AlertTriangle, ArrowUpRight, CalendarDays, CheckCircle2, Loader2 } from
 import { SampleBadge } from "@/components/common/badges";
 import { formatDateOnly } from "@/lib/format";
 import { CLIENT_LABEL, FINDING_META, REVIEW_LABEL, formatMoney } from "@/lib/projects/meta";
-import type { ClientStatus, FindingCategory, ProcessingStatus, ProjectSummary, ReviewStatus } from "@/lib/projects/types";
+import type { ClientStatus, Finding, FindingCategory, ProcessingStatus, ProjectSummary, ReviewStatus } from "@/lib/projects/types";
 import { cn } from "@/lib/utils";
 
 export function FindingBadge({ category, className }: { category: FindingCategory; className?: string }) {
@@ -104,5 +104,23 @@ export function ProjectCard({ project: p }: { project: ProjectSummary }) {
         )}
       </div>
     </Link>
+  );
+}
+
+/** One finding in a list: type, status, title, the quote, and where it came from. Links to its review. */
+export function FindingListItem({ f, href, context }: { f: Finding; href: string; context: string }) {
+  return (
+    <li>
+      <Link href={href} className="flex flex-col gap-2 p-4 transition-colors hover:bg-cream/60">
+        <span className="flex flex-wrap items-center gap-2">
+          <FindingBadge category={f.category} />
+          <StatusPills review={f.review_status} client={f.client_status} />
+          {f.is_sample && <SampleBadge />}
+        </span>
+        <span className="font-semibold">{f.title}</span>
+        <span className="border-l-[3px] border-dawn-strong pl-3 font-serif text-base leading-snug text-ink/80 italic">“{f.source_quote}”</span>
+        <span className="eyebrow">{context}</span>
+      </Link>
+    </li>
   );
 }

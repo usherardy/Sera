@@ -9,9 +9,10 @@ Status key: **Built** (code complete, typechecks and builds) · **Untested live*
 | Login | `/login` | Email + password sign-in / sign-up (Supabase Auth). | Built |
 | Record (home) | `/` | Big Record button, upload audio, or paste transcript → tag speakers → check transcript → match or draft the project → analyze. Recent projects below. | Built · untested live |
 | Projects dashboard | `/projects` | Stats (active projects, changes to review, open follow-ups), project cards (name, client, price, deadline, pending changes), recent activity, New project. | Built · untested live |
-| Project detail | `/projects/[id]` | Header with stats and a "needs review" banner; Original agreement; Conversations; Scope changes; Follow-through (commitments, tasks, awaiting client). | Built · untested live |
+| Project detail | `/projects/[id]` | Header with stats and a "needs review" banner; **"Where it stands" summary card** (agreed vs. what changed, client responses, discussed deadline, next follow-up, latest call summary; built from stored data, no AI); Original agreement; Conversations; Scope changes; Follow-through. | Built · untested live |
+| Findings | `/findings` | Every finding across all projects with filters: Needs review, Awaiting client, All changes, Commitments, Everything. Each opens its review drawer. | Built · untested live |
 | Conversation detail | `/projects/[id]/conversations/[cid]` | Transcript with quote highlighting, summary, findings grouped by type, Analyze / Retry / Re-run. Clicking a finding opens the review drawer. | Built · untested live |
-| Settings | `/settings` | Timezone, load / remove the sample project, sign out. Calendar shown as unavailable. | Built |
+| Settings | `/settings` | Timezone, load / remove demo data, sign out. | Built |
 
 ## Project memory
 | Feature | Status |
@@ -43,14 +44,15 @@ Status key: **Built** (code complete, typechecks and builds) · **Untested live*
 |---|---|
 | Review a finding: confirm or correct the category, add notes, mark reviewed, dismiss, restore | Built · untested live |
 | Follow-up tasks with owner and due date (owner never auto-filled), complete toggle | Built · untested live |
+| "Add to calendar" on open tasks and dated commitments: opens Google Calendar with an all-day event pre-filled (no Google sign-in; not a sync) | Built |
 | Client confirmation message (deterministic template, asks for approval, no price) with edit and copy | Built · untested live |
 | Two status tracks: AI detected → Reviewed, and Not sent → Sent → Client approved / rejected. Client status can only be set after review, by hand | Built · untested live |
 
 ## Demo
 | Feature | Status |
 |---|---|
-| Sample project "Acme Studio Website" (€500, due 20 Nov 2026) with four labeled conversations, loaded unanalyzed so the live AI runs in the demo | Built |
+| Demo data (Settings → Load): "Acme Studio Website" (€500, 4 conversations) and "Nordic Bakery Rebrand" (€1,200, 2 conversations) with summaries, **pre-written example findings** in every state (needs review, sent, client approved, ideas, commitments, deadline change) and tasks. All labeled Sample; quotes verified against transcripts at load time. "Re-run analysis" replaces a conversation's example findings with live AI output | Built |
 | `npm run eval`: runs the four conversations through the real pipeline and asserts the expected findings | Built; not yet passing live (OpenAI account had no credits when last run) |
 
 ## Cut / not built
-Public client approval links, automatic emails, invoicing, Stripe, Calendar sync, CRM, audio storage. See [roadmap.md](roadmap.md).
+Public client approval links, automatic emails, invoicing, Stripe, two-way Calendar sync (OAuth), Notion, CRM, audio storage. See [roadmap.md](roadmap.md).

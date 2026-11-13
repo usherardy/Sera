@@ -70,7 +70,7 @@ export function SampleDayButtons() {
             ? previewNote()
             : run("load", async () => {
                 const { id } = await api<{ id: string }>("/api/demo/seed", "POST");
-                toast.success("Sample project loaded. Every item is labeled Sample.");
+                toast.success("Demo data loaded. Every item is labeled Sample.");
                 router.push(`/projects/${id}`);
                 router.refresh();
               })
@@ -87,7 +87,7 @@ export function SampleDayButtons() {
             ? previewNote()
             : run("remove", async () => {
                 await api("/api/demo/seed", "DELETE");
-                toast.success("Sample project removed.");
+                toast.success("Demo data removed.");
                 router.refresh();
               })
         }

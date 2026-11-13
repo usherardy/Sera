@@ -77,10 +77,10 @@ async function SettingsContent() {
         icon={<Database />}
         title={
           <span className="inline-flex items-center gap-2">
-            Sample project <SampleBadge />
+            Demo data <SampleBadge />
           </span>
         }
-        body="Load a labeled demo project (Acme Studio Website, €500) with four client conversations to try SERA, or remove it. It's never mixed up with your own projects."
+        body="Load two labeled sample projects with conversations, summaries, example findings in every state, and tasks. The findings are pre-written examples; Re-run analysis on a conversation to use the live AI. Never mixed up with your own projects."
         action={<SampleDayButtons />}
       />
       <SettingRow

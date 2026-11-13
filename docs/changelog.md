@@ -2,6 +2,13 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-13 (demo data, findings page, calendar)
+- Demo data: two labeled sample projects with summaries, pre-written example findings in every state, and tasks, so every screen can be seen without live AI. Re-run analysis replaces example findings with real ones.
+- New Findings page (`/findings`) with filters; nav is Record · Projects · Findings · Settings.
+- Project page "Where it stands" card built from stored data.
+- "Add to calendar" links (Google Calendar pre-filled, no sign-in) on open tasks and dated commitments.
+- Docs: features, architecture, roadmap updated.
+
 ## 2026-11-13 (record-first flow)
 - Home (`/`) is now a Record button: record in the browser, upload audio, or paste a transcript.
 - Transcription with speaker separation; the user tags which speaker is the client, and lines become `Client:` / `Freelancer:`.

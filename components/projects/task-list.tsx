@@ -7,10 +7,11 @@ import { toast } from "sonner";
 import { api } from "@/lib/client/api";
 import { formatDateOnly } from "@/lib/format";
 import type { Task } from "@/lib/projects/types";
+import { CalendarLink } from "./calendar-link";
 import { cn } from "@/lib/utils";
 
 /** Open follow-up tasks with a complete toggle. */
-export function TaskList({ tasks }: { tasks: Task[] }) {
+export function TaskList({ tasks, projectName }: { tasks: Task[]; projectName?: string }) {
   const router = useRouter();
   const [busyId, setBusyId] = useState<string | null>(null);
 
@@ -45,6 +46,7 @@ export function TaskList({ tasks }: { tasks: Task[] }) {
             <span className="block text-xs text-ink-muted">
               {t.owner ?? "Unassigned"} · {t.due_date ? formatDateOnly(t.due_date) : "No due date"}
             </span>
+            {t.status === "open" && <CalendarLink title={t.title} date={t.due_date} details={projectName ? `Follow-up for ${projectName} (from SERA)` : "Follow-up from SERA"} className="-ml-1.5" />}
           </span>
         </li>
       ))}

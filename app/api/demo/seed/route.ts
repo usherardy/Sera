@@ -1,11 +1,14 @@
 import { getAuthedClient, jsonError, unauthorized } from "@/lib/auth";
-import { ACME_CONVERSATIONS, ACME_PROJECT } from "@/lib/sample/acme";
+import { groundQuote } from "@/lib/projects/grounding";
+import { buildClientMessage } from "@/lib/projects/message";
+import { SAMPLE_PROJECTS } from "@/lib/sample/demo";
 
 /**
- * Load the clearly labeled sample project (Acme Studio Website) into the
- * signed-in user's account. The conversations are added UNANALYZED so the demo
- * runs the real analysis live; nothing here is pre-computed AI output.
- * Loading again replaces the previous sample project.
+ * Load the clearly labeled demo data: two sample projects with conversations,
+ * summaries, PRE-WRITTEN example findings in every state, and tasks. Every row
+ * is is_sample = true and shows a Sample badge; "Re-run analysis" on a sample
+ * conversation replaces its example findings with real AI output.
+ * Loading again replaces the previous demo data.
  */
 export async function POST() {
   const auth = await getAuthedClient();
@@ -13,37 +16,92 @@ export async function POST() {
   const { supabase } = auth;
 
   const removed = await supabase.from("projects").delete().eq("is_sample", true);
-  if (removed.error) return jsonError(500, "Couldn't replace the previous sample project.");
+  if (removed.error) return jsonError(500, "Couldn't replace the previous demo data.");
 
-  const { data: project, error } = await supabase
-    .from("projects")
-    .insert({ ...ACME_PROJECT, is_sample: true })
-    .select("id")
-    .single();
-  if (error || !project) return jsonError(500, "Couldn't add the sample project.");
+  let firstId: string | null = null;
+  for (const sample of SAMPLE_PROJECTS) {
+    const { data: project, error } = await supabase
+      .from("projects")
+      .insert({ ...sample.project, is_sample: true })
+      .select("id")
+      .single();
+    if (error || !project) return jsonError(500, "Couldn't add the demo projects.");
+    firstId ??= project.id;
 
-  const { error: convError } = await supabase.from("conversations").insert(
-    ACME_CONVERSATIONS.map((c) => ({
-      project_id: project.id,
-      title: c.title,
-      transcript: c.transcript,
-      source: "paste",
-      recorded_at: c.recorded_at,
-      is_sample: true,
-    })),
-  );
-  if (convError) {
-    await supabase.from("projects").delete().eq("id", project.id);
-    return jsonError(500, "Couldn't add the sample conversations.");
+    const { data: convs, error: convError } = await supabase
+      .from("conversations")
+      .insert(
+        sample.conversations.map((c) => ({
+          project_id: project.id,
+          title: c.title,
+          transcript: c.transcript,
+          summary: c.summary,
+          source: "paste",
+          recorded_at: c.recorded_at,
+          processing_status: "completed",
+          is_sample: true,
+        })),
+      )
+      .select("id,title");
+    if (convError || !convs) return jsonError(500, "Couldn't add the demo conversations.");
+
+    const convByKey = new Map(sample.conversations.map((c) => [c.key, { ...c, id: convs.find((x) => x.title === c.title)?.id }]));
+    const rows = [];
+    for (const f of sample.findings) {
+      const c = convByKey.get(f.conv);
+      // Same rule as live analysis: the quote must exist in the transcript.
+      const quote = c?.id ? groundQuote(f.quote, c.transcript) : null;
+      if (!c?.id || !quote) return jsonError(500, `Demo finding "${f.title}" has a quote that isn't in its transcript.`);
+      const callDate = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Vilnius" }).format(new Date(c.recorded_at));
+      rows.push({
+        project_id: project.id,
+        conversation_id: c.id,
+        category: f.category,
+        title: f.title,
+        description: f.description,
+        source_quote: quote,
+        related_scope_item: f.related_scope_item,
+        explanation: f.explanation,
+        confidence: f.confidence,
+        suggested_follow_up: f.suggested_follow_up,
+        owner_label: f.owner_label,
+        due_date: f.due_date,
+        due_phrase: f.due_phrase,
+        review_status: f.review_status ?? "ai_detected",
+        client_status: f.client_status ?? "not_sent",
+        notes: f.notes ?? null,
+        client_message: f.message
+          ? buildClientMessage(sample.project, { ...f, source_quote: quote }, callDate)
+          : null,
+        is_sample: true,
+      });
+    }
+    const { data: findings, error: fError } = await supabase.from("findings").insert(rows).select("id,title");
+    if (fError || !findings) return jsonError(500, "Couldn't add the demo findings.");
+
+    if (sample.tasks.length > 0) {
+      const { error: tError } = await supabase.from("tasks").insert(
+        sample.tasks.map((t) => ({
+          project_id: project.id,
+          finding_id: t.finding ? (findings.find((x) => x.title === t.finding)?.id ?? null) : null,
+          title: t.title,
+          owner: t.owner,
+          due_date: t.due_date,
+          status: t.status,
+          is_sample: true,
+        })),
+      );
+      if (tError) return jsonError(500, "Couldn't add the demo tasks.");
+    }
   }
-  return Response.json({ id: project.id }, { status: 201 });
+  return Response.json({ id: firstId }, { status: 201 });
 }
 
-/** Remove the sample project and everything under it (findings and tasks cascade). */
+/** Remove all demo data (conversations, findings and tasks cascade). */
 export async function DELETE() {
   const auth = await getAuthedClient();
   if (!auth) return unauthorized();
   const { error } = await auth.supabase.from("projects").delete().eq("is_sample", true);
-  if (error) return jsonError(500, "Couldn't remove the sample project.");
+  if (error) return jsonError(500, "Couldn't remove the demo data.");
   return Response.json({ ok: true });
 }

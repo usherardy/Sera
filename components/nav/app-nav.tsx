@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { usePathname } from "next/navigation";
-import { FolderKanban, Mic, Settings } from "lucide-react";
+import { FolderKanban, ListChecks, Mic, Settings } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/", label: "Record", icon: Mic },
   { href: "/projects", label: "Projects", icon: FolderKanban },
+  { href: "/findings", label: "Findings", icon: ListChecks },
   { href: "/settings", label: "Settings", icon: Settings },
 ] as const;
 

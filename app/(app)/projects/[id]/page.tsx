@@ -7,13 +7,14 @@ import { SampleBadge } from "@/components/common/badges";
 import { EmptyState, SectionHeader } from "@/components/common/layout-bits";
 import { AddConversationButton } from "@/components/projects/add-conversation";
 import { EditAgreementButton } from "@/components/projects/project-form-dialog";
-import { FindingBadge, ProcessingLine, StatusPills } from "@/components/projects/project-bits";
+import { CalendarLink } from "@/components/projects/calendar-link";
+import { FindingListItem, ProcessingLine } from "@/components/projects/project-bits";
 import { TaskList } from "@/components/projects/task-list";
 import { getViewer } from "@/lib/viewer";
 import { formatClock, formatDateOnly, formatDayHeading, localDateOf } from "@/lib/format";
 import { getProject } from "@/lib/projects/data";
 import { FINDING_ORDER, awaitingClient, formatMoney, isChangeCategory, needsReview } from "@/lib/projects/meta";
-import type { FindingWithSource } from "@/lib/projects/types";
+import type { Conversation, FindingWithSource, Project, Task } from "@/lib/projects/types";
 
 export default function ProjectPage({ params }: PageProps<"/projects/[id]">) {
   return (
@@ -39,21 +40,81 @@ function Stat({ value, label, tone }: { value: number; label: string; tone?: "al
 }
 
 function FindingRow({ f, projectId }: { f: FindingWithSource; projectId: string }) {
+  return <FindingListItem f={f} href={`/projects/${projectId}/conversations/${f.conversation_id}?finding=${f.id}`} context={`From ${f.conversation.title}`} />;
+}
+
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <li>
-      <Link
-        href={`/projects/${projectId}/conversations/${f.conversation_id}?finding=${f.id}`}
-        className="flex flex-col gap-2 p-4 transition-colors hover:bg-cream/60"
-      >
-        <span className="flex flex-wrap items-center gap-2">
-          <FindingBadge category={f.category} />
-          <StatusPills review={f.review_status} client={f.client_status} />
-        </span>
-        <span className="font-semibold">{f.title}</span>
-        <span className="border-l-[3px] border-dawn-strong pl-3 font-serif text-base leading-snug text-ink/80 italic">“{f.source_quote}”</span>
-        <span className="eyebrow">From {f.conversation.title}</span>
-      </Link>
-    </li>
+    <div className="grid gap-1 sm:grid-cols-[9rem_1fr] sm:gap-4">
+      <dt className="font-mono text-[0.7rem] tracking-wider text-cream/60 uppercase">{label}</dt>
+      <dd className="text-[0.9375rem] leading-relaxed text-cream">{children}</dd>
+    </div>
+  );
+}
+
+/** "Where this project stands", built only from stored data: no AI involved. */
+function ProjectStatus({
+  p,
+  live,
+  tasks,
+  latest,
+}: {
+  p: Project;
+  live: FindingWithSource[];
+  tasks: Task[];
+  latest: Conversation | undefined;
+}) {
+  const of = (c: FindingWithSource["category"]) => live.filter((f) => f.category === c);
+  const additions = of("potential_scope_addition");
+  const changes = of("scope_modification");
+  const questions = of("clarification_needed");
+  const changeItems = [...additions, ...changes, ...questions];
+  const approved = changeItems.filter((f) => f.client_status === "approved").length;
+  const rejected = changeItems.filter((f) => f.client_status === "rejected").length;
+  const sent = changeItems.filter((f) => f.review_status === "reviewed" && f.client_status === "sent").length;
+  const unreviewed = changeItems.filter((f) => f.review_status === "ai_detected").length;
+  const open = tasks.filter((t) => t.status === "open").sort((a, b) => (a.due_date ?? "9999").localeCompare(b.due_date ?? "9999"));
+  const next = open[0];
+  const discussed = changes.find((f) => f.due_date && /deadline|due|deliver/i.test(`${f.title} ${f.related_scope_item ?? ""}`));
+  const names = (xs: FindingWithSource[]) => (xs.length ? `: ${xs.map((x) => x.title).join(", ")}` : "");
+
+  return (
+    <section className="flex flex-col gap-5 rounded-panel bg-fathom p-6 text-cream sm:p-8">
+      <h2 className="display text-3xl sm:text-4xl">
+        Where it <em>stands</em>
+      </h2>
+      <dl className="flex flex-col gap-3.5">
+        <Row label="Agreed">
+          {p.agreed_scope.join(", ")} · {formatMoney(p.fixed_price, p.currency)} · {p.deadline ? `due ${formatDateOnly(p.deadline)}` : "no deadline"}
+        </Row>
+        <Row label="Since then">
+          {changeItems.length === 0 ? (
+            "No possible changes found yet."
+          ) : (
+            <>
+              {additions.length} possible addition{additions.length === 1 ? "" : "s"}
+              {names(additions)}. {changes.length} change{changes.length === 1 ? "" : "s"}
+              {names(changes)}. {questions.length} open question{questions.length === 1 ? "" : "s"}
+              {names(questions)}.
+            </>
+          )}
+        </Row>
+        {changeItems.length > 0 && (
+          <Row label="Client">
+            {approved} approved · {rejected} rejected · {sent} waiting for a reply · {unreviewed} not reviewed by you yet
+          </Row>
+        )}
+        {discussed && (
+          <Row label="Deadline">
+            Discussed {formatDateOnly(discussed.due_date!)} instead of {p.deadline ? formatDateOnly(p.deadline) : "the original"}; not confirmed by the client yet.
+          </Row>
+        )}
+        <Row label="Follow-ups">
+          {open.length === 0 ? "Nothing open." : `${open.length} open${next ? `. Next: ${next.title}${next.due_date ? ` (${formatDateOnly(next.due_date)})` : ""}` : ""}.`}
+        </Row>
+        {latest?.summary && <Row label="Latest call">{`${latest.title}: ${latest.summary}`}</Row>}
+      </dl>
+    </section>
   );
 }
 
@@ -101,6 +162,10 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
           <p className="rounded-card bg-success/25 px-4 py-3 text-sm font-semibold text-success-dark">Nothing waiting for your review.</p>
         ) : null}
       </header>
+
+      {conversations.length > 0 && (
+        <ProjectStatus p={p} live={live} tasks={tasks} latest={[...conversations].reverse().find((c) => c.summary)} />
+      )}
 
       <section className="flex flex-col gap-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -233,6 +298,7 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
                     <span className="block text-xs text-ink-muted">
                       {f.owner_label ?? "Owner not stated"} · {f.due_date ? formatDateOnly(f.due_date) : "No deadline stated"}
                     </span>
+                    <CalendarLink title={f.title} date={f.due_date} details={`${p.name}\n“${f.source_quote}”\n(from SERA)`} className="-ml-1.5" />
                   </li>
                 ))}
               </ul>
@@ -240,7 +306,7 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
           </div>
           <div className="surface flex flex-col gap-3 p-5">
             <p className="eyebrow">Tasks</p>
-            <TaskList tasks={tasks.filter((t) => t.status === "open" || tasks.length <= 8)} />
+            <TaskList tasks={tasks.filter((t) => t.status === "open" || tasks.length <= 8)} projectName={p.name} />
           </div>
           <div className="surface flex flex-col gap-3 p-5">
             <p className="eyebrow">Awaiting client</p>
