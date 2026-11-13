@@ -119,7 +119,7 @@ export function ProjectFormDialog({
             {editing
               ? "This changes the ORIGINAL agreement that every conversation is compared against. Do this only if both sides actually agreed to the change."
               : drafted
-                ? "SERA drafted this from your recording. Check every field: only what was actually said is filled in. Nothing is saved until you press Create."
+                ? "Sera drafted this from your recording. Check every field: only what was actually said is filled in. Nothing is saved until you press Create."
                 : "Enter what you and the client originally agreed. Every conversation is compared against this."}
           </DialogDescription>
         </div>

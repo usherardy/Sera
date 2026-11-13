@@ -22,7 +22,7 @@ Record (MediaRecorder) or upload audio
        AI call 1: speaker roles + matching project or a drafted agreement + title
        label lines Client / Freelancer, create the project if none matched
        insert the conversation → runAnalysis (AI call 2)
-  → open the conversation (?created=1 shows "SERA created this project" + Edit agreement)
+  → open the conversation (?created=1 shows "Sera created this project" + Edit agreement)
 ```
 Paste transcript skips the upload and transcription steps.
 

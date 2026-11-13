@@ -33,10 +33,10 @@ Floating **frosted-glass** bar (white/65, `backdrop-blur-xl`, inner highlight, s
 A large dark gradient circle with a white mic, ringed by two soft pastel halos (lavender, peach). While recording: a dark pill with a pulsing coral dot, the live waveform, a mono timer, Stop and Cancel; always visible, which also covers the privacy requirement.
 
 ## Landing page sky
-`components/marketing/sky.tsx`: a soft blue sky gradient with original fluffy SVG clouds (circle clusters roughened by `feTurbulence` + `feDisplacementMap`, then blurred, with a cooler shadow layer), film grain, slow drift (off for reduced motion), and a fade into the page at the bottom. Used for the landing hero and the closing CTA panel. Drawn for SERA; no artwork copied from other sites.
+`components/marketing/sky.tsx`: a soft blue sky gradient with original fluffy SVG clouds (circle clusters roughened by `feTurbulence` + `feDisplacementMap`, then blurred, with a cooler shadow layer), film grain, slow drift (off for reduced motion), and a fade into the page at the bottom. Used for the landing hero and the closing CTA panel. Drawn for Sera; no artwork copied from other sites.
 
 ## Logo
-A lavender tile (`#E3E0FF`) with an ink "thread" mark, and the wordmark SERA in EB Garamond with wide tracking.
+A lavender tile (`#E3E0FF`) with an ink "thread" mark, and the wordmark "Sera" (not all caps) in EB Garamond.
 
 ## Copy and states
 Processing status lines: "Not analyzed yet", "Analyzing…", "Analyzed", "Couldn't analyze". Sample data always carries a visible **Sample** badge. Every list has an empty state; every async action has a loading and a failed state.

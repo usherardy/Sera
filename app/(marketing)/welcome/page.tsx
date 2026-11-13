@@ -9,11 +9,11 @@ import { FindingBadge } from "@/components/projects/project-bits";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "SERA · Stop doing free work",
-  description: "SERA listens to your client calls and flags anything that isn't in the deal.",
+  title: "Sera · Stop doing free work",
+  description: "Sera listens to your client calls and flags anything that isn't in the deal.",
 };
 
-/** The idea in one picture: what the client said → what SERA flags. */
+/** The idea in one picture: what the client said → what Sera flags. */
 function HeroDemo() {
   return (
     <div className="mx-auto flex w-full max-w-md flex-col items-center gap-3">
@@ -39,7 +39,7 @@ function HeroDemo() {
 
 const STEPS = [
   { n: "01", icon: <Mic />, t: "Record", d: "Press record on any client call." },
-  { n: "02", icon: <Sparkles />, t: "Compare", d: "SERA checks every request against the deal." },
+  { n: "02", icon: <Sparkles />, t: "Compare", d: "Sera checks every request against the deal." },
   { n: "03", icon: <ClipboardCheck />, t: "Confirm", d: "Send the change for approval in one tap." },
 ];
 
@@ -49,7 +49,7 @@ export default function WelcomePage() {
       <Sky className="pb-24 sm:pb-32">
         <header className="px-4 pt-4 sm:pt-6">
           <nav className="mx-auto flex max-w-5xl items-center justify-between gap-3 rounded-2xl border border-white/70 bg-white/45 py-2 pr-2 pl-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_10px_30px_-14px_rgba(20,30,80,0.25)] backdrop-blur-xl backdrop-saturate-150">
-            <Link href="/welcome" aria-label="SERA">
+            <Link href="/welcome" aria-label="Sera">
               <Logo />
             </Link>
             <div className="flex items-center gap-1.5">
@@ -68,7 +68,7 @@ export default function WelcomePage() {
           <h1 className="display text-[3.6rem] sm:text-[6.5rem]">
             Stop doing <em>free</em> work.
           </h1>
-          <p className="max-w-md text-lg text-ink/70 sm:text-xl">SERA listens to your client calls and flags anything that isn&apos;t in the deal.</p>
+          <p className="max-w-md text-lg text-ink/70 sm:text-xl">Sera listens to your client calls and flags anything that isn&apos;t in the deal.</p>
           <Link href="/login?mode=signup" className={buttonVariants({ size: "lg" })}>
             Get started
             <ArrowRight />

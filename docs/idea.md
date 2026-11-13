@@ -1,7 +1,7 @@
 # The idea
 
 ## One line
-SERA protects freelancers from scope creep: it remembers what clients asked for, compares it with what was originally agreed, and shows the exact words as evidence.
+Sera protects freelancers from scope creep: it remembers what clients asked for, compares it with what was originally agreed, and shows the exact words as evidence.
 
 ## Who it's for
 Freelance web developers, designers, and small creative or development agencies (1 to 10 people) working on **fixed-price client projects**.
@@ -11,10 +11,10 @@ Clients change requirements during calls and chats. Neither side keeps a reliabl
 
 ## The product
 1. **Record the call.** The home screen is a Record button (or upload audio, or paste a transcript). Press Stop when the call ends; there is no form to fill in.
-2. **The project is set up for you.** SERA separates the voices, works out who the client is, and files the call under the matching project, or creates one from what was actually said (client, deliverables, price, deadline). It tells you when it created a project so you can check or edit the agreement.
-3. **SERA compares.** One structured AI pass finds requests, changes, deadlines, and commitments, classifies each against the original agreement, and attaches the exact quote.
+2. **The project is set up for you.** Sera separates the voices, works out who the client is, and files the call under the matching project, or creates one from what was actually said (client, deliverables, price, deadline). It tells you when it created a project so you can check or edit the agreement.
+3. **Sera compares.** One structured AI pass finds requests, changes, deadlines, and commitments, classifies each against the original agreement, and attaches the exact quote.
 4. **You review.** Confirm or correct each finding, add notes, create follow-up tasks.
-5. **You ask the client.** SERA drafts a message that *asks* for approval. You send it yourself and record the client's answer by hand.
+5. **You ask the client.** Sera drafts a message that *asks* for approval. You send it yourself and record the client's answer by hand.
 
 ## Where the value is
 The comparison: what the client asks for now versus what was originally agreed. Everything else supports that.

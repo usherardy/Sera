@@ -70,7 +70,7 @@ async function ConversationContent({
         <div className="flex flex-col gap-3 rounded-card border border-dawn-strong bg-dawn/40 p-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="font-semibold">
-              SERA created the project “{project.name}” from this call.
+              Sera created the project “{project.name}” from this call.
             </p>
             <p className="text-sm text-ink-muted">
               {project.agreed_scope.length

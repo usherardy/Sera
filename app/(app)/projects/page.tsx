@@ -23,7 +23,7 @@ export default function ProjectsPage() {
             Your <em>projects</em>
           </>
         }
-        subtitle="SERA creates a project the first time you record a call with a new client. Each one keeps the original agreement that later calls are compared against."
+        subtitle="Sera creates a project the first time you record a call with a new client. Each one keeps the original agreement that later calls are compared against."
         action={
           <Link href="/" className={buttonVariants({ size: "lg" })}>
             <Mic />
@@ -55,7 +55,7 @@ async function DashboardContent() {
       <EmptyState
         icon={<Mic />}
         title="Record your first call."
-        body="Press record during a client call. SERA works out who the client is, sets up the project from what was said, and flags anything beyond the agreement."
+        body="Press record during a client call. Sera works out who the client is, sets up the project from what was said, and flags anything beyond the agreement."
         action={
           <div className="flex flex-wrap justify-center gap-2">
             <Link href="/" className={buttonVariants()}>

@@ -2,11 +2,14 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-13 (name)
+- The product name is written **Sera**, not SERA, everywhere: UI, page titles, logo wordmark, docs. All-caps labels avoid the name so it never renders as SERA.
+
 ## 2026-11-13 (simpler landing)
 - Landing page cut to the essentials, Wispr Flow-style: centered hero (headline, one sentence, one button, a two-step visual of the idea), three one-line steps, one closing CTA. Removed the problem, example, before/after and control sections.
 
 ## 2026-11-13 (landing page)
-- New public landing page at `/welcome` describing SERA, with an original sky-and-clouds hero (SVG clouds drawn in code), frosted nav, feature pills, problem, 4-step how it works, example finding, before/after, control and CTA sections.
+- New public landing page at `/welcome` describing Sera, with an original sky-and-clouds hero (SVG clouds drawn in code), frosted nav, feature pills, problem, 4-step how it works, example finding, before/after, control and CTA sections.
 - Signed-out visitors to `/` now see the landing page; `/login?mode=signup` opens on Create account.
 
 ## 2026-11-13 (fonts)
@@ -23,9 +26,9 @@ Newest first. Add an entry for **every** meaningful change, in the same change a
 - If the account has no projects, the home page loads the labeled demo data automatically (once per browser, remembered in localStorage) and shows a "Load demo data" button. Lets the app be explored while the OpenAI account has no credits.
 
 ## 2026-11-13 (fully automatic capture)
-- Record → Stop is now the whole flow: SERA transcribes, works out speaker roles, files the call under the matching project or creates one from what was said, analyzes it, and opens the result. Removed the speaker-tagging, transcript-check and project-confirm steps.
+- Record → Stop is now the whole flow: Sera transcribes, works out speaker roles, files the call under the matching project or creates one from what was said, analyzes it, and opens the result. Removed the speaker-tagging, transcript-check and project-confirm steps.
 - New `POST /api/intake` replaces `/api/intake/draft`. Unstated price and deadline stay empty; a project with no clear deliverables says so.
-- Result page shows "SERA created this project" with Edit agreement. Projects page leads with Record a call; manual setup is a fallback.
+- Result page shows "Sera created this project" with Edit agreement. Projects page leads with Record a call; manual setup is a fallback.
 - Nav: Record · Findings · Settings.
 - Not verified live (OpenAI credits); typecheck, lint, build pass.
 
@@ -39,13 +42,13 @@ Newest first. Add an entry for **every** meaningful change, in the same change a
 ## 2026-11-13 (record-first flow)
 - Home (`/`) is now a Record button: record in the browser, upload audio, or paste a transcript.
 - Transcription with speaker separation; the user tags which speaker is the client, and lines become `Client:` / `Freelancer:`.
-- The project is set up automatically: SERA matches the call to an existing project or drafts a new agreement from what was said (unstated prices dropped in code), and the freelancer confirms before saving.
+- The project is set up automatically: Sera matches the call to an existing project or drafts a new agreement from what was said (unstated prices dropped in code), and the freelancer confirms before saving.
 - Audio goes browser → private bucket → transcription, then is deleted.
 - Nav: Record · Projects · Settings. Updated idea, features, architecture, roadmap, design-system.
 - Not verified live (OpenAI credits); typecheck, lint, build pass.
 
 ## 2026-11-13 (pivot to scope protection)
-- Product focus changed from a general AI memory app to **scope protection for freelancers** on fixed-price projects (still named SERA). Rewrote `docs/idea.md`, `features.md`, `architecture.md`, `roadmap.md`.
+- Product focus changed from a general AI memory app to **scope protection for freelancers** on fixed-price projects (still named Sera). Rewrote `docs/idea.md`, `features.md`, `architecture.md`, `roadmap.md`.
 - Added migration `0002_projects.sql` (projects, conversations, findings, tasks, all with RLS). **Must be run manually in Supabase.**
 - Projects dashboard, project page (original agreement, conversations, scope changes, follow-through), conversation page with quote-highlighted transcript, review drawer.
 - OpenAI structured analysis with code-enforced rules: verified quotes only, redacted invented amounts, ideas never get deadlines or tasks.
@@ -60,12 +63,12 @@ Newest first. Add an entry for **every** meaningful change, in the same change a
 - Commitments now store a local `due_time` ("HH:MM") instead of a `due_at` timestamp, so a stated time can't shift with UTC.
 - Added `.env.example` (git now tracks it; `.env.local` stays ignored). Env names follow Supabase's current keys: `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`.
 - Docs updated: architecture, features, roadmap.
-- Positioned SERA against Pocket and Fieldy: "they remember what was said; SERA makes sure what was promised gets done." Added the comparison to `idea.md`.
+- Positioned Sera against Pocket and Fieldy: "they remember what was said; Sera makes sure what was promised gets done." Added the comparison to `idea.md`.
 - Built the differentiation UI on sample data: promise ledger (You promised / Waiting on others) in Actions, "Remind me to check in" for others' promises, "Hear it" clip replay on moments and tasks, and Close your day (`/close`) with a Home entry card. Commitment review logic moved into `useCommitments` so both screens share it.
 - Fixed: shadcn `dark:` styles followed the OS dark mode (the `@custom-variant dark` line was dropped from `globals.css`), so dark-mode phones got grey tabs and inputs. Restored it.
 - Docs updated: idea, features, roadmap, architecture, design-system.
 - Phase 1a UI built on static sample data: Home, Memory, Recording detail, Moments, Actions, Settings, Login hero, navs, recording pill, capture sheet (ingest is a design preview).
-- Renamed product to SERA (from "FollowThrough") for now.
+- Renamed product to Sera (from "FollowThrough") for now.
 - Added `docs/` (idea, features, architecture, design system, roadmap, changelog) and the docs-update rule in `AGENTS.md`.
 - Pushed `README.md` as the first commit to `usherardy/Sera`.
 - Added `vercel.json` pinning the framework to Next.js. The first Vercel deploy failed after a successful build, most likely because the project was created when the repo held only the README and was set to "Other".

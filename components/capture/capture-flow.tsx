@@ -43,7 +43,7 @@ function extFor(mime: string, name?: string) {
 }
 
 /**
- * Press record, press stop: SERA transcribes, works out who the client is,
+ * Press record, press stop: Sera transcribes, works out who the client is,
  * files the call under the right project (or creates one from what was said)
  * and compares it with the agreement. Everything can be corrected afterwards.
  */
@@ -123,7 +123,7 @@ export function CaptureFlow({ userId }: { userId: string }) {
           </Button>
         </div>
         <p className="max-w-sm text-sm text-ink-muted">
-          Up to {Math.round(MAX_RECORDING_SECONDS / 60)} minutes. Press Stop when the call ends; SERA does the rest.
+          Up to {Math.round(MAX_RECORDING_SECONDS / 60)} minutes. Press Stop when the call ends; Sera does the rest.
         </p>
       </section>
     );
@@ -152,7 +152,7 @@ export function CaptureFlow({ userId }: { userId: string }) {
           </Button>
         </div>
         <p className="text-sm text-ink-muted">
-          Speaker labels like <span className="font-mono text-ink">Client:</span> and <span className="font-mono text-ink">Freelancer:</span> help SERA
+          Speaker labels like <span className="font-mono text-ink">Client:</span> and <span className="font-mono text-ink">Freelancer:</span> help Sera
           tell who asked from who agreed.
         </p>
         <Textarea
@@ -190,7 +190,7 @@ export function CaptureFlow({ userId }: { userId: string }) {
       </button>
       <div className="flex flex-col gap-1">
         <p className="display text-3xl">Tap to record the call</p>
-        <p className="text-sm text-ink-muted">SERA files it under the right project, or creates one from what was said.</p>
+        <p className="text-sm text-ink-muted">Sera files it under the right project, or creates one from what was said.</p>
       </div>
       {rec.error && <p className="rounded-card bg-error-bg px-4 py-3 text-sm font-semibold text-pulse">{rec.error}</p>}
       <div className="flex flex-wrap justify-center gap-2">

@@ -79,7 +79,7 @@ function AddConversationDialog({ projectId, open, onOpenChange }: { projectId: s
           </DialogTitle>
           <DialogDescription className="text-ink-muted">
             Paste a transcript with speaker labels like <span className="font-mono text-ink">Client:</span> and{" "}
-            <span className="font-mono text-ink">Freelancer:</span>. Labels let SERA tell who asked from who agreed.
+            <span className="font-mono text-ink">Freelancer:</span>. Labels let Sera tell who asked from who agreed.
           </DialogDescription>
         </div>
 
@@ -120,7 +120,7 @@ function AddConversationDialog({ projectId, open, onOpenChange }: { projectId: s
         </div>
 
         <p className="text-xs text-ink-muted">
-          Make sure everyone on the call knew it was recorded. SERA flags possible changes for you to review; it doesn&apos;t give legal advice.
+          Make sure everyone on the call knew it was recorded. Sera flags possible changes for you to review; it doesn&apos;t give legal advice.
         </p>
 
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">

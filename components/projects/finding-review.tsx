@@ -148,7 +148,7 @@ export function FindingReview({ finding: f, tasks }: { finding: FindingWithSourc
                       {t.owner ?? "Unassigned"} · {t.due_date ? formatDateOnly(t.due_date) : "No due date"}
                     </span>
                     {t.status === "open" && (
-                      <CalendarLink title={t.title} date={t.due_date} details={`${f.title}\n“${f.source_quote}”\n(from SERA)`} className="-ml-1.5" />
+                      <CalendarLink title={t.title} date={t.due_date} details={`${f.title}\n“${f.source_quote}”\n(from Sera)`} className="-ml-1.5" />
                     )}
                   </span>
                 </li>
@@ -189,7 +189,7 @@ export function FindingReview({ finding: f, tasks }: { finding: FindingWithSourc
       )}
 
       {askable && f.review_status !== "dismissed" && (
-        <Block title="3 · Ask the client" hint="SERA drafts a message asking for approval. You send it yourself; nothing is sent automatically.">
+        <Block title="3 · Ask the client" hint="Sera drafts a message asking for approval. You send it yourself; nothing is sent automatically.">
           {!message ? (
             <Button
               variant="outline"

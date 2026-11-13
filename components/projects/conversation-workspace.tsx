@@ -54,7 +54,7 @@ export function FindingDetail({ finding: f, project }: { finding: FindingWithSou
 
       {f.explanation && (
         <div className="flex flex-col gap-2">
-          <p className="eyebrow">Why SERA flagged this</p>
+          <p className="eyebrow">Why it was flagged</p>
           <p className="text-[0.9375rem] text-ink/85">{f.explanation}</p>
           <p className="text-xs text-ink-muted">AI findings are suggestions for you to review. They aren&apos;t legal advice and don&apos;t mean the client agreed to anything.</p>
         </div>

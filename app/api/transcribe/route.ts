@@ -13,7 +13,7 @@ const Body = z.object({
 
 /**
  * Transcribe a recording the browser uploaded to the private bucket, then
- * delete it: SERA keeps the transcript, not the audio.
+ * delete it: Sera keeps the transcript, not the audio.
  */
 export async function POST(request: Request) {
   const auth = await getAuthedClient();

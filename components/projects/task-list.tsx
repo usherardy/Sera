@@ -46,7 +46,7 @@ export function TaskList({ tasks, projectName }: { tasks: Task[]; projectName?: 
             <span className="block text-xs text-ink-muted">
               {t.owner ?? "Unassigned"} · {t.due_date ? formatDateOnly(t.due_date) : "No due date"}
             </span>
-            {t.status === "open" && <CalendarLink title={t.title} date={t.due_date} details={projectName ? `Follow-up for ${projectName} (from SERA)` : "Follow-up from SERA"} className="-ml-1.5" />}
+            {t.status === "open" && <CalendarLink title={t.title} date={t.due_date} details={projectName ? `Follow-up for ${projectName} (from Sera)` : "Follow-up from Sera"} className="-ml-1.5" />}
           </span>
         </li>
       ))}

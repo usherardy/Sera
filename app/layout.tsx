@@ -21,7 +21,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SERA",
+  title: "Sera",
   description:
     "Scope protection for freelancers: compare what clients ask for with what was originally agreed, with the exact words as evidence.",
 };

@@ -1,6 +1,6 @@
-# SERA docs
+# Sera docs
 
-Source of truth for what SERA is, how it is built, and where it stands.
+Source of truth for what Sera is, how it is built, and where it stands.
 **These docs must be updated in the same change as the code they describe.** See the rule in [../AGENTS.md](../AGENTS.md).
 
 | File | What it covers | Update when |
@@ -12,4 +12,4 @@ Source of truth for what SERA is, how it is built, and where it stands.
 | [roadmap.md](roadmap.md) | Phases, deadline, scope cuts, what is next | A phase starts or finishes, or scope is cut or added |
 | [changelog.md](changelog.md) | Dated log of every meaningful change | **Every change** |
 
-Product name: **SERA** (the hackathon brief calls it "FollowThrough"; kept as SERA). Product: scope protection for freelancers on fixed-price projects.
+Product name: **Sera** (the hackathon brief calls it "FollowThrough"; kept as Sera). Product: scope protection for freelancers on fixed-price projects.

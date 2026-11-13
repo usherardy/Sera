@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-/** SERA wordmark: a soft lavender tile with a "thread" mark + tracked name */
+/** Sera wordmark: a soft lavender tile with a "thread" mark + the serif name */
 export function Logo({ className, compact = false }: { className?: string; compact?: boolean }) {
   return (
     <span className={cn("inline-flex items-center gap-2.5 text-ink", className)}>
@@ -15,7 +15,7 @@ export function Logo({ className, compact = false }: { className?: string; compa
           />
         </svg>
       </span>
-      {!compact && <span className="font-serif text-[1.4rem] leading-none tracking-[0.14em]">SERA</span>}
+      {!compact && <span className="font-serif text-[1.55rem] leading-none tracking-[0.01em]">Sera</span>}
     </span>
   );
 }

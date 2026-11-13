@@ -178,7 +178,7 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
             <p className="eyebrow mb-3">Agreed deliverables</p>
             {p.agreed_scope.length === 0 && (
               <p className="rounded-md bg-warning px-3 py-2 text-sm font-semibold text-warning-dark">
-                No deliverables recorded yet. Add them with Edit agreement so SERA has something to compare against.
+                No deliverables recorded yet. Add them with Edit agreement so Sera has something to compare against.
               </p>
             )}
             <ul className="flex flex-col gap-2">
@@ -233,7 +233,7 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
           <EmptyState
             icon={<MessagesSquare />}
             title="No conversations yet."
-            body="Add a client conversation and SERA will compare it with the original agreement."
+            body="Add a client conversation and Sera will compare it with the original agreement."
             action={<AddConversationButton projectId={p.id} />}
           />
         ) : (
@@ -304,7 +304,7 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
                     <span className="block text-xs text-ink-muted">
                       {f.owner_label ?? "Owner not stated"} · {f.due_date ? formatDateOnly(f.due_date) : "No deadline stated"}
                     </span>
-                    <CalendarLink title={f.title} date={f.due_date} details={`${p.name}\n“${f.source_quote}”\n(from SERA)`} className="-ml-1.5" />
+                    <CalendarLink title={f.title} date={f.due_date} details={`${p.name}\n“${f.source_quote}”\n(from Sera)`} className="-ml-1.5" />
                   </li>
                 ))}
               </ul>

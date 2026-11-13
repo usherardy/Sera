@@ -37,7 +37,7 @@ function TopNavView({ pathname }: { pathname: string | null }) {
   return (
     <div className="sticky top-0 z-30 px-4 pt-3 sm:pt-4">
       <nav className="mx-auto flex max-w-5xl items-center justify-between gap-4 rounded-2xl border border-white/80 bg-white/65 py-2 pr-2 pl-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.6),0_10px_30px_-14px_rgba(20,30,80,0.28)] backdrop-blur-xl backdrop-saturate-150">
-        <Link href="/" aria-label="SERA home">
+        <Link href="/" aria-label="Sera home">
           <Logo />
         </Link>
         <ul className="hidden items-center gap-1 sm:flex">

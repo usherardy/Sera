@@ -18,7 +18,7 @@ export default function HomePage() {
           What did the client <em>ask</em> for?
         </h1>
         <p className="max-w-xl text-base text-ink-muted sm:text-lg">
-          Record the call. SERA compares it with what you originally agreed and shows you the exact words.
+          Record the call. Sera compares it with what you originally agreed and shows you the exact words.
         </p>
       </header>
       {SUPABASE_ENABLED ? (

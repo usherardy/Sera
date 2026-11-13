@@ -10,7 +10,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ## Project docs: keep them current (REQUIRED)
 
-SERA's documentation lives in [`docs/`](docs/README.md). **Read the relevant doc before starting work, and update the docs in the same change as the code, every time.** A task is not finished until the docs match.
+Sera's documentation lives in [`docs/`](docs/README.md). **Read the relevant doc before starting work, and update the docs in the same change as the code, every time.** A task is not finished until the docs match.
 
 Before you finish any change, go through this checklist:
 1. [`docs/changelog.md`](docs/changelog.md): add a dated entry. Always.

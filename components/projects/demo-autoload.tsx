@@ -61,7 +61,7 @@ export function DemoAutoload() {
       </span>
       <p className="display text-2xl">No projects yet.</p>
       <p className="max-w-md text-sm text-ink-muted">
-        Record a call above, or explore SERA with two labeled sample projects: conversations, summaries, example findings and tasks.
+        Record a call above, or explore Sera with two labeled sample projects: conversations, summaries, example findings and tasks.
       </p>
       <Button variant="outline" disabled={busy} onClick={() => void load(false)}>
         {busy && <Loader2 className="animate-spin" />}

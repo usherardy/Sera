@@ -21,7 +21,7 @@ export default function LoginPage() {
             Stop doing <em>free</em> work.
           </h1>
           <p className="max-w-md text-lg text-ink/75 sm:text-xl">
-            SERA remembers what your client asked for, compares it with what you originally agreed, and
+            Sera remembers what your client asked for, compares it with what you originally agreed, and
             shows the exact words, so scope creep becomes a conversation, not a surprise.
           </p>
           <div className="flex w-fit items-center gap-3 rounded-full border border-ink bg-ink py-2.5 pr-5 pl-4 text-cream">
