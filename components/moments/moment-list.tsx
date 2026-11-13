@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { CategoryBadge, ConfidenceMeter, SampleBadge } from "@/components/common/badges";
+import { PlayClip } from "@/components/common/play-clip";
 import { EmptyState, EvidenceQuote } from "@/components/common/layout-bits";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { CATEGORY_META, CATEGORY_ORDER } from "@/lib/categories";
@@ -159,7 +160,15 @@ function MomentDetail({ moment, tz, onDismiss }: { moment: M; tz: string; onDism
         >
           {moment.evidence_text}
         </EvidenceQuote>
-        <ConfidenceMeter confidence={moment.confidence} />
+        <div className="flex flex-wrap items-center gap-3">
+          <PlayClip
+            recordingId={moment.recording_id}
+            startMs={moment.start_ms}
+            endMs={moment.end_ms}
+            available={!moment.is_sample}
+          />
+          <ConfidenceMeter confidence={moment.confidence} />
+        </div>
       </div>
 
       <div className="flex flex-col gap-2 sm:flex-row">

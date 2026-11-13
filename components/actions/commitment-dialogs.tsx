@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/compone
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatDateOnly } from "@/lib/format";
+import { calendarEventTitle, isWaitingOn } from "@/lib/ledger";
 import { cn } from "@/lib/utils";
 import type { Commitment } from "@/lib/types";
 
@@ -183,6 +184,7 @@ export function SyncCalendarDialog({
   onEditDeadline: () => void;
 }) {
   const hasTime = !!commitment.due_at;
+  const waitingOn = isWaitingOn(commitment.owner_label);
   const [allDay, setAllDay] = useState<boolean | null>(hasTime ? false : null);
   const [time, setTime] = useState(hasTime ? commitment.due_at!.slice(11, 16) : "");
   const ready = !!commitment.due_date && (hasTime || allDay === true || (allDay === false && !!time));
@@ -192,15 +194,25 @@ export function SyncCalendarDialog({
       <DialogContent className="sm:max-w-md">
         <div className="flex flex-col gap-1">
           <DialogTitle className="display text-3xl">
-            Add to <em>calendar</em>
+            {waitingOn ? (
+              <>
+                Remind me to <em>check in</em>
+              </>
+            ) : (
+              <>
+                Add to <em>calendar</em>
+              </>
+            )}
           </DialogTitle>
           <DialogDescription className="text-ink-muted">
-            Nothing is added to Google Calendar until you confirm.
+            {waitingOn
+              ? `${commitment.owner_label} promised this. SERA adds a check-in to your calendar for the day it's due. Nothing is added until you confirm.`
+              : "Nothing is added to Google Calendar until you confirm."}
           </DialogDescription>
         </div>
 
         <div className="rounded-card border-2 border-cream-dark bg-paper p-4">
-          <p className="font-semibold">{commitment.title}</p>
+          <p className="font-semibold">{calendarEventTitle(commitment)}</p>
           <p className="mt-1 font-mono text-xs text-ink-muted">
             {commitment.due_date ? formatDateOnly(commitment.due_date) : "No deadline yet"}
           </p>
@@ -239,7 +251,7 @@ export function SyncCalendarDialog({
           </Button>
           <Button disabled={!ready} onClick={() => onConfirm({ allDay: !!allDay && !hasTime, time: hasTime ? time : allDay ? null : time })}>
             <CalendarPlus />
-            Add to Google Calendar
+            {waitingOn ? "Add check-in" : "Add to Google Calendar"}
           </Button>
         </div>
       </DialogContent>

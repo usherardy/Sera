@@ -2,6 +2,10 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Light-only app: `dark:` utilities apply only under a .dark ancestor (never set),
+   so the OS dark mode can't restyle shadcn components. */
+@custom-variant dark (&:is(.dark *));
+
 /*
  * SERA design tokens (Wispr Flow-inspired).
  * Brand palette first; shadcn semantic tokens are mapped onto it below.

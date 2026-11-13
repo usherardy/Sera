@@ -23,6 +23,7 @@ Browser ──signed upload──▶ Supabase Storage (private bucket, {uid}/{ri
         after(): transcribe → analyze → persist (one SQL txn) → regenerate daily summary
    client polls /status every 2s → refresh on completed / failed (+Retry)
 ```
+- **Clip playback:** `GET /api/recordings/[id]/audio` (planned) returns `{ url }`, a short-lived signed URL, fetched only when someone taps "Hear it".
 - **Device-agnostic ingest:** upload-url → register → process. A future wearable drops a file and calls the same three endpoints.
 - **Audio never passes through our API** (Vercel's 4.5 MB body limit). Client uploads directly with a signed URL; playback uses short-lived signed URLs.
 - **Background work** runs in `after()` with `maxDuration = 300`. A recording stuck in `transcribing` or `analyzing` over 5 minutes shows as failed with Retry.
@@ -62,11 +63,15 @@ components/ui/                     shadcn-style primitives (button, dialog, shee
 components/nav/app-nav.tsx         floating top nav (desktop) / bottom bar + record button (mobile)
 components/capture/                recorder hook, provider, sheet, recording pill, waveform, ingest (preview)
 components/home|memory|moments|actions/   feature components
+components/actions/use-commitments.tsx   shared commitment state + review actions (Actions, Close your day)
+components/close/                  Close your day flow + Home entry card (route: app/(app)/close)
+components/common/play-clip.tsx    "Hear it": plays start_ms → end_ms of a recording
 components/brand|common/           logo, badges, layout bits
 hooks/use-media-query.ts
 lib/types.ts                       domain types
 lib/data/index.ts                  data access (sample now, Supabase later)
 lib/sample/sample-day.ts           labeled sample data
+lib/ledger.ts                      yours vs waiting-on, calendar event titles
 lib/ranking.ts, categories.ts, format.ts, preview.ts, utils.ts
 ```
 Planned additions: `proxy.ts`, `app/api/**`, `lib/supabase/{server,browser,admin}.ts`, `lib/auth.ts`, `lib/ai/*`, `lib/pipeline/process-recording.ts`, `lib/evidence.ts`, `lib/dates.ts`, `lib/crypto.ts`, `lib/google/{oauth,calendar}.ts`, `supabase/migrations/`, `demo/`, `scripts/eval-analysis.ts`.

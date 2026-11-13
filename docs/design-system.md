@@ -21,5 +21,11 @@ Desktop: floating bordered cream top bar (max 64rem). Mobile: floating bordered 
 ## Recording pill
 Floating ink pill with live waveform (Web Audio `AnalyserNode`), mono timer, stop button. Always visible while recording, which also satisfies the privacy requirement.
 
+## Light only
+The app is light-only. `@custom-variant dark` in [app/globals.css](../app/globals.css) scopes `dark:` utilities to a `.dark` ancestor, which is never set, so a phone in dark mode can't restyle shadcn components.
+
+## Close your day
+Entry card on Home: solid ink, lavender moon icon, "Close your *day*". The flow is one raised card at a time with a segmented progress bar; the end card is ink with "Day *closed*." Receipts use the small "Hear it" pill (play icon + seconds).
+
 ## Copy and states
 Processing shown as status lines: "Transcribing…", "Finding moments…", "Commitment identified". Sample data always carries a visible **Sample** badge. Every list has an empty state; every async action has a loading and failed state.

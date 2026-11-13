@@ -38,6 +38,10 @@ Keep this table current; it is how we see what is left.
 |---|---|---|
 | Review commitments | Approve / dismiss / edit / mark done. Low confidence and unclear ownership are flagged for review. | Done (UI, sample data) |
 | Google Calendar sync | Approved tasks only. Date without time prompts for a time or all-day. Idempotent event id prevents duplicates. | Planned |
+| Promise ledger | Each Actions tab splits into **You promised** (owner is me, or unassigned) and **Waiting on others** (someone else owns it). Logic in [lib/ledger.ts](../lib/ledger.ts). | Done (UI, sample data) |
+| Check-in reminders | Waiting-on tasks get "Remind me to check in": a calendar event titled "Check in with {name}: {task}" on the due date. Time or all-day is still the user's choice. | UI done; calendar sync Planned (Phase 4) |
+| Play the receipt | "Hear it" on moments and tasks plays exactly start_ms → end_ms of the recording ([components/common/play-clip.tsx](../components/common/play-clip.tsx)). Hidden for sample data (no audio). | UI done; needs `GET /api/recordings/[id]/audio` (Phase 2) |
+| Close your day | `/close`: one card at a time. Pending promises: Approve (owner check if unassigned), Fix, Not a promise, Decide later. Top 3 moments: Keep / Not important. Ends on "Day closed": your list, waiting on, next up, and one confirmed step adding dated items to Calendar (all-day where no time was said). Home shows the entry card. | Done (UI, sample data) |
 | Sample day | Labeled sample data (badge on every item) with a remove button; fallback for a slow demo network. | Sample data in code; seed/remove Planned |
 
 ## Privacy and safety

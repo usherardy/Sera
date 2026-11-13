@@ -21,6 +21,23 @@ The UI is the easy part. The value is **judgment plus grounding**:
 - Treating a mid-conversation correction ("actually, Friday") as an update, not a duplicate.
 - Tying every claim to a verbatim transcript quote with a real timestamp.
 
+## Positioning
+**Pocket and Fieldy remember what was said. SERA makes sure what was promised gets done.**
+
+Our "extra touch" is follow-through: SERA closes the loop instead of stopping at a list of action items. Comparison from the competitors' public pages as of 2026-11-13. "Not mentioned" means their site doesn't claim it, not that it is proven absent; say it that way in the pitch.
+
+| | Pocket | Fieldy | SERA |
+|---|---|---|---|
+| Capture | $99–139 card clipped to the phone, press-to-record | Pendant or watch; always-on on the paid tier | The phone you already have, press-to-record; wearable later |
+| Action items | "Organize themselves"; pushed to task apps | "Become action items automatically" | Proposed, then confirmed by you; owner, date and time never guessed |
+| Evidence | Not mentioned | Not mentioned | Every moment and task links to the exact quote; replay the clip |
+| Judgment | Not mentioned | Not mentioned | Ideas aren't tasks; a correction updates the task instead of duplicating it |
+| Others' promises | Not mentioned | Not mentioned | Waiting on others, with a check-in reminder when they're due |
+| Closing the loop | Syncs to your task app | Reminders, calendar sync | Close your day: a one-minute evening review, then one confirmed step into Google Calendar |
+| Consent | Light and vibration while recording | Privacy light | Explicit start/stop, visible recording bar, consent notice, delete anything |
+
+Sources: [heypocket.com](https://heypocket.com/), [Pocket product page](https://heypocket.com/pages/pocket-ai-voice-recorder), [fieldy.ai](https://www.fieldy.ai/), [Fieldy memberships](https://www.fieldy.ai/memberships).
+
 ## Principles
 - **Never invent.** No made-up commitments, deadlines, times, or timestamps. If a time was not stated, ask the user or leave it empty.
 - **Evidence for everything.** Every moment and commitment links to the quote and the place in the audio it came from.

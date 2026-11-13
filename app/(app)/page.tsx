@@ -6,6 +6,7 @@ import { CaptureCta, Greeting, StatCard } from "@/components/home/home-bits";
 import { DailyMemoryCard } from "@/components/home/daily-memory-card";
 import { MomentList } from "@/components/moments/moment-list";
 import { ActionsBoard } from "@/components/actions/actions-board";
+import { CloseDayCard } from "@/components/close/close-day-card";
 import { getDay, getViewer } from "@/lib/data";
 import { formatDayHeading } from "@/lib/format";
 import { byMomentTime, rankMoments } from "@/lib/ranking";
@@ -47,6 +48,10 @@ async function HomeContent() {
         <StatCard value={day.moments.length} label="Important moments" icon={<Sparkles />} />
         <StatCard value={pending.length} label="Pending commitments" icon={<CheckSquare />} />
       </section>
+
+      {day.recordings.length > 0 && (
+        <CloseDayCard promises={pending.length} moments={Math.min(3, day.moments.length)} />
+      )}
 
       {day.recordings.length === 0 ? (
         <EmptyState
