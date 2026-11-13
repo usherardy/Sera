@@ -1,0 +1,173 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/*
+ * FollowThrough design tokens (Wispr Flow-inspired).
+ * Brand palette first; shadcn semantic tokens are mapped onto it below.
+ */
+:root {
+  --cream: #ffffeb;
+  --cream-dark: #e4e4d0;
+  --paper: #fffdf9;
+  --ink: #1a1a1a;
+  --ink-muted: #71716e;
+  --dawn: #f0d7ff;
+  --dawn-strong: #e6c2fb;
+  --fathom: #034f46;
+  --fathom-dark: #07352f;
+  --purple: #886dc2;
+  --glow: #ffa946;
+  --signal: #ffbcf2;
+  --flare: #ff6c4c;
+  --pulse: #7f1c34;
+  --success: #cef5ca;
+  --success-dark: #114e0b;
+  --warning: #fcf8d8;
+  --warning-dark: #5e5515;
+  --error-bg: #f8e4e4;
+
+  /* shadcn semantic mapping */
+  --background: var(--cream);
+  --foreground: var(--ink);
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--dawn);
+  --primary-foreground: var(--ink);
+  --secondary: #f4f3df;
+  --secondary-foreground: var(--ink);
+  --muted: #f4f3df;
+  --muted-foreground: var(--ink-muted);
+  --accent: var(--dawn);
+  --accent-foreground: var(--ink);
+  --destructive: var(--pulse);
+  --border: var(--cream-dark);
+  --input: var(--cream-dark);
+  --ring: var(--purple);
+  --radius: 0.5rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-cream: var(--cream);
+  --color-cream-dark: var(--cream-dark);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-dawn: var(--dawn);
+  --color-dawn-strong: var(--dawn-strong);
+  --color-fathom: var(--fathom);
+  --color-fathom-dark: var(--fathom-dark);
+  --color-purple: var(--purple);
+  --color-glow: var(--glow);
+  --color-signal: var(--signal);
+  --color-flare: var(--flare);
+  --color-pulse: var(--pulse);
+  --color-success: var(--success);
+  --color-success-dark: var(--success-dark);
+  --color-warning: var(--warning);
+  --color-warning-dark: var(--warning-dark);
+  --color-error-bg: var(--error-bg);
+
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-garamond), ui-serif, Georgia, serif;
+  --font-heading: var(--font-garamond), ui-serif, Georgia, serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --radius-4xl: 2rem;
+  --radius-card: 1rem;
+  --radius-panel: 2rem;
+
+  --animate-wave: wave 1.1s ease-in-out infinite;
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "ss01";
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  /* Serif display headings with optional italic accent: <h1 class="display">Here's what <em>mattered</em></h1> */
+  .display {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .display em {
+    font-style: italic;
+  }
+  /* Small uppercase mono label */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  /* Standard card surface */
+  .surface {
+    background: var(--paper);
+    border: 2px solid var(--cream-dark);
+    border-radius: var(--radius-card);
+  }
+  /* Raised card with a hard offset ink shadow */
+  .surface-raised {
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-card);
+    box-shadow: 3px 3px 0 0 var(--ink);
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
