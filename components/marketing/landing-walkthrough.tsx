@@ -1,7 +1,7 @@
-import { ArrowRight, CalendarDays, Check, FolderKanban, Sparkles } from "lucide-react";
+import { ArrowRight, Check, FolderKanban, Sparkles } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { EvidenceQuote } from "@/components/common/layout-bits";
-import { HeroDemo, MarketingFooter, MarketingNav, PrimaryCta, RecordingPill } from "@/components/marketing/shell";
+import { HeroDemo, MarketingFooter, MarketingNav, PrimaryCta, ProblemSection, RecordingPill } from "@/components/marketing/shell";
 import { Sky } from "@/components/marketing/sky";
 import { FindingBadge } from "@/components/projects/project-bits";
 import type { FindingCategory } from "@/lib/projects/types";
@@ -19,6 +19,21 @@ function RecordVisual() {
 }
 
 function ProjectVisual() {
+  return (
+    <div className="relative isolate pt-11">
+      {/* a second client's project behind, to show projects stay separate */}
+      <div className="surface absolute inset-x-6 top-0 -z-10 flex h-24 items-start justify-between px-5 pt-3">
+        <span className="inline-flex items-center gap-2 text-xs font-semibold text-ink/70">
+          <FolderKanban className="size-3.5" /> Nordic Bakery Rebrand
+        </span>
+        <span className="text-xs text-ink-muted">2 calls · 2 to do</span>
+      </div>
+      <ProjectCard />
+    </div>
+  );
+}
+
+function ProjectCard() {
   return (
     <div className="surface-raised flex flex-col gap-4 p-5">
       <div className="flex items-center justify-between gap-3">
@@ -52,6 +67,38 @@ function ProjectVisual() {
   );
 }
 
+const TODOS: { t: string; p: string; due: string; done?: boolean }[] = [
+  { t: "Send the updated proposal", p: "Acme Studio", due: "Today" },
+  { t: "Send the refined logo", p: "Nordic Bakery", due: "Mon, Nov 16" },
+  { t: "Confirm the new date in writing", p: "Acme Studio", due: "No date" },
+  { t: "Share the staging link", p: "Acme Studio", due: "Done", done: true },
+];
+
+function TodoVisual() {
+  return (
+    <div className="surface-raised flex flex-col gap-1 p-3">
+      <p className="eyebrow px-2 pt-2 pb-1">To do · all clients</p>
+      <ul className="divide-y divide-cream-dark">
+        {TODOS.map((x) => (
+          <li key={x.t} className="flex items-start gap-3 px-2 py-3">
+            <span className={cn("mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border border-ink/30", x.done && "bg-fathom text-cream")}>
+              {x.done && <Check className="size-3.5" />}
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className={cn("block font-semibold", x.done && "line-through opacity-60")}>{x.t}</span>
+              <span className="mt-1 flex flex-wrap items-center gap-2 text-xs text-ink-muted">
+                <span className="rounded-full bg-secondary px-2 py-0.5 font-semibold text-ink/75">{x.p}</span>
+                {x.due}
+                <span className="rounded-full bg-dawn px-1.5 py-0.5 font-semibold text-ink/70">from call</span>
+              </span>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 const CHECKS: { c: FindingCategory; t: string; q: string }[] = [
   { c: "potential_scope_addition", t: "Stripe payments", q: "Can we also add Stripe payments?" },
   { c: "scope_modification", t: "Deadline moved to Mon, Nov 23", q: "Actually, make it Monday, the 23rd." },
@@ -59,6 +106,19 @@ const CHECKS: { c: FindingCategory; t: string; q: string }[] = [
 ];
 
 function CompareVisual() {
+  return (
+    <div className="flex flex-col gap-3">
+      <p className="eyebrow">Second call with Acme · compared with your earlier calls</p>
+      <CompareList />
+      <div className="surface flex items-center justify-between gap-3 px-4 py-3">
+        <span className="text-sm font-semibold">Stripe payments: not in your agreement</span>
+        <span className="rounded-lg bg-ink px-3 py-1.5 text-xs font-semibold whitespace-nowrap text-white">Ask client to approve</span>
+      </div>
+    </div>
+  );
+}
+
+function CompareList() {
   return (
     <ul className="flex flex-col gap-2.5">
       {CHECKS.map((x) => (
@@ -72,52 +132,30 @@ function CompareVisual() {
   );
 }
 
-function ApproveVisual() {
-  return (
-    <div className="surface-raised flex flex-col gap-4 p-5">
-      <p className="eyebrow">Change request to your client</p>
-      <div className="rounded-xl bg-cream/70 p-4 text-[0.9rem] leading-relaxed text-ink/85">
-        Hi Acme Studio, following our call on 9 November, you mentioned: “Can we also add Stripe payments?” This goes beyond what we
-        originally agreed, so I&apos;ll send an estimate separately. Could you confirm how you&apos;d like to proceed?
-      </div>
-      <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
-        <span className="rounded-md bg-success/40 px-2 py-1 text-success-dark">Reviewed</span>
-        <ArrowRight className="size-3.5 text-ink/40" />
-        <span className="rounded-md bg-dawn px-2 py-1">Sent to client</span>
-        <ArrowRight className="size-3.5 text-ink/40" />
-        <span className="rounded-md bg-success/40 px-2 py-1 text-success-dark">Client approved</span>
-      </div>
-      <p className="inline-flex items-center gap-1.5 text-xs text-ink-muted">
-        <CalendarDays className="size-3.5" /> Follow-up task added to your calendar
-      </p>
-    </div>
-  );
-}
-
 const STEPS = [
   {
     n: "01",
-    t: "Record the call",
+    t: "Record with one click",
     d: "Tap record when the call starts and stop when it ends. You can also upload audio or paste a transcript.",
     v: <RecordVisual />,
   },
   {
     n: "02",
-    t: "Sera sets up the project",
-    d: "It separates the voices, works out who the client is, and files the call under the right project, or creates one from what was said: deliverables, price and deadline.",
+    t: "Projects, created and kept separate",
+    d: "Sera works out who the client is and files the call under the right project, or creates a new one from what was said. Every client stays in its own place.",
     v: <ProjectVisual />,
   },
   {
     n: "03",
-    t: "Every request, checked",
-    d: "Each request is compared with the original agreement and labeled: possible addition, scope change, needs clarification, or already included. Each comes with the exact quote.",
-    v: <CompareVisual />,
+    t: "Everything to do, in one list",
+    d: "Every promise you make on a call becomes a task automatically, with the date if one was said. One list across all your clients.",
+    v: <TodoVisual />,
   },
   {
     n: "04",
-    t: "A change request, ready",
-    d: "Review the finding, add a follow-up task, and send a ready-made change request that asks your client to approve. You record their answer.",
-    v: <ApproveVisual />,
+    t: "New requests, flagged",
+    d: "On every later call, Sera compares what the client asks for with what you already agreed, flags anything extra with the exact quote, and drafts a change request for the client to approve.",
+    v: <CompareVisual />,
   },
 ];
 
@@ -134,8 +172,8 @@ export function LandingWalkthrough() {
             Stop doing <em>free</em> work.
           </h1>
           <p className="max-w-xl text-lg text-ink/70 sm:text-xl">
-            Record your client calls. Sera checks every request against the agreed scope, shows you the exact words, and gets changes
-            approved before your team builds them.
+            Lots of clients? Sera records each call, keeps every project separate, lists what you need to do, and flags anything a
+            client asks for beyond what you agreed.
           </p>
           <div className="flex flex-wrap justify-center gap-2">
             <PrimaryCta>
@@ -152,6 +190,8 @@ export function LandingWalkthrough() {
       </Sky>
 
       <main className="flex flex-col gap-28 px-6 pb-24 sm:gap-32">
+        <ProblemSection />
+
         <section id="how" className="mx-auto flex w-full max-w-5xl scroll-mt-24 flex-col gap-16 sm:gap-24">
           <div className="flex flex-col items-center gap-3 text-center">
             <p className="eyebrow">How it works</p>

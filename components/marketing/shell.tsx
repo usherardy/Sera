@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, ListX, MessageSquarePlus, Users } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { buttonVariants } from "@/components/ui/button";
 import { Waveform } from "@/components/capture/waveform";
@@ -106,5 +106,31 @@ export function PrimaryCta({ children = "Get started" }: { children?: React.Reac
     <Link href="/login?mode=signup" className={buttonVariants({ size: "lg" })}>
       {children}
     </Link>
+  );
+}
+
+/** The problem, stated plainly: three cards under a centered serif heading. */
+export function ProblemSection() {
+  const cards = [
+    { icon: <Users />, t: "Which client asked for what?", d: "Calls blur together when you juggle several clients." },
+    { icon: <ListX />, t: "Tasks slip through", d: "You promise something on a call and forget to write it down." },
+    { icon: <MessageSquarePlus />, t: "Clients ask for more", d: "“Can you just add…” turns into work you never agreed to." },
+  ];
+  return (
+    <section className="mx-auto flex w-full max-w-5xl flex-col items-center gap-10 text-center">
+      <h2 className="display max-w-3xl text-[2.6rem] sm:text-6xl">
+        Lots of clients. Lots to <em>remember</em>.
+      </h2>
+      <div className="grid w-full gap-3 sm:grid-cols-3">
+        {cards.map((p) => (
+          <div key={p.t} className="surface flex flex-col items-center gap-2.5 px-5 py-6">
+            <span className="flex size-10 items-center justify-center rounded-xl bg-dawn [&_svg]:size-5">{p.icon}</span>
+            <p className="font-semibold">{p.t}</p>
+            <p className="text-sm text-ink-muted">{p.d}</p>
+          </div>
+        ))}
+      </div>
+      <p className="text-lg text-ink/70">Sera keeps it all organized for you.</p>
+    </section>
   );
 }

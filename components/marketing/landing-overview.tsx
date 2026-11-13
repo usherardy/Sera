@@ -3,17 +3,15 @@ import {
   Brush,
   CalendarDays,
   Code2,
-  FileText,
   FolderKanban,
   Mail,
   MessageSquareQuote,
   Mic,
   ScrollText,
-  Sparkles,
   Users,
 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { IconTile, MarketingFooter, MarketingNav, PrimaryCta } from "@/components/marketing/shell";
+import { IconTile, MarketingFooter, MarketingNav, PrimaryCta, ProblemSection } from "@/components/marketing/shell";
 import { Sky } from "@/components/marketing/sky";
 import { FindingBadge } from "@/components/projects/project-bits";
 import { cn } from "@/lib/utils";
@@ -111,24 +109,7 @@ export function LandingOverview() {
       </Sky>
 
       <main className="flex flex-col gap-28 px-6 pb-24 sm:gap-32">
-        <section className="mx-auto flex w-full max-w-5xl flex-col items-center gap-10 text-center">
-          <h2 className="display max-w-3xl text-[2.6rem] sm:text-6xl">
-            Extra work rarely arrives in <em>writing</em>.
-          </h2>
-          <div className="grid w-full gap-3 sm:grid-cols-3">
-            {[
-              { icon: <MessageSquareQuote />, t: "It's said on a call", d: "“Can you just add…” sounds small at the time." },
-              { icon: <FileText />, t: "The deal gets forgotten", d: "The original scope is buried in an old email." },
-              { icon: <Sparkles />, t: "It never gets billed", d: "You do the work, and argue about it later." },
-            ].map((p) => (
-              <div key={p.t} className="surface flex flex-col items-center gap-2.5 px-5 py-6">
-                <span className="flex size-10 items-center justify-center rounded-xl bg-dawn [&_svg]:size-5">{p.icon}</span>
-                <p className="font-semibold">{p.t}</p>
-                <p className="text-sm text-ink-muted">{p.d}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+        <ProblemSection />
 
         <section id="features" className="mx-auto flex w-full max-w-5xl scroll-mt-24 flex-col gap-10">
           <div className="flex flex-col gap-3">
