@@ -42,7 +42,14 @@ export function TaskList({ tasks, projectName }: { tasks: Task[]; projectName?: 
             {t.status === "done" && <Check className="size-3.5" />}
           </button>
           <span className="min-w-0">
-            <span className={cn("block font-semibold", t.status === "done" && "line-through opacity-60")}>{t.title}</span>
+            <span className={cn("block font-semibold", t.status === "done" && "line-through opacity-60")}>
+              {t.title}
+              {t.auto_created && (
+                <span className="ml-2 rounded-full bg-dawn px-1.5 py-0.5 align-middle text-[0.65rem] font-semibold text-ink/70" title="Sera added this from a promise you made on a call">
+                  from call
+                </span>
+              )}
+            </span>
             <span className="block text-xs text-ink-muted">
               {t.owner ?? "Unassigned"} · {t.due_date ? formatDateOnly(t.due_date) : "No due date"}
             </span>

@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { isValidTimeZone } from "@/lib/dates";
 import { DEFAULT_TZ, localDateOf } from "@/lib/format";
 import { AnalysisError, analyzeConversation, type EarlierChange } from "./analyze";
-import { toFindingRows } from "./process";
+import { autoTasksFrom, toFindingRows } from "./process";
 import type { Project } from "./types";
 
 const STUCK_AFTER_MS = 3 * 60 * 1000;
@@ -15,7 +15,8 @@ export type RunResult =
 /**
  * Analyze one conversation and store its findings. Safe to call twice:
  * an atomic claim means a second call while one is running does nothing, and
- * re-running replaces only findings the freelancer hasn't reviewed yet.
+ * re-running replaces only findings you haven't reviewed yet (and the open
+ * tasks Sera created from them).
  */
 export async function runAnalysis(supabase: SupabaseClient, userId: string, conversationId: string): Promise<RunResult> {
   const staleBefore = new Date(Date.now() - STUCK_AFTER_MS).toISOString();
@@ -24,7 +25,7 @@ export async function runAnalysis(supabase: SupabaseClient, userId: string, conv
     .update({ processing_status: "analyzing", analysis_started_at: new Date().toISOString(), error_message: null })
     .eq("id", conversationId)
     .or(`processing_status.neq.analyzing,analysis_started_at.lt.${staleBefore}`)
-    .select("id,project_id,transcript,recorded_at")
+    .select("id,project_id,transcript,recorded_at,is_baseline")
     .maybeSingle();
   if (claimError) return { ok: false, status: "failed", error: "Couldn't start the analysis." };
   if (!claimed) {
@@ -81,7 +82,8 @@ export async function runAnalysis(supabase: SupabaseClient, userId: string, conv
       transcript,
       conversationDate: localDateOf(claimed.recorded_at, timezone),
       timezone,
-      history,
+      history: claimed.is_baseline ? [] : history,
+      baseline: !!claimed.is_baseline,
     });
 
     // Amounts are only allowed if they were actually said or are in the agreement.
@@ -89,10 +91,22 @@ export async function runAnalysis(supabase: SupabaseClient, userId: string, conv
       analysis.findings,
       transcript,
       `${transcript}\n${project.fixed_price ?? ""} ${project.currency}`,
+      { baseline: !!claimed.is_baseline },
     );
     const rows = found.map((r) => ({ ...r, project_id: claimed.project_id, conversation_id: conversationId }));
 
-    // Replace only what the freelancer hasn't touched; keep their reviewed/dismissed decisions.
+    // Replace only what you haven't touched; keep your reviewed/dismissed decisions.
+    // Open tasks Sera created from the findings being replaced go with them; tasks you ticked off stay.
+    const { data: replaced } = await supabase
+      .from("findings")
+      .select("id")
+      .eq("conversation_id", conversationId)
+      .eq("review_status", "ai_detected");
+    const replacedIds = (replaced ?? []).map((f) => f.id as string);
+    if (replacedIds.length > 0) {
+      await supabase.from("tasks").delete().in("finding_id", replacedIds).eq("auto_created", true).eq("status", "open");
+    }
+
     const { error: delError } = await supabase
       .from("findings")
       .delete()
@@ -105,8 +119,20 @@ export async function runAnalysis(supabase: SupabaseClient, userId: string, conv
     const fresh = rows.filter((r) => !keptKeys.has(`${r.category}|${r.source_quote}`));
 
     if (fresh.length > 0) {
-      const { error: insError } = await supabase.from("findings").insert(fresh);
+      const { data: inserted, error: insError } = await supabase
+        .from("findings")
+        .insert(fresh)
+        .select("id,category,owner_label,title,suggested_follow_up,due_date");
       if (insError) return await fail("Couldn't save the analysis. Try again.");
+
+      // Promises you made become tasks automatically, so nothing is forgotten.
+      const tasks = autoTasksFrom(inserted ?? []);
+      if (tasks.length > 0) {
+        const { error: taskError } = await supabase
+          .from("tasks")
+          .insert(tasks.map((t) => ({ ...t, project_id: claimed.project_id, auto_created: true })));
+        if (taskError) console.error("auto tasks failed", taskError.message); // findings are saved; tasks can be added by hand
+      }
     }
 
     const { error: doneError } = await supabase

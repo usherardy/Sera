@@ -110,6 +110,8 @@ export function buildUserPrompt(args: {
   timezone: string;
   /** changes from earlier calls with a recorded client answer (or still awaiting one) */
   history?: EarlierChange[];
+  /** this call set up the project's agreement: nothing to compare it against */
+  baseline?: boolean;
 }): string {
   const { project: p } = args;
   const list = (items: string[]) => (items.length ? items.map((s) => `- ${s}`).join("\n") : "(none listed)");
@@ -122,7 +124,13 @@ Explicitly not included / constraints:
 ${list(p.exclusions)}
 Fixed price: ${p.fixed_price != null ? `${p.fixed_price} ${p.currency}` : "not stated"}
 Original deadline: ${p.deadline ?? "not stated"}
-${earlierChanges(args.history)}
+${earlierChanges(args.history)}${
+    args.baseline
+      ? `
+BASELINE CALL: the agreement above was drafted FROM this call, so there is nothing to compare it against. Do NOT report potential_scope_addition, scope_modification or existing_scope. Only report commitments (promises by either side), clarification_needed (open questions) and idea.
+`
+      : ""
+  }
 CONVERSATION DATE: ${args.conversationDate} (${args.timezone}). Next 14 days: ${dateGrid(args.conversationDate)}
 
 TRANSCRIPT

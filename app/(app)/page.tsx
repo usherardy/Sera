@@ -3,9 +3,12 @@ import { AlertCircle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SectionHeader } from "@/components/common/layout-bits";
 import { CaptureFlow } from "@/components/capture/capture-flow";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { DemoAutoload } from "@/components/projects/demo-autoload";
+import { TodoList } from "@/components/projects/todo-list";
 import { ProjectCard } from "@/components/projects/project-bits";
-import { listProjects } from "@/lib/projects/data";
+import { listProjects, listTodo } from "@/lib/projects/data";
 import { SUPABASE_ENABLED } from "@/lib/supabase/config";
 import { getViewer } from "@/lib/viewer";
 
@@ -36,13 +39,28 @@ export default function HomePage() {
 }
 
 async function HomeContent() {
-  const [viewer, projects] = await Promise.all([getViewer(), listProjects()]);
+  const [viewer, projects, todo] = await Promise.all([getViewer(), listProjects(), listTodo()]);
   return (
     <>
       <div className="mx-auto w-full max-w-2xl">
         <CaptureFlow userId={viewer.userId} />
       </div>
       {projects.length === 0 && <DemoAutoload />}
+      {(todo.tasks.length > 0 || todo.review.length > 0) && (
+        <section className="flex flex-col gap-5">
+          <SectionHeader title={<>Up <em>next</em></>} href="/todo" linkLabel="Everything to do" />
+          {todo.review.length > 0 && (
+            <Link
+              href="/todo"
+              className="flex items-center justify-between gap-3 rounded-card bg-glow/15 px-4 py-3 text-sm font-semibold text-[#8a4d00] transition-colors hover:bg-glow/25"
+            >
+              {todo.review.length} possible change{todo.review.length === 1 ? "" : "s"} from your calls waiting for review
+              <ArrowRight className="size-4 shrink-0" />
+            </Link>
+          )}
+          {todo.tasks.length > 0 && <TodoList tasks={todo.tasks} today={viewer.today} limit={5} />}
+        </section>
+      )}
       {projects.length > 0 && (
         <section className="flex flex-col gap-5">
           <SectionHeader title="Your projects" count={projects.length} href="/projects" linkLabel="All projects" />

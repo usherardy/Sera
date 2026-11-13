@@ -66,16 +66,14 @@ async function ConversationContent({
           </div>
         </div>
       )}
-      {created === "1" && (
+      {(c.is_baseline || created === "1") && (
         <div className="flex flex-col gap-3 rounded-card border border-dawn-strong bg-dawn/40 p-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="font-semibold">
-              Sera created the project “{project.name}” from this call.
-            </p>
+            <p className="font-semibold">Baseline call: this call set up the agreement for “{project.name}”.</p>
             <p className="text-sm text-ink-muted">
               {project.agreed_scope.length
-                ? `It recorded ${project.agreed_scope.length} deliverable${project.agreed_scope.length === 1 ? "" : "s"} from what was said. Check the agreement; later calls are compared against it.`
-                : "No deliverables were clearly stated, so there's nothing to compare against yet. Add them to the agreement."}
+                ? `Sera recorded ${project.agreed_scope.length} deliverable${project.agreed_scope.length === 1 ? "" : "s"} from what was said, and your promises as tasks. Every later call is compared against this agreement.`
+                : "No deliverables were clearly stated, so there's nothing to compare later calls against yet. Add them to the agreement."}
             </p>
           </div>
           <div className="flex shrink-0 gap-2">

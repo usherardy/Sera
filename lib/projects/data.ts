@@ -2,7 +2,7 @@ import "server-only";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { createClient as createServerClient } from "@/lib/supabase/server";
-import { needsReview } from "./meta";
+import { awaitingClient, needsReview } from "./meta";
 import type {
   Conversation,
   ConversationDetail,
@@ -25,10 +25,10 @@ async function createClient() {
 const PROJECT_COLS =
   "id,name,client_name,original_description,agreed_scope,exclusions,fixed_price,currency,deadline,is_sample,created_at";
 const CONVERSATION_COLS =
-  "id,project_id,title,source,summary,recorded_at,processing_status,error_message,is_sample,analysis_started_at";
+  "id,project_id,title,source,summary,recorded_at,processing_status,error_message,is_baseline,is_sample,analysis_started_at";
 const FINDING_COLS =
   "id,project_id,conversation_id,category,title,description,source_quote,transcript_start_seconds,transcript_end_seconds,related_scope_item,explanation,confidence,suggested_follow_up,owner_label,due_date,due_phrase,review_status,client_status,notes,client_message,is_sample,created_at";
-const TASK_COLS = "id,project_id,finding_id,title,owner,due_date,status,is_sample,created_at";
+const TASK_COLS = "id,project_id,finding_id,title,owner,due_date,status,auto_created,is_sample,created_at";
 
 /** A conversation stuck mid-analysis this long is shown as failed so it can be retried. */
 const STUCK_AFTER_MS = 3 * 60 * 1000;
@@ -201,4 +201,42 @@ export async function listAllFindings(): Promise<FindingWithProject[]> {
     .limit(500);
   if (error) fail("findings", error);
   return ((data ?? []) as unknown as FindingWithProject[]).filter((f) => f.project && f.conversation);
+}
+
+export interface TodoTask extends Task {
+  project: Pick<Project, "id" | "name">;
+  finding: { conversation_id: string } | null;
+}
+
+export interface TodoBundle {
+  /** your open tasks across all projects, soonest first (no date last) */
+  tasks: TodoTask[];
+  /** possible changes waiting for your review */
+  review: FindingWithProject[];
+  /** change requests sent to clients without an answer, and promises clients made */
+  waiting: FindingWithProject[];
+}
+
+/** Everything that needs doing, across every client. */
+export async function listTodo(): Promise<TodoBundle> {
+  const supabase = await createClient();
+  await requireUserId(supabase);
+  const [tasks, findings] = await Promise.all([
+    supabase
+      .from("tasks")
+      .select(`${TASK_COLS},project:projects(id,name),finding:findings(conversation_id)`)
+      .eq("status", "open")
+      .order("due_date", { ascending: true, nullsFirst: false })
+      .order("created_at", { ascending: true })
+      .limit(300),
+    listAllFindings(),
+  ]);
+  if (tasks.error) fail("tasks", tasks.error);
+  const isClientPromise = (f: FindingWithProject) =>
+    f.category === "commitment" && f.review_status !== "dismissed" && (f.owner_label ?? "").trim().toLowerCase() === "client";
+  return {
+    tasks: ((tasks.data ?? []) as unknown as TodoTask[]).filter((t) => t.project),
+    review: findings.filter(needsReview),
+    waiting: findings.filter((f) => awaitingClient(f) || isClientPromise(f)),
+  };
 }

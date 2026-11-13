@@ -49,6 +49,8 @@ export interface Conversation {
   recorded_at: string;
   processing_status: ProcessingStatus;
   error_message: string | null;
+  /** this call set up the project's agreement */
+  is_baseline: boolean;
   is_sample: boolean;
 }
 
@@ -92,6 +94,8 @@ export interface Task {
   owner: string | null;
   due_date: string | null;
   status: TaskStatus;
+  /** created by Sera from a promise you made on a call */
+  auto_created: boolean;
   is_sample: boolean;
   created_at: string;
 }

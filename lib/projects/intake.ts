@@ -122,6 +122,8 @@ export async function runIntake(
       transcript,
       source: input.source,
       recorded_at: input.recordedAt,
+      // The call that set up a new project is its baseline: later calls are compared against it.
+      is_baseline: createdProject,
     })
     .select("id")
     .single();
