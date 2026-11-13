@@ -6,7 +6,7 @@ Status key: **Built** (code complete, typechecks and builds) · **Untested live*
 
 | Feature | Route | Behavior | Status |
 |---|---|---|---|
-| Landing page | `/welcome` | Public page explaining SERA: sky-and-clouds hero, the problem, how it works (4 steps), an example finding, before/after, "you stay in control", sign-up CTA. Signed-out visitors to `/` land here. | Built |
+| Landing page | `/welcome` | Minimal public page: sky-and-clouds hero with one headline, one line, one button, and a picture of the idea (client quote → "Not in your agreement"); three steps (Record · Compare · Confirm); one closing CTA. Signed-out visitors to `/` land here. | Built |
 | Login | `/login` | Email + password sign-in / sign-up (Supabase Auth). `?mode=signup` opens on Create account. | Built |
 | Record (home) | `/` | Big Record button, upload audio, or paste transcript. Press Stop and SERA does the rest: transcribe → label speakers → match or create the project → analyze → open the result. Recent projects below. | Built · untested live |
 | Projects dashboard | `/projects` | Stats (active projects, changes to review, open follow-ups), project cards (name, client, price, deadline, pending changes), recent activity, New project. | Built · untested live |

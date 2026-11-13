@@ -2,6 +2,9 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-13 (simpler landing)
+- Landing page cut to the essentials, Wispr Flow-style: centered hero (headline, one sentence, one button, a two-step visual of the idea), three one-line steps, one closing CTA. Removed the problem, example, before/after and control sections.
+
 ## 2026-11-13 (landing page)
 - New public landing page at `/welcome` describing SERA, with an original sky-and-clouds hero (SVG clouds drawn in code), frosted nav, feature pills, problem, 4-step how it works, example finding, before/after, control and CTA sections.
 - Signed-out visitors to `/` now see the landing page; `/login?mode=signup` opens on Create account.
