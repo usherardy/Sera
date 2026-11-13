@@ -4,6 +4,7 @@ Newest first. Add an entry for **every** meaningful change, in the same change a
 
 ## 2026-11-13
 - Phase 1b: Supabase sign-in (email + password), `proxy.ts` session refresh and sign-in redirect, schema with RLS and a private audio bucket (`supabase/migrations/0001_init.sql`), real queries behind the same data-layer signatures, and APIs to update tasks and moments, delete recordings, and load/remove the sample day. Without Supabase env vars the app stays in design-preview mode, so Vercel keeps working until the vars are added.
+- Verified Phase 1b end to end against the real Supabase project (27/27 checks): sign-up creates a profile, sample day load/remove, approvals and owner confirmation persist across reloads, moment dismiss, recording delete cascades, and a second account can't read, update, delete or insert another user's rows, audio, or `integration_secrets`. The live data layer now calls `connection()` before reading the clock, which Cache Components requires.
 - Commitments now store a local `due_time` ("HH:MM") instead of a `due_at` timestamp, so a stated time can't shift with UTC.
 - Added `.env.example` (git now tracks it; `.env.local` stays ignored). Env names follow Supabase's current keys: `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`.
 - Docs updated: architecture, features, roadmap.

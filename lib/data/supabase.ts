@@ -1,6 +1,7 @@
 import "server-only";
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { connection } from "next/server";
+import { createClient as createServerClient } from "@/lib/supabase/server";
 import { AUDIO_BUCKET } from "@/lib/supabase/config";
 import { dayBoundsUtc, isValidTimeZone, todayIn } from "@/lib/dates";
 import { DEFAULT_TZ, localDateOf } from "@/lib/format";
@@ -18,6 +19,13 @@ import type { RecordingBundle, Viewer } from "./types";
 
 // Real data, read as the signed-in user. RLS guarantees every query only ever
 // sees the viewer's own rows; we never filter by user_id for security.
+
+/** Per-request client. connection() marks the render as request-time, which
+ *  Cache Components requires before reading the clock (today, stuck checks). */
+async function createClient() {
+  await connection();
+  return createServerClient();
+}
 
 const RECORDING_COLS =
   "id,title,kind,recorded_at,duration_seconds,status,summary,topics,error_message,is_sample,processing_started_at";
