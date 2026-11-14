@@ -47,8 +47,21 @@ function extFor(mime: string, name?: string) {
  * files the call under the right project (or creates one from what was said)
  * and compares it with the agreement. Everything can be corrected afterwards.
  */
-export function CaptureFlow({ userId }: { userId: string }) {
+export function CaptureFlow({
+  userId,
+  projects = [],
+  defaultProjectId = null,
+}: {
+  userId: string;
+  /** existing projects the call can be filed under */
+  projects?: { id: string; name: string }[];
+  /** preselected, e.g. from a project page's "Record a call" */
+  defaultProjectId?: string | null;
+}) {
   const router = useRouter();
+  // "" = let Sera decide which project this call belongs to
+  const [target, setTarget] = useState(defaultProjectId && projects.some((p) => p.id === defaultProjectId) ? defaultProjectId : "");
+  const targetName = projects.find((p) => p.id === target)?.name;
   const fileRef = useRef<HTMLInputElement>(null);
   const [step, setStep] = useState<Step>({ k: "idle" });
   const stopRef = useRef<() => void>(() => {});
@@ -61,8 +74,12 @@ export function CaptureFlow({ userId }: { userId: string }) {
 
   /** Hand the conversation to the server and open the result. */
   const intake = async (body: { segments?: Segment[]; transcript?: string; source: ConversationSource; recorded_at: string }) => {
-    setStep({ k: "busy", label: "Setting up the project…", detail: "Finding the client and comparing the call with what was agreed." });
-    const res = await api<IntakeResponse>("/api/intake", "POST", body);
+    setStep(
+      targetName
+        ? { k: "busy", label: `Adding it to ${targetName}…`, detail: "Comparing the call with what was agreed." }
+        : { k: "busy", label: "Setting up the project…", detail: "Finding the client and comparing the call with what was agreed." },
+    );
+    const res = await api<IntakeResponse>("/api/intake", "POST", { ...body, project_id: target || undefined });
     if (res.duplicate) toast("This conversation was already added.");
     else if (!res.analysis.ok) toast.error(`${res.analysis.error} You can retry from the conversation page.`);
     else toast.success(res.analysis.findings ? `Found ${res.analysis.findings} item${res.analysis.findings === 1 ? "" : "s"} to look at.` : "Analyzed. Nothing relevant found.");
@@ -190,8 +207,28 @@ export function CaptureFlow({ userId }: { userId: string }) {
       </button>
       <div className="flex flex-col gap-1">
         <p className="display text-3xl">Tap to record the call</p>
-        <p className="text-sm text-ink-muted">Sera files it under the right project, or creates one from what was said.</p>
+        <p className="text-sm text-ink-muted">
+          {targetName ? `It's added to ${targetName}, next to its other calls.` : "Sera files it under the right project, or creates one from what was said."}
+        </p>
       </div>
+      {projects.length > 0 && (
+        <label className="inline-flex max-w-full items-center gap-2 rounded-full border border-[var(--hairline)] bg-paper py-1.5 pr-2 pl-4 text-sm shadow-[var(--sera-shadow-soft)]">
+          <span className="shrink-0 text-ink-muted">File under</span>
+          <select
+            value={target}
+            onChange={(e) => setTarget(e.target.value)}
+            className="min-w-0 cursor-pointer truncate rounded-full bg-transparent py-1 pr-1 font-semibold outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label="Which project this call belongs to"
+          >
+            <option value="">Let Sera decide</option>
+            {projects.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
       {rec.error && <p className="rounded-card bg-error-bg px-4 py-3 text-sm font-semibold text-pulse">{rec.error}</p>}
       <div className="flex flex-wrap justify-center gap-2">
         <Button variant="outline" onClick={() => fileRef.current?.click()}>

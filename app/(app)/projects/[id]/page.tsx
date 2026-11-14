@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { ArrowLeft, CalendarDays, Check, ChevronRight, MessagesSquare, X } from "lucide-react";
+import { ArrowLeft, CalendarDays, Check, ChevronRight, MessagesSquare, Mic, X } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AskBar } from "@/components/ask/ask-bar";
 import { SampleBadge } from "@/components/common/badges";
@@ -279,7 +280,13 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
       <section className="flex flex-col gap-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <SectionHeader title="Calls" count={conversations.length} />
-          {conversations.length > 0 && <AddConversationButton projectId={p.id} variant="outline" size="sm" />}
+          <div className="flex flex-wrap gap-2">
+            <Link href={`/?project=${p.id}`} className={buttonVariants({ size: "sm" })}>
+              <Mic />
+              Record a call
+            </Link>
+            {conversations.length > 0 && <AddConversationButton projectId={p.id} variant="outline" size="sm" />}
+          </div>
         </div>
         {conversations.length === 0 ? (
           <EmptyState

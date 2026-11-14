@@ -61,7 +61,14 @@ function projectFromDraft(d: DraftResult["draft"], transcript: string) {
 export async function runIntake(
   supabase: SupabaseClient,
   userId: string,
-  input: { segments?: IntakeSegment[]; transcript?: string; source: "paste" | "upload" | "recording"; recordedAt: string },
+  input: {
+    segments?: IntakeSegment[];
+    transcript?: string;
+    source: "paste" | "upload" | "recording";
+    recordedAt: string;
+    /** chosen by the user: file it here, no matching */
+    projectId?: string;
+  },
 ): Promise<IntakeResult> {
   const hasSpeakers = !!input.segments?.some((s) => s.speaker);
   // What the model reads: speakers as "Speaker A:" until roles are known.
@@ -71,15 +78,22 @@ export async function runIntake(
   if (!rawText.trim()) return { ok: false, status: 400, error: "The transcript is empty." };
   if (rawText.length > 60_000) return { ok: false, status: 400, error: "That conversation is too long (60,000 characters max)." };
 
-  const [{ data: projects }, { data: profile }] = await Promise.all([
+  const [{ data: projects }, { data: profile }, { data: recent }] = await Promise.all([
     supabase.from("projects").select("id,name,client_name,agreed_scope").order("created_at", { ascending: false }).limit(50),
     supabase.from("profiles").select("timezone").eq("id", userId).maybeSingle(),
+    supabase.from("conversations").select("project_id,summary").not("summary", "is", null).order("recorded_at", { ascending: false }).limit(200),
   ]);
   const tz = profile?.timezone && isValidTimeZone(profile.timezone) ? profile.timezone : DEFAULT_TZ;
+  const known = new Set((projects ?? []).map((p) => p.id));
+  if (input.projectId && !known.has(input.projectId)) return { ok: false, status: 404, error: "That project wasn't found." };
+
+  // Each project's latest call summary: it names the people on the calls, which helps matching.
+  const latestCall = new Map<string, string>();
+  for (const c of recent ?? []) if (c.summary && !latestCall.has(c.project_id)) latestCall.set(c.project_id, c.summary);
 
   const draft = await draftFromConversation({
     transcript: rawText,
-    projects: projects ?? [],
+    projects: (projects ?? []).map((p) => ({ ...p, latest_call: latestCall.get(p.id) ?? null })),
     conversationDate: localDateOf(input.recordedAt, tz),
     timezone: tz,
   });
@@ -95,9 +109,9 @@ export async function runIntake(
     });
   }
 
-  // File it: the matched project if the model is sure, else a new one from what was said.
-  const known = new Set((projects ?? []).map((p) => p.id));
-  let projectId = draft.matched_project_id && known.has(draft.matched_project_id) ? draft.matched_project_id : null;
+  // File it: the project the user picked, else the one the model matched, else a new one from what was said.
+  let projectId =
+    input.projectId ?? (draft.matched_project_id && known.has(draft.matched_project_id) ? draft.matched_project_id : null);
   const createdProject = !projectId;
   if (!projectId) {
     const { data, error } = await supabase.from("projects").insert(projectFromDraft(draft.draft, transcript)).select("id").single();

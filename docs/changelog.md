@@ -2,6 +2,14 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-14 (recordings join existing projects)
+- Recorded calls kept landing in new projects ("Audio Check", "Stripe Data Backend Website") instead of joining the client's existing one. Now:
+  - **File under** picker under the Record button: "Let Sera decide" or pick a project; the call is added next to that project's other calls and compared with its agreement.
+  - **Record a call** button on each project page (opens Home with that project picked, `/?project=<id>`).
+  - Better automatic matching: the model also sees each project's latest call summary (which names the people on the calls) and is told a follow-up call must join its project, not create a new one.
+- `POST /api/intake` takes an optional `project_id`. Tested end to end with a throwaway account: a picked project and an automatic "Hi Sarah… your website" call both landed in Acme Studio Website with the booking-page finding and the estimate task.
+- Updated `docs/features.md`, `docs/architecture.md`.
+
 ## 2026-11-14 (demo data matches the live pitch)
 - Acme Studio Website sample: **€1,000** (was €500), client contact **Sarah**, and Tuesday's call is now "Design review: payments and accounts", where Sarah asks for both Stripe payments and customer accounts (Stripe used to come up on Monday's kickoff). Monday is a plain "Kickoff call" (homepage on phones). Same findings, tasks and states; quotes re-checked against transcripts.
 - Landing walkthrough's example project card shows €1,000 to match. `npm run eval` updated for the new call keys (`kickoff`, `review`).

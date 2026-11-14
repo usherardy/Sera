@@ -12,6 +12,8 @@ const Body = z
     transcript: z.string().max(60_000).optional(),
     source: z.enum(["paste", "upload", "recording"]),
     recorded_at: z.iso.datetime({ offset: true }),
+    /** file it under this project instead of letting Sera decide */
+    project_id: z.uuid().optional(),
   })
   .refine((b) => b.segments?.length || b.transcript?.trim(), "The transcript is empty.");
 
@@ -30,6 +32,7 @@ export async function POST(request: Request) {
       transcript: b.transcript,
       source: b.source,
       recordedAt: b.recorded_at,
+      projectId: b.project_id,
     });
     if (!res.ok) return jsonError(res.status, res.error);
     return Response.json(res, { status: 201 });

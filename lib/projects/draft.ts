@@ -28,7 +28,7 @@ SPEAKERS
 - If transcript lines start with "Speaker A:", "Speaker B:", … assign each speaker a role in speaker_roles: "freelancer" (the provider: the person delivering the work, usually the one who recorded), "client" (the person paying / asking for work), or "other". Use the content: who asks for deliverables, who promises to build or estimate. If lines have no speaker labels, return an empty list.
 
 MATCHING
-- matched_project_id: the id of an existing project ONLY if the conversation is clearly about it (same client or clearly the same work). Otherwise null. Never guess.
+- matched_project_id: the id of the existing project this conversation continues: the same client or company, the same contact person (people named in a project's latest call count), or clearly the same work (for example the same website). A follow-up call on an existing project must be matched to it, not turned into a new project. Return null only when no existing project fits; never pick one at random.
 - match_reason: one short sentence.
 
 DRAFT (always fill it, even when matched)
@@ -44,12 +44,14 @@ conversation_title: 2-5 words describing this call, e.g. "Kickoff call", "Design
 
 export async function draftFromConversation(args: {
   transcript: string;
-  projects: { id: string; name: string; client_name: string; agreed_scope: string[] }[];
+  projects: { id: string; name: string; client_name: string; agreed_scope: string[]; latest_call?: string | null }[];
   conversationDate: string;
   timezone: string;
 }): Promise<DraftResult> {
   const list = args.projects.length
-    ? args.projects.map((p) => `- id=${p.id} | ${p.name} | client: ${p.client_name} | scope: ${p.agreed_scope.join(", ")}`).join("\n")
+    ? args.projects
+        .map((p) => `- id=${p.id} | ${p.name} | client: ${p.client_name} | scope: ${p.agreed_scope.join(", ")}${p.latest_call ? ` | latest call: ${p.latest_call.slice(0, 240)}` : ""}`)
+        .join("\n")
     : "(no existing projects)";
   try {
     const completion = await openai().chat.completions.parse({

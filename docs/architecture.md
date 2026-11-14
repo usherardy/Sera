@@ -22,7 +22,8 @@ Record (MediaRecorder) or upload audio
   → POST /api/transcribe   (download as the user, gpt-4o-transcribe-diarize → Speaker A/B; fallback OPENAI_TRANSCRIBE_MODEL; object deleted)
   → POST /api/intake  (lib/projects/intake.ts, one request, 120 s):
        AI call 1: speaker roles + matching project or a drafted agreement + title
-       label lines Client / Freelancer, create the project if none matched
+       label lines Client / You; use project_id if the user picked one, else the match,
+       else create the project
        insert the conversation → runAnalysis (AI call 2)
   → open the conversation (?created=1 shows "Sera created this project" + Edit agreement)
 ```
@@ -77,7 +78,7 @@ Migration `0003_baseline_and_auto_tasks.sql` adds `conversations.is_baseline` (t
 | `POST /api/findings/[id]/message` | Generate and save the client confirmation message |
 | `POST /api/tasks`, `PATCH/DELETE /api/tasks/[id]` | Follow-up tasks |
 | `POST /api/transcribe` | Transcribe an uploaded recording (own folder only), then delete it (120 s) |
-| `POST /api/intake` | From segments or pasted text: label speakers, match or create the project, add and analyze the conversation (120 s) |
+| `POST /api/intake` | From segments or pasted text: label speakers, file under `project_id` if given (the user's pick), else match (the model sees each project's name, client, scope and latest call summary) or create the project; add and analyze the conversation (120 s) |
 | `POST/DELETE /api/demo/seed` | Load / remove demo data (two sample projects with example findings and tasks), via `lib/sample/seed.ts` |
 | `POST /api/ask` | Ask Sera: `{question, project_id?}` → answer, points, sources resolved from stored rows, optional email draft (60 s). Read-only |
 | `POST /api/ask/transcribe` | A spoken question (multipart `audio`, ≤ 4 MB) → text, via `gpt-4o-mini-transcribe`; audio not stored |
