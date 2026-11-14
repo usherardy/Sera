@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Clipboard, Loader2, Plus, Undo2, X } from "lucide-react";
+import { Check, ChevronRight, Clipboard, Loader2, Plus, Undo2, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,21 +15,34 @@ import type { ClientStatus, FindingCategory, FindingWithSource, Task } from "@/l
 import { cn } from "@/lib/utils";
 import { CalendarLink } from "./calendar-link";
 
-function Block({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
+function Section({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-3 border-t border-cream-dark pt-5">
       <div>
-        <p className="eyebrow">{title}</p>
-        {hint && <p className="mt-1 text-xs text-ink-muted">{hint}</p>}
+        <p className="font-semibold">{title}</p>
+        {hint && <p className="mt-0.5 text-xs text-ink-muted">{hint}</p>}
       </div>
       {children}
     </section>
   );
 }
 
+/** A quiet row that folds extra controls away until they're needed. */
+function Fold({ label, defaultOpen, children }: { label: string; defaultOpen?: boolean; children: React.ReactNode }) {
+  return (
+    <details open={defaultOpen} className="group">
+      <summary className="flex w-fit cursor-pointer list-none items-center gap-1.5 text-sm font-semibold text-ink/70 hover:text-ink">
+        <ChevronRight className="size-4 transition-transform group-open:rotate-90" />
+        {label}
+      </summary>
+      <div className="mt-3 flex flex-col gap-2 pl-5.5">{children}</div>
+    </details>
+  );
+}
+
 const CLIENT_STATES: ClientStatus[] = ["not_sent", "sent", "approved", "rejected"];
 
-/** The freelancer's side: confirm or correct the finding, add notes, create a task, ask the client, record their answer. */
+/** Your side: confirm or dismiss the finding, ask the client and record their answer, add tasks and notes. */
 export function FindingReview({ finding: f, tasks }: { finding: FindingWithSource; tasks: Task[] }) {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
@@ -69,70 +82,122 @@ export function FindingReview({ finding: f, tasks }: { finding: FindingWithSourc
     }
   };
 
+  const generate = () =>
+    run("gen", async () => {
+      const res = await api<{ message: string }>(`/api/findings/${f.id}/message`, "POST");
+      setMessage(res.message);
+    });
+
   return (
     <div className="flex flex-col gap-5">
-      <Block title="1 · Review" hint="Confirm what this is, or correct the classification.">
-        <div className="flex flex-wrap gap-1.5">
-          {FINDING_ORDER.map((c: FindingCategory) => (
-            <button
-              key={c}
-              type="button"
-              disabled={!!busy}
-              onClick={() => c !== f.category && patch("category", { category: c }, "Classification updated.")}
-              aria-pressed={c === f.category}
-              className={cn(
-                "rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors",
-                c === f.category ? "border-dawn-strong bg-dawn" : "border-cream-dark bg-paper text-ink/70 hover:border-ink/20",
-              )}
-            >
-              {FINDING_META[c].label}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <Label htmlFor={`notes-${f.id}`}>Notes</Label>
-          <Textarea id={`notes-${f.id}`} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Anything to remember about this…" className="min-h-16" />
-          {notes !== (f.notes ?? "") && (
-            <Button size="sm" variant="outline" className="self-start" disabled={!!busy} onClick={() => patch("notes", { notes: notes.trim() || null }, "Notes saved.")}>
-              {busy === "notes" && <Loader2 className="animate-spin" />}
-              Save notes
-            </Button>
-          )}
-        </div>
-
+      {/* Decide */}
+      <section className="flex flex-col gap-3 border-t border-cream-dark pt-5">
         <div className="flex flex-wrap gap-2">
-          {reviewed ? (
-            <Button variant="outline" disabled={!!busy} onClick={() => patch("review", { review_status: "ai_detected" })}>
-              <Undo2 />
-              Undo review
-            </Button>
-          ) : (
-            <Button disabled={!!busy} onClick={() => patch("review", { review_status: "reviewed" }, "Marked as reviewed.")}>
-              {busy === "review" ? <Loader2 className="animate-spin" /> : <Check />}
-              Mark reviewed
-            </Button>
-          )}
-          {f.review_status !== "dismissed" ? (
-            <Button variant="ghost" disabled={!!busy} onClick={() => patch("dismiss", { review_status: "dismissed" }, "Dismissed.")}>
-              <X />
-              Dismiss
-            </Button>
-          ) : (
+          {f.review_status === "dismissed" ? (
             <Button variant="outline" disabled={!!busy} onClick={() => patch("restore", { review_status: "ai_detected" })}>
               <Undo2 />
               Restore
             </Button>
+          ) : (
+            <>
+              {reviewed ? (
+                <Button variant="outline" disabled={!!busy} onClick={() => patch("review", { review_status: "ai_detected" })}>
+                  <Undo2 />
+                  Undo confirm
+                </Button>
+              ) : (
+                <Button disabled={!!busy} onClick={() => patch("review", { review_status: "reviewed" }, "Confirmed.")}>
+                  {busy === "review" ? <Loader2 className="animate-spin" /> : <Check />}
+                  Confirm
+                </Button>
+              )}
+              <Button variant="ghost" disabled={!!busy} onClick={() => patch("dismiss", { review_status: "dismissed" }, "Dismissed.")}>
+                <X />
+                Dismiss
+              </Button>
+            </>
           )}
         </div>
-      </Block>
+        <Fold label="Wrong type? Change it">
+          <div className="flex flex-wrap gap-1.5">
+            {FINDING_ORDER.map((c: FindingCategory) => (
+              <button
+                key={c}
+                type="button"
+                disabled={!!busy}
+                onClick={() => c !== f.category && patch("category", { category: c }, "Type updated.")}
+                aria-pressed={c === f.category}
+                className={cn(
+                  "rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors",
+                  c === f.category ? "border-dawn-strong bg-dawn" : "border-cream-dark bg-paper text-ink/70 hover:border-ink/20",
+                )}
+              >
+                {FINDING_META[c].label}
+              </button>
+            ))}
+          </div>
+        </Fold>
+      </section>
+
+      {askable && f.review_status !== "dismissed" && (
+        <Section title="Ask the client" hint="Sera drafts the message; you send it. Sending from Gmail or Outlook is coming soon.">
+          {!message ? (
+            <Button variant="outline" className="self-start" disabled={!!busy} onClick={generate}>
+              {busy === "gen" && <Loader2 className="animate-spin" />}
+              Draft the message
+            </Button>
+          ) : (
+            <div className="flex flex-col gap-2">
+              <Textarea value={message} onChange={(e) => setMessage(e.target.value)} className="min-h-44 text-[0.875rem]" aria-label="Client message" />
+              <div className="flex flex-wrap gap-2">
+                <Button size="sm" onClick={copy}>
+                  <Clipboard />
+                  Copy
+                </Button>
+                {message !== (f.client_message ?? "") && (
+                  <Button size="sm" variant="outline" disabled={!!busy} onClick={() => patch("msg", { client_message: message }, "Message saved.")}>
+                    Save edits
+                  </Button>
+                )}
+                <Button size="sm" variant="ghost" disabled={!!busy} onClick={generate}>
+                  Redraft
+                </Button>
+              </div>
+            </div>
+          )}
+
+          <div className="flex flex-col gap-2 pt-1">
+            <Label>Client&apos;s answer</Label>
+            <div className="grid grid-cols-2 gap-1 rounded-lg border border-cream-dark bg-paper p-1 sm:grid-cols-4">
+              {CLIENT_STATES.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  disabled={!!busy || (!reviewed && s !== "not_sent")}
+                  onClick={() => s !== f.client_status && patch("client", { client_status: s }, `Recorded: ${CLIENT_LABEL[s].toLowerCase()}.`)}
+                  aria-pressed={f.client_status === s}
+                  className={cn(
+                    "rounded-md px-2 py-2 text-xs font-semibold transition-colors disabled:opacity-40",
+                    f.client_status === s ? (s === "approved" ? "bg-success/40 text-success-dark" : s === "rejected" ? "bg-error-bg text-pulse" : "bg-dawn text-ink") : "text-ink/60 hover:text-ink",
+                  )}
+                >
+                  {CLIENT_LABEL[s]}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-ink-muted">
+              {reviewed ? "Only record a yes once the client actually says it. A mention on a call never counts." : "Confirm the finding first, then record what the client did."}
+            </p>
+          </div>
+        </Section>
+      )}
 
       {f.review_status !== "dismissed" && (
-        <Block title="2 · Follow-up task" hint="Optional. Nothing is created unless you add it.">
+        <Section title="Follow-up">
           {myTasks.length > 0 && (
             <ul className="flex flex-col gap-2">
               {myTasks.map((t) => (
-                <li key={t.id} className="flex items-start gap-3 rounded-lg bg-secondary px-3 py-2.5 text-sm">
+                <li key={t.id} className="flex items-start gap-3 rounded-lg bg-paper px-3 py-2.5 text-sm shadow-[var(--sera-shadow-soft)]">
                   <button
                     type="button"
                     aria-label={t.status === "done" ? "Mark as open" : "Mark as done"}
@@ -158,7 +223,7 @@ export function FindingReview({ finding: f, tasks }: { finding: FindingWithSourc
               ))}
             </ul>
           )}
-          <div className="flex flex-col gap-2">
+          <Fold label={myTasks.length > 0 ? "Add another task" : "Add a task"}>
             <Input value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)} placeholder="e.g. Estimate the extra work" aria-label="Task title" />
             <div className="grid gap-2 sm:grid-cols-2">
               <Input value={taskOwner} onChange={(e) => setTaskOwner(e.target.value)} placeholder="Owner (optional)" aria-label="Owner" />
@@ -187,83 +252,22 @@ export function FindingReview({ finding: f, tasks }: { finding: FindingWithSourc
               {busy === "task" ? <Loader2 className="animate-spin" /> : <Plus />}
               Add task
             </Button>
-          </div>
-        </Block>
+          </Fold>
+          <Fold label={f.notes ? "Your note" : "Add a note"} defaultOpen={!!f.notes}>
+            <Textarea id={`notes-${f.id}`} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Anything to remember about this…" className="min-h-16" aria-label="Notes" />
+            {notes !== (f.notes ?? "") && (
+              <Button size="sm" variant="outline" className="self-start" disabled={!!busy} onClick={() => patch("notes", { notes: notes.trim() || null }, "Note saved.")}>
+                {busy === "notes" && <Loader2 className="animate-spin" />}
+                Save note
+              </Button>
+            )}
+          </Fold>
+        </Section>
       )}
 
-      {askable && f.review_status !== "dismissed" && (
-        <Block title="3 · Ask the client" hint="Sera drafts a message asking for approval. Copy it and send it yourself; nothing is sent automatically. Sending from Gmail or Outlook after you approve is coming soon.">
-          {!message ? (
-            <Button
-              variant="outline"
-              className="self-start"
-              disabled={!!busy}
-              onClick={() =>
-                run("gen", async () => {
-                  const res = await api<{ message: string }>(`/api/findings/${f.id}/message`, "POST");
-                  setMessage(res.message);
-                })
-              }
-            >
-              {busy === "gen" && <Loader2 className="animate-spin" />}
-              Generate client confirmation message
-            </Button>
-          ) : (
-            <div className="flex flex-col gap-2">
-              <Textarea value={message} onChange={(e) => setMessage(e.target.value)} className="min-h-56 text-[0.875rem]" aria-label="Client message" />
-              <div className="flex flex-wrap gap-2">
-                <Button onClick={copy}>
-                  <Clipboard />
-                  Copy message
-                </Button>
-                {message !== (f.client_message ?? "") && (
-                  <Button variant="outline" disabled={!!busy} onClick={() => patch("msg", { client_message: message }, "Message saved.")}>
-                    Save edits
-                  </Button>
-                )}
-                <Button
-                  variant="ghost"
-                  disabled={!!busy}
-                  onClick={() =>
-                    run("gen", async () => {
-                      const res = await api<{ message: string }>(`/api/findings/${f.id}/message`, "POST");
-                      setMessage(res.message);
-                    })
-                  }
-                >
-                  Regenerate
-                </Button>
-              </div>
-            </div>
-          )}
-
-          <div className="flex flex-col gap-2">
-            <Label>What the client has done</Label>
-            <div className="grid grid-cols-2 gap-1 rounded-lg border border-cream-dark bg-paper p-1 sm:grid-cols-4">
-              {CLIENT_STATES.map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  disabled={!!busy || (!reviewed && s !== "not_sent")}
-                  onClick={() => s !== f.client_status && patch("client", { client_status: s }, `Recorded: ${CLIENT_LABEL[s].toLowerCase()}.`)}
-                  aria-pressed={f.client_status === s}
-                  className={cn(
-                    "rounded-md px-2 py-2 text-xs font-semibold transition-colors disabled:opacity-40",
-                    f.client_status === s ? (s === "approved" ? "bg-success/40 text-success-dark" : s === "rejected" ? "bg-error-bg text-pulse" : "bg-dawn text-ink") : "text-ink/60 hover:text-ink",
-                  )}
-                >
-                  {CLIENT_LABEL[s]}
-                </button>
-              ))}
-            </div>
-            <p className="text-xs text-ink-muted">
-              {reviewed
-                ? "Approval is only recorded here, by you, once the client actually says yes. A mention in a call never counts."
-                : "Mark the finding as reviewed before recording what the client did."}
-            </p>
-          </div>
-        </Block>
-      )}
+      <p className="border-t border-cream-dark pt-4 text-xs text-ink-muted">
+        Sera&apos;s findings are suggestions for you to check. They aren&apos;t legal advice and don&apos;t mean the client agreed to anything.
+      </p>
     </div>
   );
 }

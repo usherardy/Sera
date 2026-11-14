@@ -47,6 +47,7 @@ Status key: **Built** (code complete, typechecks and builds) · **Untested live*
 | Feature | Status |
 |---|---|
 | Review a finding: confirm or correct the category, add notes, mark reviewed, dismiss, restore | Built · untested live |
+| **Review drawer layout:** type badge and one plain status (Needs your review / Not sent yet / Waiting on client / Client approved / Client declined / Reviewed / Dismissed, from `findingStatus` in `lib/projects/meta.ts`, shared with the project page), title, the quote, one "Why Sera flagged it" box (explanation, confidence, the agreement item it was compared with). Then **Confirm** / Dismiss, "Ask the client" (Draft the message, Copy, Redraft, the client's answer), Follow-up (tasks). "Wrong type? Change it", "Add a task" and "Add a note" stay folded until opened. No step numbers. | Built |
 | Follow-up tasks with owner and due date, complete toggle | Built · untested live |
 | **Auto-created tasks:** every promise *you* make on a call becomes a task (date only if stated), tagged "from call". Client promises stay "waiting on client". Re-running an analysis replaces only Sera's untouched open tasks | Built · offline-tested · needs migration 0003 |
 | **Baseline call:** the call that created a project sets up its agreement and only lists promises, questions and ideas; every later call is compared against it | Built · offline-tested · needs migration 0003 |

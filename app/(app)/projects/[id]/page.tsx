@@ -13,7 +13,7 @@ import { TaskList } from "@/components/projects/task-list";
 import { getViewer } from "@/lib/viewer";
 import { formatClock, formatDateOnly, formatDayHeading, localDateOf } from "@/lib/format";
 import { getProject } from "@/lib/projects/data";
-import { FINDING_META, FINDING_ORDER, awaitingClient, formatMoney, isChangeCategory, needsReview } from "@/lib/projects/meta";
+import { FINDING_META, FINDING_ORDER, STATUS_TONE, awaitingClient, findingStatus, formatMoney, isChangeCategory, needsReview, type StatusTone } from "@/lib/projects/meta";
 import type { FindingWithSource } from "@/lib/projects/types";
 import { cn } from "@/lib/utils";
 
@@ -33,20 +33,12 @@ export default function ProjectPage({ params }: PageProps<"/projects/[id]">) {
 
 /* ---------------------------------------------------------------- pieces */
 
-type Tone = "review" | "muted" | "waiting" | "declined";
-const TONE: Record<Tone, string> = {
-  review: "bg-warning text-warning-dark",
-  muted: "bg-secondary text-ink-muted",
-  waiting: "bg-dawn text-ink",
-  declined: "bg-error-bg text-pulse",
-};
+const RANK: Record<string, number> = { "Needs your review": 0, "Not sent yet": 1, "Waiting on client": 2, "Client declined": 3 };
 
-/** Where a possible change is, in plain words. Client approval is never implied by review. */
-function changeState(f: FindingWithSource): { label: string; tone: Tone; rank: number } {
-  if (f.review_status === "ai_detected") return { label: "Needs your review", tone: "review", rank: 0 };
-  if (f.client_status === "not_sent") return { label: "Not sent yet", tone: "muted", rank: 1 };
-  if (f.client_status === "sent") return { label: "Waiting on client", tone: "waiting", rank: 2 };
-  return { label: "Client declined", tone: "declined", rank: 3 };
+/** Where a possible change is, in plain words, plus its sort order. Client approval is never implied by review. */
+function changeState(f: FindingWithSource) {
+  const s = findingStatus(f);
+  return { ...s, rank: RANK[s.label] ?? 4 };
 }
 
 const OTHER_LABEL: Partial<Record<FindingWithSource["category"], string>> = { existing_scope: "In scope", idea: "Idea" };
@@ -65,7 +57,7 @@ function Fact({ children, icon }: { children: React.ReactNode; icon?: React.Reac
 }
 
 /** One finding as a single tidy row: dot, title, a short quote, where it came from, and its status. Opens the review. */
-function FindingLine({ f, projectId, pill, tone }: { f: FindingWithSource; projectId: string; pill: string; tone: Tone }) {
+function FindingLine({ f, projectId, pill, tone }: { f: FindingWithSource; projectId: string; pill: string; tone: StatusTone }) {
   return (
     <li>
       <Link
@@ -80,7 +72,7 @@ function FindingLine({ f, projectId, pill, tone }: { f: FindingWithSource; proje
             {FINDING_META[f.category].label} · {f.conversation.title}
           </span>
         </span>
-        <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-[0.7rem] font-semibold whitespace-nowrap", TONE[tone])}>{pill}</span>
+        <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-[0.7rem] font-semibold whitespace-nowrap", STATUS_TONE[tone])}>{pill}</span>
       </Link>
     </li>
   );

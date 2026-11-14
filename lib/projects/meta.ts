@@ -97,3 +97,24 @@ export function formatMoney(amount: number | null, currency: string): string {
     return `${amount} ${currency}`;
   }
 }
+
+export type StatusTone = "review" | "muted" | "waiting" | "approved" | "declined";
+
+export const STATUS_TONE: Record<StatusTone, string> = {
+  review: "bg-warning text-warning-dark",
+  muted: "bg-secondary text-ink-muted",
+  waiting: "bg-dawn text-ink",
+  approved: "bg-success text-success-dark",
+  declined: "bg-error-bg text-pulse",
+};
+
+/** Where a finding is, in plain words (one status instead of separate review and client pills). */
+export function findingStatus(f: Pick<Finding, "category" | "review_status" | "client_status">): { label: string; tone: StatusTone } {
+  if (f.review_status === "dismissed") return { label: "Dismissed", tone: "muted" };
+  if (f.review_status === "ai_detected") return { label: "Needs your review", tone: "review" };
+  if (!isChangeCategory(f.category)) return { label: "Reviewed", tone: "approved" };
+  if (f.client_status === "not_sent") return { label: "Not sent yet", tone: "muted" };
+  if (f.client_status === "sent") return { label: "Waiting on client", tone: "waiting" };
+  if (f.client_status === "approved") return { label: "Client approved", tone: "approved" };
+  return { label: "Client declined", tone: "declined" };
+}

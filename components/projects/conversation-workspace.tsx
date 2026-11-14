@@ -8,7 +8,7 @@ import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/
 import { FindingReview } from "@/components/projects/finding-review";
 import { FindingBadge, StatusPills } from "@/components/projects/project-bits";
 import { normalizeForMatch, parseTranscript } from "@/lib/projects/grounding";
-import { FINDING_META, FINDING_ORDER } from "@/lib/projects/meta";
+import { FINDING_META, FINDING_ORDER, STATUS_TONE, findingStatus } from "@/lib/projects/meta";
 import type { FindingWithSource, Project, Task } from "@/lib/projects/types";
 import { cn } from "@/lib/utils";
 
@@ -19,46 +19,42 @@ function lineBacks(lineNorm: string, quoteNorm: string) {
   return lineNorm.includes(quoteNorm) || quoteNorm.includes(lineNorm);
 }
 
-/** Read-only detail of a finding: the evidence, the original agreement it's compared with, and the AI's reasoning. */
+/** Read-only detail of a finding: what it is, the exact words, and why Sera flagged it. */
 export function FindingDetail({ finding: f, project }: { finding: FindingWithSource; project: Pick<Project, "agreed_scope" | "exclusions"> }) {
   const related = f.related_scope_item;
+  const status = findingStatus(f);
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-wrap items-center gap-2">
         <FindingBadge category={f.category} />
-        <StatusPills review={f.review_status} client={f.client_status} />
-        <ConfidenceMeter confidence={f.confidence} />
+        <span className={cn("rounded-full px-2.5 py-1 text-xs font-semibold", STATUS_TONE[status.tone])}>{status.label}</span>
         {f.is_sample && <SampleBadge />}
       </div>
-      <h3 className="display text-3xl">{f.title}</h3>
-      {f.description && <p className="text-[0.9375rem] text-ink/85">{f.description}</p>}
-
       <div className="flex flex-col gap-2">
-        <p className="eyebrow">What was said</p>
-        <EvidenceQuote meta={`From ${f.conversation.title}`}>{f.source_quote}</EvidenceQuote>
+        <h3 className="display text-3xl sm:text-4xl">{f.title}</h3>
+        {f.description && <p className="text-[0.9375rem] text-ink-muted">{f.description}</p>}
       </div>
 
-      <div className="flex flex-col gap-2">
-        <p className="eyebrow">Original agreement</p>
-        <div className="rounded-card border border-cream-dark bg-cream/60 p-4 text-sm">
+      <EvidenceQuote meta={`Said in ${f.conversation.title}`}>{f.source_quote}</EvidenceQuote>
+
+      <div className="flex flex-col gap-2.5 rounded-card bg-paper p-4 text-sm shadow-[var(--sera-shadow-soft)]">
+        <div className="flex items-center justify-between gap-3">
+          <p className="eyebrow">Why Sera flagged it</p>
+          <ConfidenceMeter confidence={f.confidence} />
+        </div>
+        {f.explanation && <p className="leading-relaxed text-ink/85">{f.explanation}</p>}
+        <p className="text-ink-muted">
+          Agreement:{" "}
           {related ? (
-            <p>
-              Related item: <span className="font-semibold">{related}</span>
-              {project.exclusions.includes(related) && <span className="ml-2 rounded-md bg-error-bg px-1.5 py-0.5 text-xs font-semibold text-pulse">Listed as not included</span>}
-            </p>
+            <>
+              <span className="font-semibold text-ink">{related}</span>
+              {project.exclusions.includes(related) && <span className="ml-1.5 rounded-full bg-error-bg px-2 py-0.5 text-xs font-semibold text-pulse">not included</span>}
+            </>
           ) : (
-            <p className="text-ink-muted">No matching item in the agreed deliverables or exclusions.</p>
+            "nothing in it matches this."
           )}
-        </div>
+        </p>
       </div>
-
-      {f.explanation && (
-        <div className="flex flex-col gap-2">
-          <p className="eyebrow">Why it was flagged</p>
-          <p className="text-[0.9375rem] text-ink/85">{f.explanation}</p>
-          <p className="text-xs text-ink-muted">AI findings are suggestions for you to review. They aren&apos;t legal advice and don&apos;t mean the client agreed to anything.</p>
-        </div>
-      )}
     </div>
   );
 }

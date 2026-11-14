@@ -2,6 +2,11 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-14 (cleaner review drawer)
+- The finding drawer drops the numbered steps (1 · Review, 2 · Follow-up task, 3 · Ask the client) and the separate "AI detected" + client pills. It now shows one plain status, the quote, and a single "Why Sera flagged it" box (explanation, confidence, matching agreement item), then **Confirm** / Dismiss, **Ask the client** and **Follow-up**. Changing the type, adding a task and notes fold away until needed. The legal note moved to the bottom.
+- New `findingStatus()` in `lib/projects/meta.ts` gives the drawer and the project page the same status words.
+- Updated `docs/features.md`, `docs/design-system.md`.
+
 ## 2026-11-14 (cleaner project page)
 - Project page simplified so it reads at a glance instead of as a dense report: the four stat boxes, the review banner, the dark "Where it stands" card and the three Follow-through columns are replaced by a header with fact chips and one status line, a **Scope** card (*Agreed* beside *Since then*, every change one row with a plain status pill), **To do** (your tasks, unowned promises, client promises) and **Calls** (latest first).
 - Approved changes move into *Agreed* ("Approved later"); open changes stay in *Since then*. Every row still opens the finding's review with its quote.
