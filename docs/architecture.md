@@ -78,7 +78,7 @@ Migration `0003_baseline_and_auto_tasks.sql` adds `conversations.is_baseline` (t
 | `POST /api/findings/[id]/message` | Generate and save the client confirmation message |
 | `POST /api/tasks`, `PATCH/DELETE /api/tasks/[id]` | Follow-up tasks |
 | `POST /api/transcribe` | Transcribe an uploaded recording (own folder only), then delete it (120 s) |
-| `POST /api/intake` | From segments or pasted text: label speakers, file under `project_id` if given (the user's pick), else match (the model sees each project's name, client, scope and latest call summary) or create the project; add and analyze the conversation (120 s) |
+| `POST /api/intake` | From segments or pasted text: label speakers, file under `project_id` if given (API only; the UI always lets Sera decide), else match (the model sees each project's name, client, scope and latest call summary) or create the project; add and analyze the conversation (120 s) |
 | `POST/DELETE /api/demo/seed` | Load / remove demo data (two sample projects with example findings and tasks), via `lib/sample/seed.ts` |
 | `POST /api/ask` | Ask Sera: `{question, project_id?}` → answer, points, sources resolved from stored rows, optional email draft (60 s). Read-only |
 | `POST /api/ask/transcribe` | A spoken question (multipart `audio`, ≤ 4 MB) → text, via `gpt-4o-mini-transcribe`; audio not stored |

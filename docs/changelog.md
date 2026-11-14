@@ -4,10 +4,9 @@ Newest first. Add an entry for **every** meaningful change, in the same change a
 
 ## 2026-11-14 (recordings join existing projects)
 - Recorded calls kept landing in new projects ("Audio Check", "Stripe Data Backend Website") instead of joining the client's existing one. Now:
-  - **File under** picker under the Record button: "Let Sera decide" or pick a project; the call is added next to that project's other calls and compared with its agreement.
-  - **Record a call** button on each project page (opens Home with that project picked, `/?project=<id>`).
   - Better automatic matching: the model also sees each project's latest call summary (which names the people on the calls) and is told a follow-up call must join its project, not create a new one.
-- `POST /api/intake` takes an optional `project_id`. Tested end to end with a throwaway account: a picked project and an automatic "Hi Sarah… your website" call both landed in Acme Studio Website with the booking-page finding and the estimate task.
+- A "File under" picker and a "Record a call" button were tried and removed the same day: detection stays automatic, so the demo is press Record → Stop. `POST /api/intake` keeps an optional `project_id` (API only).
+- Tested end to end with a throwaway account: an automatic "Hi Sarah… your website" call landed in Acme Studio Website with the booking-page finding and the estimate task.
 - Updated `docs/features.md`, `docs/architecture.md`.
 
 ## 2026-11-14 (demo data matches the live pitch)

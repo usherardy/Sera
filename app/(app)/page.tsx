@@ -14,7 +14,7 @@ import { listProjects, listTodo } from "@/lib/projects/data";
 import { SUPABASE_ENABLED } from "@/lib/supabase/config";
 import { getViewer } from "@/lib/viewer";
 
-export default function HomePage({ searchParams }: PageProps<"/">) {
+export default function HomePage() {
   return (
     <div className="flex flex-col gap-10 sm:gap-14">
       <header className="flex flex-col items-center gap-4 pt-2 text-center animate-in fade-in slide-in-from-bottom-2 duration-500">
@@ -28,7 +28,7 @@ export default function HomePage({ searchParams }: PageProps<"/">) {
       </header>
       {SUPABASE_ENABLED ? (
         <Suspense fallback={<Skeleton className="mx-auto size-44 rounded-full bg-cream-dark/60" />}>
-          <HomeContent searchParams={searchParams} />
+          <HomeContent />
         </Suspense>
       ) : (
         <div className="flex items-start gap-3 rounded-card bg-warning p-4 text-warning-dark">
@@ -50,19 +50,12 @@ function homeSuggestions(projects: ProjectSummary[]) {
   ];
 }
 
-async function HomeContent({ searchParams }: { searchParams: PageProps<"/">["searchParams"] }) {
-  const [viewer, projects, todo, sp] = await Promise.all([getViewer(), listProjects(), listTodo(), searchParams]);
-  // "Record a call" on a project page links here with ?project=<id> to preselect it.
-  const preselect = typeof sp.project === "string" ? sp.project : null;
+async function HomeContent() {
+  const [viewer, projects, todo] = await Promise.all([getViewer(), listProjects(), listTodo()]);
   return (
     <>
       <div className="mx-auto w-full max-w-2xl">
-        <CaptureFlow
-          key={preselect ?? "auto"}
-          userId={viewer.userId}
-          projects={projects.map((p) => ({ id: p.id, name: p.name }))}
-          defaultProjectId={preselect}
-        />
+        <CaptureFlow userId={viewer.userId} />
       </div>
       {projects.length > 0 && (
         <div className="mx-auto w-full max-w-2xl">
