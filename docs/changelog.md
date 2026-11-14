@@ -2,6 +2,12 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-14 (review sheet, Gmail drafts)
+- The finding review now opens **from the bottom, almost full screen** (click outside to close) instead of a side drawer. On wide screens the finding is on the left and the actions on the right.
+- The client message is shown as an **email draft** (To, editable Subject, body) with **Open in Gmail** and **Outlook** buttons that open it in your own mailbox, ready to send (`lib/projects/email.ts`, no OAuth; Sera sends nothing). Copy includes the subject.
+- Landing and Settings: Gmail and Outlook are now "Available now" (drafts); sending for you stays planned. Notion still Coming soon.
+- Updated `docs/features.md`, `docs/idea.md`, `docs/roadmap.md`, `docs/architecture.md`, `docs/design-system.md`.
+
 ## 2026-11-14 (cleaner review drawer)
 - The finding drawer drops the numbered steps (1 · Review, 2 · Follow-up task, 3 · Ask the client) and the separate "AI detected" + client pills. It now shows one plain status, the quote, and a single "Why Sera flagged it" box (explanation, confidence, matching agreement item), then **Confirm** / Dismiss, **Ask the client** and **Follow-up**. Changing the type, adding a task and notes fold away until needed. The legal note moved to the bottom.
 - New `findingStatus()` in `lib/projects/meta.ts` gives the drawer and the project page the same status words.

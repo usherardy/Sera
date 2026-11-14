@@ -2,16 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, ChevronRight, Clipboard, Loader2, Plus, Undo2, X } from "lucide-react";
+import { ArrowUpRight, Check, ChevronRight, Clipboard, Loader2, Mail, Plus, Undo2, X } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/client/api";
 import { formatDateOnly } from "@/lib/format";
 import { CLIENT_LABEL, FINDING_META, FINDING_ORDER, isChangeCategory } from "@/lib/projects/meta";
-import type { ClientStatus, FindingCategory, FindingWithSource, Task } from "@/lib/projects/types";
+import { changeRequestSubject, gmailComposeUrl, outlookComposeUrl } from "@/lib/projects/email";
+import type { ClientStatus, FindingCategory, FindingWithSource, Project, Task } from "@/lib/projects/types";
 import { cn } from "@/lib/utils";
 import { CalendarLink } from "./calendar-link";
 
@@ -43,11 +44,12 @@ function Fold({ label, defaultOpen, children }: { label: string; defaultOpen?: b
 const CLIENT_STATES: ClientStatus[] = ["not_sent", "sent", "approved", "rejected"];
 
 /** Your side: confirm or dismiss the finding, ask the client and record their answer, add tasks and notes. */
-export function FindingReview({ finding: f, tasks }: { finding: FindingWithSource; tasks: Task[] }) {
+export function FindingReview({ finding: f, tasks, project }: { finding: FindingWithSource; tasks: Task[]; project: Pick<Project, "name" | "client_name"> }) {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   const [notes, setNotes] = useState(f.notes ?? "");
   const [message, setMessage] = useState(f.client_message ?? "");
+  const [subject, setSubject] = useState(changeRequestSubject(project.name, f.title));
   const [taskTitle, setTaskTitle] = useState(f.suggested_follow_up ?? "");
   const [taskOwner, setTaskOwner] = useState("");
   const [taskDue, setTaskDue] = useState("");
@@ -75,8 +77,8 @@ export function FindingReview({ finding: f, tasks }: { finding: FindingWithSourc
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(message);
-      toast.success("Copied. Send it to your client yourself.");
+      await navigator.clipboard.writeText(`Subject: ${subject}\n\n${message}`);
+      toast.success("Copied with the subject. Send it to your client yourself.");
     } catch {
       toast.error("Couldn't copy. Select the text and copy it manually.");
     }
@@ -91,7 +93,7 @@ export function FindingReview({ finding: f, tasks }: { finding: FindingWithSourc
   return (
     <div className="flex flex-col gap-5">
       {/* Decide */}
-      <section className="flex flex-col gap-3 border-t border-cream-dark pt-5">
+      <section className="flex flex-col gap-3 border-t border-cream-dark pt-5 lg:border-t-0 lg:pt-0">
         <div className="flex flex-wrap gap-2">
           {f.review_status === "dismissed" ? (
             <Button variant="outline" disabled={!!busy} onClick={() => patch("restore", { review_status: "ai_detected" })}>
@@ -140,26 +142,72 @@ export function FindingReview({ finding: f, tasks }: { finding: FindingWithSourc
       </section>
 
       {askable && f.review_status !== "dismissed" && (
-        <Section title="Ask the client" hint="Sera drafts the message; you send it. Sending from Gmail or Outlook is coming soon.">
+        <Section title="Ask the client" hint="Sera drafts the email. Open it in Gmail or Outlook, add the client's address, check it and press Send.">
           {!message ? (
             <Button variant="outline" className="self-start" disabled={!!busy} onClick={generate}>
-              {busy === "gen" && <Loader2 className="animate-spin" />}
-              Draft the message
+              {busy === "gen" ? <Loader2 className="animate-spin" /> : <Mail />}
+              Draft the email
             </Button>
           ) : (
-            <div className="flex flex-col gap-2">
-              <Textarea value={message} onChange={(e) => setMessage(e.target.value)} className="min-h-44 text-[0.875rem]" aria-label="Client message" />
-              <div className="flex flex-wrap gap-2">
-                <Button size="sm" onClick={copy}>
+            <div className="overflow-hidden rounded-card border border-[var(--hairline)] bg-paper shadow-[var(--sera-shadow-soft)]">
+              <div className="flex items-center justify-between gap-3 border-b border-cream-dark bg-cream/60 px-4 py-2.5">
+                <span className="inline-flex items-center gap-2 text-xs font-semibold">
+                  <Mail className="size-3.5" />
+                  Email draft
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-success px-2.5 py-1 text-[0.7rem] font-semibold text-success-dark">
+                  <span className="size-1.5 rounded-full bg-success-dark" />
+                  Opens in Gmail
+                </span>
+              </div>
+              <div className="flex items-center gap-3 border-b border-cream-dark px-4 py-2.5 text-sm">
+                <span className="w-14 shrink-0 text-ink-muted">To</span>
+                <span className="font-semibold">{project.client_name}</span>
+                <span className="text-xs text-ink-muted">add their address in Gmail</span>
+              </div>
+              <label className="flex items-center gap-3 border-b border-cream-dark px-4 py-1.5 text-sm">
+                <span className="w-14 shrink-0 text-ink-muted">Subject</span>
+                <input value={subject} onChange={(e) => setSubject(e.target.value)} className="h-8 min-w-0 flex-1 bg-transparent font-semibold outline-none" aria-label="Subject" />
+              </label>
+              <Textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="min-h-56 rounded-none border-0 bg-transparent px-4 py-3 text-[0.9rem] leading-relaxed shadow-none focus-visible:ring-0"
+                aria-label="Email body"
+              />
+              <div className="flex flex-wrap items-center gap-2 border-t border-cream-dark bg-cream/40 px-3 py-2.5">
+                <a
+                  href={gmailComposeUrl({ subject, body: message })}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => toast.success("Opened in Gmail. Once you've sent it, set the client's answer to Sent.")}
+                  className={buttonVariants({ size: "sm" })}
+                >
+                  <Mail />
+                  Open in Gmail
+                  <ArrowUpRight />
+                </a>
+                <a
+                  href={outlookComposeUrl({ subject, body: message })}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => toast.success("Opened in Outlook. Once you've sent it, set the client's answer to Sent.")}
+                  className={buttonVariants({ size: "sm", variant: "outline" })}
+                >
+                  Outlook
+                </a>
+                <Button size="sm" variant="ghost" onClick={copy}>
                   <Clipboard />
                   Copy
                 </Button>
+                <span className="flex-1" />
                 {message !== (f.client_message ?? "") && (
-                  <Button size="sm" variant="outline" disabled={!!busy} onClick={() => patch("msg", { client_message: message }, "Message saved.")}>
+                  <Button size="sm" variant="outline" disabled={!!busy} onClick={() => patch("msg", { client_message: message }, "Draft saved.")}>
                     Save edits
                   </Button>
                 )}
                 <Button size="sm" variant="ghost" disabled={!!busy} onClick={generate}>
+                  {busy === "gen" && <Loader2 className="animate-spin" />}
                   Redraft
                 </Button>
               </div>

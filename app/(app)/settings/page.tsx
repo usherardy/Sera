@@ -30,6 +30,15 @@ function SettingRow({
   );
 }
 
+function Available() {
+  return (
+    <span className="inline-flex items-center gap-1.5 self-start rounded-full bg-success px-3 py-1.5 text-xs font-semibold text-success-dark sm:self-center">
+      <span className="size-1.5 rounded-full bg-success-dark" />
+      Available now
+    </span>
+  );
+}
+
 function ComingSoon() {
   return (
     <Button variant="outline" disabled>
@@ -64,13 +73,13 @@ async function SettingsContent() {
         icon={<CalendarDays />}
         title="Google Calendar"
         body="Every task with a date has an Add to calendar button that opens Google Calendar with the event filled in. Automatic sync is coming soon."
-        action={<ComingSoon />}
+        action={<Available />}
       />
       <SettingRow
         icon={<Mail />}
         title="Gmail and Outlook"
-        body="When a client asks for more or changes the plan, send the change request from your own inbox once you approve it. Coming soon; for now, copy the message."
-        action={<ComingSoon />}
+        body="When a client asks for more or changes the plan, Sera drafts the email. Open in Gmail or Outlook puts it in your own inbox, ready to send. Sending automatically is coming soon."
+        action={<Available />}
       />
       <SettingRow
         icon={<NotebookPen />}

@@ -118,8 +118,9 @@ export function ProblemSection() {
 }
 
 /**
- * The tools Sera connects to. Only Google Calendar works today (pre-filled
- * "Add to calendar" links); the others are planned and labeled Coming soon.
+ * The tools Sera connects to. Google Calendar, Gmail and Outlook work today
+ * through pre-filled links (an event or an email draft opens in your own
+ * account; nothing is sent by Sera). Notion is planned and labeled Coming soon.
  */
 const INTEGRATIONS: { icon: React.ReactNode; name: string; d: string; live?: boolean }[] = [
   {
@@ -132,9 +133,10 @@ const INTEGRATIONS: { icon: React.ReactNode; name: string; d: string; live?: boo
   {
     icon: <Mail />,
     name: "Gmail",
-    d: "When a client asks for more or changes the plan, Sera drafts the email. Approve it and it goes to your client from your Gmail.",
+    d: "When a client asks for more or changes the plan, Sera drafts the email. Approve it and it opens in your Gmail, ready to send.",
+    live: true,
   },
-  { icon: <Inbox />, name: "Outlook", d: "The same for Outlook: approved change requests go out from your own inbox." },
+  { icon: <Inbox />, name: "Outlook", d: "The same for Outlook: your approved change request opens as a draft in your own inbox.", live: true },
 ];
 
 export function IntegrationsSection() {

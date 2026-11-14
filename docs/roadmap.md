@@ -14,7 +14,7 @@
 | 5c. "Organize every client" pitch | Auto tasks from promises, baseline first calls, To do page + Home "Up next", walkthrough landing with problem section, demo data refresh | Built (needs migration 0003) |
 | 5d. Ask Sera | Prompt bar on Home and project pages, push-to-talk, grounded answers with sources, email drafts | Built; tested live on demo data |
 | 6. Polish and deploy | Mobile pass, empty/loading states, Vercel env vars, deploy | Planned |
-| 7. Integrations | Notion (tasks and deadlines), Gmail and Outlook (send approved change requests from your inbox), Google Calendar sync (OAuth) | Planned, after the hackathon. Landing page and Settings already mention them, labeled Coming soon; Google Calendar "Add to calendar" links work today |
+| 7. Integrations | Notion (tasks and deadlines), Gmail and Outlook sending for you (OAuth), Google Calendar sync (OAuth) | Planned, after the hackathon. Working today without OAuth: Add to calendar links and Open in Gmail / Outlook drafts. Notion is labeled Coming soon |
 
 ## Before the demo
 1. Run `supabase/migrations/0002_projects.sql` in the Supabase SQL editor (after 0001).

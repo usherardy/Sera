@@ -24,10 +24,10 @@ You have a lot of clients. Calls blur together, you promise something and forget
 6. **Ask Sera anything.** Type or say a question ("What did Acme ask for beyond the agreement?", "Draft an email about the open changes"). Answers come only from your calls, with the exact quotes; emails come back as drafts. It never sends or changes anything.
 
 ## Integrations (planned)
-Sera should work inside the tools you already use. Only the first is live today; the landing page and Settings label the rest **Coming soon**.
+Sera should work inside the tools you already use. Calendar, Gmail and Outlook work today through pre-filled links; Notion is labeled **Coming soon**.
 - **Google Calendar:** deadlines from calls go on your calendar. *Live:* "Add to calendar" opens Google Calendar with the event filled in. *Planned:* automatic sync.
 - **Notion:** tasks and deadlines from every call, created in your Notion workspace. *Planned.*
-- **Gmail and Outlook:** when a client asks for more or changes the plan, Sera drafts the email and, **once you approve it**, sends it to the client from your own inbox. *Planned.* Nothing is ever sent without your approval.
+- **Gmail and Outlook:** when a client asks for more or changes the plan, Sera drafts the email. *Live:* "Open in Gmail" / "Outlook" opens it in your own inbox, ready to send. *Planned:* sending it for you once you approve (OAuth). Nothing is ever sent without your approval.
 
 ## Where the value is
 The comparison: what the client asks for now versus what was originally agreed. Everything else supports that.

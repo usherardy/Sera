@@ -9,6 +9,8 @@ Token names are kept from v1 so components didn't need renaming.
 - **Text** `--ink #121214`, muted `--ink-muted #6B6A73`. Dividers `--cream-dark #EBE6DD`.
 - **Lavender** `--dawn #ECE6FF` for selected states and highlights; `--dawn-strong #D9CFF8` for their borders.
 - **Dark hero cards** `--fathom #1B1A24` with white text (used sparingly; the project page no longer has one).
+- **Bottom sheet for detail:** finding review opens as a near-full-screen sheet from the bottom (`side="bottom"`, 94dvh, rounded top, grab handle), content centered at `max-w-5xl`, two columns on `lg`. Click outside to close.
+- **Email draft card:** a white card styled like a compose window: header ("Email draft" + green "Opens in Gmail" chip), To and Subject rows, borderless body, footer with Open in Gmail (dark), Outlook, Copy, Redraft. No third-party logos.
 - **Fold rows:** secondary controls (change type, add a task, add a note) sit behind a quiet `▸ label` row (`<details>`, chevron rotates open) so a screen shows the main action first. Used in the review drawer.
 - **Split cards:** one white card with two columns and a hairline divider (stacked on phones), each column with a mono eyebrow, e.g. the project page's *Agreed | Since then*. List rows inside are one line of status each: dot, title, a truncated serif quote, a muted context line, a pill on the right.
 - **Pastel chips with deep text:** caramel `--glow #C28148` (possible additions), purple `--purple #5C4A99` (scope changes), peach `--warning #FFE9CF` / `#8A5A2A` (needs clarification, sample badges), pink `--signal #FFC9E5` (commitments), mint `--success #C9F5E0` / `#1A5C3A` (approved, reviewed). Errors: `--pulse #B4232C` on `--error-bg #FDE8E8`.

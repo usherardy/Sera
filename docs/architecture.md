@@ -107,6 +107,7 @@ lib/sample/demo.ts                      full demo data: two projects, summaries,
 lib/sample/seed.ts                      seedDemoData(): inserts the demo data for the signed-in user
 lib/demo-account.ts                     shared demo account email + password (public)
 lib/projects/calendar.ts                Google Calendar "create event" link (no OAuth)
+lib/projects/email.ts                   Gmail / Outlook "compose" links with subject + body (no OAuth; Sera sends nothing)
 lib/ask/ask.ts                          Ask Sera: loadAskData (RLS), buildAskPrompt (refs P1/C1/F1/T1), askSera, resolveSources
 lib/ask/types.ts, limit.ts              shared response types; best-effort per-user rate limit
 components/ask/ask-bar.tsx              the prompt bar: text + push-to-talk, suggestions, answer, sources, draft

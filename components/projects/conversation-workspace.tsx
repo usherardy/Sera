@@ -68,7 +68,7 @@ export function ConversationWorkspace({
 }: {
   transcript: string;
   findings: FindingWithSource[];
-  project: Pick<Project, "agreed_scope" | "exclusions">;
+  project: Pick<Project, "name" | "client_name" | "agreed_scope" | "exclusions">;
   tasks: Task[];
   initialFindingId: string | null;
 }) {
@@ -159,13 +159,19 @@ export function ConversationWorkspace({
           </ul>
         )}
         <Sheet open={open && !!selected} onOpenChange={setOpen}>
-          <SheetContent className="w-full gap-0 overflow-y-auto bg-cream p-5 data-[side=right]:sm:max-w-xl sm:p-7">
+          <SheetContent
+            side="bottom"
+            className="gap-0 overflow-y-auto overscroll-contain bg-cream p-0 data-[side=bottom]:h-[94dvh] data-[side=bottom]:max-h-[94dvh]"
+          >
             <SheetTitle className="sr-only">{selected?.title ?? "Finding"}</SheetTitle>
             <SheetDescription className="sr-only">Review this finding against the original agreement.</SheetDescription>
+            <div aria-hidden className="mx-auto mt-3 h-1.5 w-12 shrink-0 rounded-full bg-ink/15" />
             {selected && (
-              <div className="flex flex-col gap-6 pt-6" key={selected.id}>
-                <FindingDetail finding={selected} project={project} />
-                <FindingReview finding={selected} tasks={tasks} />
+              <div className="mx-auto grid w-full max-w-5xl gap-8 px-5 pt-6 pb-12 sm:px-8 lg:grid-cols-[1fr_1.15fr] lg:gap-12 lg:pt-10" key={selected.id}>
+                <div className="lg:sticky lg:top-0 lg:self-start">
+                  <FindingDetail finding={selected} project={project} />
+                </div>
+                <FindingReview finding={selected} tasks={tasks} project={project} />
               </div>
             )}
           </SheetContent>
