@@ -46,7 +46,7 @@ function ProjectCard() {
       <div className="grid grid-cols-2 gap-3 text-sm">
         <div className="rounded-xl bg-cream/70 p-3">
           <p className="eyebrow">Price</p>
-          <p className="font-serif text-2xl">€500</p>
+          <p className="font-serif text-2xl">€1,000</p>
         </div>
         <div className="rounded-xl bg-cream/70 p-3">
           <p className="eyebrow">Deadline</p>

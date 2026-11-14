@@ -54,8 +54,8 @@ export interface SampleProject {
 }
 
 const ACME_SUMMARIES: Record<string, string> = {
-  stripe: "You showed the homepage layout. The client asked about adding Stripe payments, and you said the extra work needs an estimate first. Responsive design was confirmed as already agreed.",
-  login: "The client approved the contact page and asked for customer accounts with login. You said this wasn't in the original agreement and will prepare an updated proposal.",
+  kickoff: "You showed Sarah the homepage layout. She asked whether it will look good on phones, and you confirmed responsive design is already agreed.",
+  review: "Sarah approved the contact page, then asked for Stripe payments and customer accounts with login. You said neither was in the original agreement: you'll estimate the Stripe work and prepare an updated proposal.",
   blog: "A short status check. You will share a staging link, and the client floated a blog as a possible later addition.",
   deadline: "The client asked to move delivery from the 20th to Monday the 23rd because their copy isn't ready. You agreed and will confirm the new date in writing.",
 };
@@ -65,7 +65,7 @@ const acme: SampleProject = {
   conversations: ACME_CONVERSATIONS.map((c) => ({ ...c, summary: ACME_SUMMARIES[c.key] })),
   findings: [
     {
-      conv: "stripe",
+      conv: "review",
       category: "potential_scope_addition",
       title: "Stripe payment integration",
       description: "The client asked to add Stripe payments. You did not accept it; they said the extra work needs an estimate first.",
@@ -83,11 +83,11 @@ const acme: SampleProject = {
       message: true,
     },
     {
-      conv: "stripe",
+      conv: "kickoff",
       category: "existing_scope",
       title: "Homepage works on phones",
       description: "The client asked whether the homepage will look good on phones; you confirmed it's included.",
-      quote: "Also, will the homepage look good on phones?",
+      quote: "Will the homepage look good on phones?",
       related_scope_item: "Responsive design",
       explanation: "Responsive design is one of the agreed deliverables, so this is not extra work.",
       confidence: "high",
@@ -97,7 +97,7 @@ const acme: SampleProject = {
       due_phrase: null,
     },
     {
-      conv: "stripe",
+      conv: "review",
       category: "commitment",
       title: "Estimate the extra Stripe work",
       description: "You committed to estimating the extra work before deciding.",
@@ -111,7 +111,7 @@ const acme: SampleProject = {
       due_phrase: null,
     },
     {
-      conv: "login",
+      conv: "review",
       category: "potential_scope_addition",
       title: "Customer accounts and login",
       description: "The client asked for customer accounts with login. You said it wasn't part of the original agreement.",
@@ -125,7 +125,7 @@ const acme: SampleProject = {
       due_phrase: null,
     },
     {
-      conv: "login",
+      conv: "review",
       category: "commitment",
       title: "Prepare an updated proposal",
       description: "You promised an updated proposal. No date was given.",

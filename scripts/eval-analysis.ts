@@ -28,15 +28,15 @@ async function main() {
   const results = await Promise.all(ACME_CONVERSATIONS.map((c) => run(c.key)));
   const by = Object.fromEntries(results.map((r) => [r.c.key, r]));
 
-  console.log("\nStripe conversation");
-  check("Stripe flagged as a possible scope addition", has(by.stripe.rows, "potential_scope_addition", /stripe|payment/i));
-  check("No finding claims you approved it", !by.stripe.rows.some((r) => /\b(approved|agreed to|accepted)\b/i.test(r.description) && r.category === "potential_scope_addition" && /stripe/i.test(r.title) && /\b(you|freelancer) (approved|agreed to|accepted)\b/i.test(r.description)));
-  check("Responsive request is not extra work", !has(by.stripe.rows, "potential_scope_addition", /phone|responsive|mobile/i));
+  console.log("\nKickoff call");
+  check("Responsive request is not extra work", !has(by.kickoff.rows, "potential_scope_addition", /phone|responsive|mobile/i));
 
-  console.log("\nLogin conversation");
-  check("Customer accounts flagged as a possible addition", has(by.login.rows, "potential_scope_addition", /account|log ?in/i));
-  check("Updated proposal captured as a commitment", has(by.login.rows, "commitment", /proposal/i));
-  check("Proposal commitment has no invented deadline", by.login.rows.filter((r) => r.category === "commitment" && /proposal/i.test(r.title)).every((r) => r.due_date === null));
+  console.log("\nDesign review: payments and accounts");
+  check("Stripe flagged as a possible scope addition", has(by.review.rows, "potential_scope_addition", /stripe|payment/i));
+  check("No finding claims you approved it", !by.review.rows.some((r) => /\b(approved|agreed to|accepted)\b/i.test(r.description) && r.category === "potential_scope_addition" && /stripe/i.test(r.title) && /\b(you|freelancer) (approved|agreed to|accepted)\b/i.test(r.description)));
+  check("Customer accounts flagged as a possible addition", has(by.review.rows, "potential_scope_addition", /account|log ?in/i));
+  check("Updated proposal captured as a commitment", has(by.review.rows, "commitment", /proposal/i));
+  check("Proposal commitment has no invented deadline", by.review.rows.filter((r) => r.category === "commitment" && /proposal/i.test(r.title)).every((r) => r.due_date === null));
 
   console.log("\nBlog conversation");
   check("Blog is an idea", has(by.blog.rows, "idea", /blog/i));
@@ -51,7 +51,7 @@ async function main() {
   console.log("\nLater call about an already-approved change");
   const followUp = "Client: How is the Stripe payments integration coming along?\nYou: It's going well, it will be ready next week.";
   const history: EarlierChange[] = [
-    { title: "Stripe payment integration", category: "potential_scope_addition", client_status: "approved", date: "2026-11-09", due_date: null },
+    { title: "Stripe payment integration", category: "potential_scope_addition", client_status: "approved", date: "2026-11-10", due_date: null },
   ];
   const later = await analyzeConversation({ project: ACME_PROJECT, transcript: followUp, conversationDate: "2026-11-16", timezone: "Europe/Vilnius", history });
   const laterRows = toFindingRows(later.findings, followUp, followUp).rows;

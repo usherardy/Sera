@@ -7,13 +7,13 @@ export const ACME_PROJECT = {
   original_description: "A simple brochure website for Acme Studio, a small design studio.",
   agreed_scope: ["Homepage", "Contact page", "Responsive design"],
   exclusions: ["Payment integration", "Customer accounts"],
-  fixed_price: 500,
+  fixed_price: 1000,
   currency: "EUR",
   deadline: "2026-11-20",
 };
 
 export interface AcmeConversation {
-  key: "stripe" | "login" | "blog" | "deadline";
+  key: "kickoff" | "review" | "blog" | "deadline";
   title: string;
   /** local time on the day, ISO with offset (Europe/Vilnius, UTC+2 in November) */
   recorded_at: string;
@@ -22,24 +22,24 @@ export interface AcmeConversation {
 
 export const ACME_CONVERSATIONS: AcmeConversation[] = [
   {
-    key: "stripe",
-    title: "Kickoff call: payments question",
+    key: "kickoff",
+    title: "Kickoff call",
     recorded_at: "2026-11-09T10:00:00+02:00",
-    transcript: `You: Thanks for joining. I've got the homepage layout ready to show you.
-Client: Looks great. Can we also add Stripe payments to the website?
-You: I can look into it, but I'll need to estimate the extra work first.
-Client: Sure, no rush on that. Also, will the homepage look good on phones?
+    transcript: `You: Thanks for joining, Sarah. I've got the homepage layout ready to show you.
+Client: Looks great. Will the homepage look good on phones?
 You: Yes, responsive design is part of what we agreed.
 Client: Perfect.`,
   },
   {
-    key: "login",
-    title: "Design review: accounts",
+    // Tuesday: the call Sarah means by "but we talked about it on Tuesday!" in the pitch.
+    key: "review",
+    title: "Design review: payments and accounts",
     recorded_at: "2026-11-10T15:30:00+02:00",
-    transcript: `Client: The contact page looks good. We also need customers to have accounts and log in.
+    transcript: `Client: The contact page looks good. Can we also add Stripe payments to the website?
+You: I can look into it, but I'll need to estimate the extra work first.
+Client: Sure. We also need customers to have accounts and log in.
 You: That wasn't part of our original agreement. I'll prepare an updated proposal.
-Client: Okay, thanks for flagging that.
-You: I'll keep working on the contact page in the meantime.`,
+Client: Okay, thanks for flagging that.`,
   },
   {
     key: "blog",
