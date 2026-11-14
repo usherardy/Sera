@@ -54,6 +54,7 @@ Status key: **Built** (code complete, typechecks and builds) · **Untested live*
 | "Add to calendar" on open tasks and dated commitments: opens Google Calendar with an all-day event pre-filled (no Google sign-in; not a sync) | Built |
 | Client confirmation message (deterministic template, asks for approval, no price) with edit and copy | Built · untested live |
 | **Open in Gmail / Outlook:** opens a new email in your own Gmail or Outlook on the web with the subject and body filled in (`lib/projects/email.ts`; no OAuth, Sera sends nothing). You add the client's address and press Send, then set the client's answer to Sent | Built |
+| **Send with Gmail:** the email draft has a To field (remembered per project in this browser) and a Send with Gmail button. It sends through one Gmail account set on the server (App Password, not a per-user Google sign-in), only after you Confirm the change, only to `SEND_ALLOWLIST` recipients when set, 10 an hour per user. Then the change is marked Sent to client. Hidden when Gmail isn't configured | Built · tested against a sandbox SMTP server, not yet with a real Gmail account |
 | Two status tracks: AI detected → Reviewed, and Not sent → Sent → Client approved / rejected. Client status can only be set after review, by hand | Built · untested live |
 
 ## Demo
@@ -63,4 +64,4 @@ Status key: **Built** (code complete, typechecks and builds) · **Untested live*
 | `npm run eval`: runs the four conversations through the real pipeline and asserts the expected findings | Built; not yet passing live (OpenAI account had no credits when last run) |
 
 ## Cut / not built
-Public client approval links, invoicing, Stripe, CRM, audio storage. **Planned integrations** (not built): Notion tasks and deadlines (shown as Coming soon), sending automatically from Gmail or Outlook via OAuth (today: Open in Gmail / Outlook drafts), two-way Google Calendar sync (today: Add to calendar links). See [roadmap.md](roadmap.md).
+Public client approval links, invoicing, Stripe, CRM, audio storage. **Planned integrations** (not built): Notion tasks and deadlines (shown as Coming soon), connecting each user's own Gmail or Outlook via OAuth (today: Send with Gmail through one server account, or Open in Gmail / Outlook drafts), two-way Google Calendar sync (today: Add to calendar links). See [roadmap.md](roadmap.md).

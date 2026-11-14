@@ -2,6 +2,13 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-14 (Send with Gmail)
+- The email draft now has a **To** field and a **Send with Gmail** button: Sera sends the change request through Gmail in one click, marks it **Sent to client** and saves the message. It only sends after you Confirm the change.
+- Sends through one Gmail account set on the server (`GMAIL_USER` + `GMAIL_APP_PASSWORD`, an App Password), not a per-user Google sign-in (OAuth, still planned). Because the demo account is public: `SEND_ALLOWLIST` limits recipients, and each user can send 10 an hour. Without the Gmail settings the button is hidden and Open in Gmail stays.
+- New `POST /api/findings/[id]/send`, `lib/email/gmail.ts`, dependency `nodemailer`. Open in Gmail / Outlook now fill in the To address too. The client's address is remembered per project in the browser only (no schema change).
+- Tested with a throwaway account against a sandbox SMTP server (Ethereal): refused before Confirm, refused off-list and invalid addresses, sent to the allowed address and set Sent to client. Not yet tested with a real Gmail account.
+- Landing and Settings copy updated. Updated `docs/features.md`, `docs/architecture.md`, `docs/idea.md`, `docs/roadmap.md`.
+
 ## 2026-11-14 (recordings join existing projects)
 - Recorded calls kept landing in new projects ("Audio Check", "Stripe Data Backend Website") instead of joining the client's existing one. Now:
   - Better automatic matching: the model also sees each project's latest call summary (which names the people on the calls) and is told a follow-up call must join its project, not create a new one.

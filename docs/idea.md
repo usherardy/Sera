@@ -27,7 +27,7 @@ You have a lot of clients. Calls blur together, you promise something and forget
 Sera should work inside the tools you already use. Calendar, Gmail and Outlook work today through pre-filled links; Notion is labeled **Coming soon**.
 - **Google Calendar:** deadlines from calls go on your calendar. *Live:* "Add to calendar" opens Google Calendar with the event filled in. *Planned:* automatic sync.
 - **Notion:** tasks and deadlines from every call, created in your Notion workspace. *Planned.*
-- **Gmail and Outlook:** when a client asks for more or changes the plan, Sera drafts the email. *Live:* "Open in Gmail" / "Outlook" opens it in your own inbox, ready to send. *Planned:* sending it for you once you approve (OAuth). Nothing is ever sent without your approval.
+- **Gmail and Outlook:** when a client asks for more or changes the plan, Sera drafts the email. *Live:* **Send with Gmail** sends it in one click once you confirm the change (through one Gmail account set on the server), or "Open in Gmail" / "Outlook" opens it in your own inbox. *Planned:* each user connecting their own Gmail or Outlook (OAuth). Nothing is ever sent without your approval.
 
 ## Where the value is
 The comparison: what the client asks for now versus what was originally agreed. Everything else supports that.

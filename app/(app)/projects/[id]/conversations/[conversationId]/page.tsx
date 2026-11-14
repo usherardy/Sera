@@ -11,6 +11,7 @@ import { ProcessingLine } from "@/components/projects/project-bits";
 import { getViewer } from "@/lib/viewer";
 import { formatClock, formatDayHeading, localDateOf } from "@/lib/format";
 import { getConversation } from "@/lib/projects/data";
+import { GMAIL_SENDING_ENABLED } from "@/lib/email/gmail";
 
 export default function ConversationPage({ params, searchParams }: PageProps<"/projects/[id]/conversations/[conversationId]">) {
   return (
@@ -101,6 +102,7 @@ async function ConversationContent({
         project={project}
         tasks={tasks}
         initialFindingId={typeof finding === "string" ? finding : null}
+        canSend={GMAIL_SENDING_ENABLED}
       />
     </>
   );

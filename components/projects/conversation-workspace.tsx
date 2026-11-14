@@ -65,12 +65,15 @@ export function ConversationWorkspace({
   project,
   tasks,
   initialFindingId,
+  canSend = false,
 }: {
   transcript: string;
   findings: FindingWithSource[];
   project: Pick<Project, "name" | "client_name" | "agreed_scope" | "exclusions">;
   tasks: Task[];
   initialFindingId: string | null;
+  /** the server can send change requests through Gmail */
+  canSend?: boolean;
 }) {
   const initial = initialFindingId && findings.some((f) => f.id === initialFindingId) ? initialFindingId : null;
   const [selectedId, setSelectedId] = useState<string | null>(initial);
@@ -171,7 +174,7 @@ export function ConversationWorkspace({
                 <div className="lg:sticky lg:top-0 lg:self-start">
                   <FindingDetail finding={selected} project={project} />
                 </div>
-                <FindingReview finding={selected} tasks={tasks} project={project} />
+                <FindingReview finding={selected} tasks={tasks} project={project} canSend={canSend} />
               </div>
             )}
           </SheetContent>

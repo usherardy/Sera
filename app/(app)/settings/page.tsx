@@ -78,7 +78,7 @@ async function SettingsContent() {
       <SettingRow
         icon={<Mail />}
         title="Gmail and Outlook"
-        body="When a client asks for more or changes the plan, Sera drafts the email. Open in Gmail or Outlook puts it in your own inbox, ready to send. Sending automatically is coming soon."
+        body="When a client asks for more or changes the plan, Sera drafts the change request. Send with Gmail sends it in one click, or open the draft in Gmail or Outlook. Connecting your own Gmail account is coming soon."
         action={<Available />}
       />
       <SettingRow

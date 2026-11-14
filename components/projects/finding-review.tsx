@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowUpRight, Check, ChevronRight, Clipboard, Loader2, Mail, Plus, Undo2, X } from "lucide-react";
+import { ArrowUpRight, Check, ChevronRight, Clipboard, Loader2, Mail, Plus, Send, Undo2, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,12 +44,34 @@ function Fold({ label, defaultOpen, children }: { label: string; defaultOpen?: b
 const CLIENT_STATES: ClientStatus[] = ["not_sent", "sent", "approved", "rejected"];
 
 /** Your side: confirm or dismiss the finding, ask the client and record their answer, add tasks and notes. */
-export function FindingReview({ finding: f, tasks, project }: { finding: FindingWithSource; tasks: Task[]; project: Pick<Project, "name" | "client_name"> }) {
+export function FindingReview({
+  finding: f,
+  tasks,
+  project,
+  canSend = false,
+}: {
+  finding: FindingWithSource;
+  tasks: Task[];
+  project: Pick<Project, "name" | "client_name">;
+  /** the server can send through Gmail (GMAIL_USER + GMAIL_APP_PASSWORD set) */
+  canSend?: boolean;
+}) {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   const [notes, setNotes] = useState(f.notes ?? "");
   const [message, setMessage] = useState(f.client_message ?? "");
   const [subject, setSubject] = useState(changeRequestSubject(project.name, f.title));
+  // The client's address, remembered per project in this browser (not stored on the server).
+  const emailKey = `sera:client-email:${f.project_id}`;
+  const [toEmail, setToEmail] = useState(() => {
+    try {
+      return typeof window === "undefined" ? "" : (window.localStorage.getItem(emailKey) ?? "");
+    } catch {
+      return "";
+    }
+  });
+  const to = toEmail.trim();
+  const validTo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to);
   const [taskTitle, setTaskTitle] = useState(f.suggested_follow_up ?? "");
   const [taskOwner, setTaskOwner] = useState("");
   const [taskDue, setTaskDue] = useState("");
@@ -83,6 +105,15 @@ export function FindingReview({ finding: f, tasks, project }: { finding: Finding
       toast.error("Couldn't copy. Select the text and copy it manually.");
     }
   };
+
+  const send = () =>
+    run("send", async () => {
+      await api(`/api/findings/${f.id}/send`, "POST", { to, subject, body: message });
+      try {
+        window.localStorage.setItem(emailKey, to);
+      } catch {}
+      toast.success(`Sent to ${to} through Gmail.`);
+    });
 
   const generate = () =>
     run("gen", async () => {
@@ -142,7 +173,14 @@ export function FindingReview({ finding: f, tasks, project }: { finding: Finding
       </section>
 
       {askable && f.review_status !== "dismissed" && (
-        <Section title="Ask the client" hint="Sera drafts the email. Open it in Gmail or Outlook, add the client's address, check it and press Send.">
+        <Section
+          title="Ask the client"
+          hint={
+            canSend
+              ? "Sera drafts the email. Add the client's address, check it, and send it through Gmail."
+              : "Sera drafts the email. Open it in Gmail or Outlook, add the client's address, check it and press Send."
+          }
+        >
           {!message ? (
             <Button variant="outline" className="self-start" disabled={!!busy} onClick={generate}>
               {busy === "gen" ? <Loader2 className="animate-spin" /> : <Mail />}
@@ -157,14 +195,21 @@ export function FindingReview({ finding: f, tasks, project }: { finding: Finding
                 </span>
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-success px-2.5 py-1 text-[0.7rem] font-semibold text-success-dark">
                   <span className="size-1.5 rounded-full bg-success-dark" />
-                  Opens in Gmail
+                  {canSend ? "Sends with Gmail" : "Opens in Gmail"}
                 </span>
               </div>
-              <div className="flex items-center gap-3 border-b border-cream-dark px-4 py-2.5 text-sm">
+              <label className="flex items-center gap-3 border-b border-cream-dark px-4 py-1.5 text-sm">
                 <span className="w-14 shrink-0 text-ink-muted">To</span>
-                <span className="font-semibold">{project.client_name}</span>
-                <span className="text-xs text-ink-muted">add their address in Gmail</span>
-              </div>
+                <input
+                  type="email"
+                  value={toEmail}
+                  onChange={(e) => setToEmail(e.target.value)}
+                  placeholder={`${project.client_name}'s email address`}
+                  autoComplete="email"
+                  className="h-8 min-w-0 flex-1 bg-transparent font-semibold outline-none placeholder:font-normal placeholder:text-ink-muted"
+                  aria-label="Client's email address"
+                />
+              </label>
               <label className="flex items-center gap-3 border-b border-cream-dark px-4 py-1.5 text-sm">
                 <span className="w-14 shrink-0 text-ink-muted">Subject</span>
                 <input value={subject} onChange={(e) => setSubject(e.target.value)} className="h-8 min-w-0 flex-1 bg-transparent font-semibold outline-none" aria-label="Subject" />
@@ -176,23 +221,29 @@ export function FindingReview({ finding: f, tasks, project }: { finding: Finding
                 aria-label="Email body"
               />
               <div className="flex flex-wrap items-center gap-2 border-t border-cream-dark bg-cream/40 px-3 py-2.5">
+                {canSend && (
+                  <Button size="sm" disabled={!!busy || !reviewed || !validTo || !subject.trim() || !message.trim()} onClick={send}>
+                    {busy === "send" ? <Loader2 className="animate-spin" /> : <Send />}
+                    Send with Gmail
+                  </Button>
+                )}
                 <a
-                  href={gmailComposeUrl({ subject, body: message })}
+                  href={gmailComposeUrl({ to: validTo ? to : undefined, subject, body: message })}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => toast.success("Opened in Gmail. Once you've sent it, set the client's answer to Sent.")}
-                  className={buttonVariants({ size: "sm" })}
+                  className={buttonVariants({ size: "sm", variant: canSend ? "outline" : "default" })}
                 >
                   <Mail />
                   Open in Gmail
                   <ArrowUpRight />
                 </a>
                 <a
-                  href={outlookComposeUrl({ subject, body: message })}
+                  href={outlookComposeUrl({ to: validTo ? to : undefined, subject, body: message })}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => toast.success("Opened in Outlook. Once you've sent it, set the client's answer to Sent.")}
-                  className={buttonVariants({ size: "sm", variant: "outline" })}
+                  className={buttonVariants({ size: "sm", variant: "ghost" })}
                 >
                   Outlook
                 </a>
@@ -211,6 +262,11 @@ export function FindingReview({ finding: f, tasks, project }: { finding: Finding
                   Redraft
                 </Button>
               </div>
+              {canSend && (!reviewed || !validTo) && (
+                <p className="border-t border-cream-dark bg-cream/40 px-4 py-2 text-xs text-ink-muted">
+                  {!reviewed ? "Confirm the finding above to send it." : "Add the client's email address to send it."}
+                </p>
+              )}
             </div>
           )}
 

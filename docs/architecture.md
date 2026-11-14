@@ -76,6 +76,7 @@ Migration `0003_baseline_and_auto_tasks.sql` adds `conversations.is_baseline` (t
 | `POST /api/conversations/[id]/analyze` | Retry / re-run (60 s) |
 | `PATCH /api/findings/[id]` | Category, notes, review status, client status, saved message. Client status requires `reviewed` |
 | `POST /api/findings/[id]/message` | Generate and save the client confirmation message |
+| `POST /api/findings/[id]/send` | Send the change request through Gmail (`to`, `subject`, `body`); only for a confirmed change, only to `SEND_ALLOWLIST` recipients when set, 10 an hour per user; then sets Sent to client and saves the message |
 | `POST /api/tasks`, `PATCH/DELETE /api/tasks/[id]` | Follow-up tasks |
 | `POST /api/transcribe` | Transcribe an uploaded recording (own folder only), then delete it (120 s) |
 | `POST /api/intake` | From segments or pasted text: label speakers, file under `project_id` if given (API only; the UI always lets Sera decide), else match (the model sees each project's name, client, scope and latest call summary) or create the project; add and analyze the conversation (120 s) |
@@ -108,7 +109,8 @@ lib/sample/demo.ts                      full demo data: two projects, summaries,
 lib/sample/seed.ts                      seedDemoData(): inserts the demo data for the signed-in user
 lib/demo-account.ts                     shared demo account email + password (public)
 lib/projects/calendar.ts                Google Calendar "create event" link (no OAuth)
-lib/projects/email.ts                   Gmail / Outlook "compose" links with subject + body (no OAuth; Sera sends nothing)
+lib/projects/email.ts                   Gmail / Outlook "compose" links with to + subject + body (no OAuth)
+lib/email/gmail.ts                      Send with Gmail: nodemailer over SMTP (smtp.gmail.com:587) with one server-side Gmail account + App Password; allowlist, rate limit
 lib/ask/ask.ts                          Ask Sera: loadAskData (RLS), buildAskPrompt (refs P1/C1/F1/T1), askSera, resolveSources
 lib/ask/types.ts, limit.ts              shared response types; best-effort per-user rate limit
 components/ask/ask-bar.tsx              the prompt bar: text + push-to-talk, suggestions, answer, sources, draft
@@ -117,7 +119,7 @@ scripts/eval-analysis.ts                npm run eval
 ```
 
 ## Environment variables
-`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `OPENAI_API_KEY`, `OPENAI_ANALYSIS_MODEL`, `OPENAI_TRANSCRIBE_MODEL` (fallback when speaker separation is unavailable), `OPENAI_ASK_MODEL` (optional, Ask Sera; defaults to the analysis model), `APP_URL`. Without the Supabase keys the app shows a "not configured" notice instead of crashing.
+`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `OPENAI_API_KEY`, `OPENAI_ANALYSIS_MODEL`, `OPENAI_TRANSCRIBE_MODEL` (fallback when speaker separation is unavailable), `OPENAI_ASK_MODEL` (optional, Ask Sera; defaults to the analysis model), `APP_URL`, `GMAIL_USER` + `GMAIL_APP_PASSWORD` (Send with Gmail; without them the button is hidden and Open in Gmail remains), `SEND_ALLOWLIST` (comma-separated addresses or @domains allowed to receive; set it on the public demo), `SMTP_HOST` / `SMTP_PORT` (optional, for testing another SMTP server). Without the Supabase keys the app shows a "not configured" notice instead of crashing.
 
 ## Verification
 `npx tsc --noEmit`, `npm run lint`, `npm run build`, `npm run eval` (needs the key and credits). Grounding and redaction were checked offline against fabricated and drifted quotes.

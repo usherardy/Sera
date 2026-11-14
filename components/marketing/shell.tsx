@@ -133,7 +133,7 @@ const INTEGRATIONS: { icon: React.ReactNode; name: string; d: string; live?: boo
   {
     icon: <Mail />,
     name: "Gmail",
-    d: "When a client asks for more or changes the plan, Sera drafts the email. Approve it and it opens in your Gmail, ready to send.",
+    d: "When a client asks for more or changes the plan, Sera drafts the change request. Approve it and send it through Gmail in one click.",
     live: true,
   },
   { icon: <Inbox />, name: "Outlook", d: "The same for Outlook: your approved change request opens as a draft in your own inbox.", live: true },
