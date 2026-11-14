@@ -2,6 +2,11 @@
 
 Newest first. Add an entry for **every** meaningful change, in the same change as the code. Format: `## YYYY-MM-DD` then bullets: what changed and why; note which docs were updated.
 
+## 2026-11-14 (cleaner project page)
+- Project page simplified so it reads at a glance instead of as a dense report: the four stat boxes, the review banner, the dark "Where it stands" card and the three Follow-through columns are replaced by a header with fact chips and one status line, a **Scope** card (*Agreed* beside *Since then*, every change one row with a plain status pill), **To do** (your tasks, unowned promises, client promises) and **Calls** (latest first).
+- Approved changes move into *Agreed* ("Approved later"); open changes stay in *Since then*. Every row still opens the finding's review with its quote.
+- Updated `docs/features.md`, `docs/design-system.md`.
+
 ## 2026-11-14 (Ask Sera)
 - **Ask Sera bar** on Home (all clients) and on each project page (that project only): type or say a question ("What deadlines are coming up?", "Was anything flagged in the last meeting?", "Revise the project and draft an email to the client"). Three suggested questions per page.
 - Answers come only from stored agreements, calls, findings and tasks: a short answer, key points, and source cards (finding badge + the exact quote from the database, linked to its review drawer; tasks, calls, projects). If it isn't in your calls, it says so.

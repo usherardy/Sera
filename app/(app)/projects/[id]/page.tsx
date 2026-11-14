@@ -1,21 +1,21 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { ArrowLeft, CalendarDays, FileText, MessagesSquare } from "lucide-react";
+import { ArrowLeft, CalendarDays, Check, ChevronRight, MessagesSquare, X } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AskBar } from "@/components/ask/ask-bar";
 import { SampleBadge } from "@/components/common/badges";
 import { EmptyState, SectionHeader } from "@/components/common/layout-bits";
 import { AddConversationButton } from "@/components/projects/add-conversation";
 import { EditAgreementButton } from "@/components/projects/project-form-dialog";
-import { CalendarLink } from "@/components/projects/calendar-link";
-import { FindingListItem, ProcessingLine } from "@/components/projects/project-bits";
+import { ProcessingLine } from "@/components/projects/project-bits";
 import { TaskList } from "@/components/projects/task-list";
 import { getViewer } from "@/lib/viewer";
 import { formatClock, formatDateOnly, formatDayHeading, localDateOf } from "@/lib/format";
 import { getProject } from "@/lib/projects/data";
-import { FINDING_ORDER, awaitingClient, formatMoney, isChangeCategory, needsReview } from "@/lib/projects/meta";
-import type { Conversation, FindingWithSource, Project, Task } from "@/lib/projects/types";
+import { FINDING_META, FINDING_ORDER, awaitingClient, formatMoney, isChangeCategory, needsReview } from "@/lib/projects/meta";
+import type { FindingWithSource } from "@/lib/projects/types";
+import { cn } from "@/lib/utils";
 
 export default function ProjectPage({ params }: PageProps<"/projects/[id]">) {
   return (
@@ -31,95 +31,71 @@ export default function ProjectPage({ params }: PageProps<"/projects/[id]">) {
   );
 }
 
-function Stat({ value, label, tone }: { value: number; label: string; tone?: "alert" }) {
+/* ---------------------------------------------------------------- pieces */
+
+type Tone = "review" | "muted" | "waiting" | "declined";
+const TONE: Record<Tone, string> = {
+  review: "bg-warning text-warning-dark",
+  muted: "bg-secondary text-ink-muted",
+  waiting: "bg-dawn text-ink",
+  declined: "bg-error-bg text-pulse",
+};
+
+/** Where a possible change is, in plain words. Client approval is never implied by review. */
+function changeState(f: FindingWithSource): { label: string; tone: Tone; rank: number } {
+  if (f.review_status === "ai_detected") return { label: "Needs your review", tone: "review", rank: 0 };
+  if (f.client_status === "not_sent") return { label: "Not sent yet", tone: "muted", rank: 1 };
+  if (f.client_status === "sent") return { label: "Waiting on client", tone: "waiting", rank: 2 };
+  return { label: "Client declined", tone: "declined", rank: 3 };
+}
+
+const OTHER_LABEL: Partial<Record<FindingWithSource["category"], string>> = { existing_scope: "In scope", idea: "Idea" };
+
+const isClientPromise = (f: FindingWithSource) => f.category === "commitment" && (f.owner_label ?? "").trim().toLowerCase() === "client";
+
+const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+
+function Fact({ children, icon }: { children: React.ReactNode; icon?: React.ReactNode }) {
   return (
-    <div className="surface px-4 py-3">
-      <p className={`font-serif text-3xl leading-none ${tone === "alert" && value > 0 ? "text-[#8a4d00]" : ""}`}>{value}</p>
-      <p className="mt-1 text-xs font-semibold text-ink-muted">{label}</p>
-    </div>
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--hairline)] bg-paper px-3 py-1.5 text-sm font-semibold shadow-[var(--sera-shadow-soft)] [&_svg]:size-3.5">
+      {icon}
+      {children}
+    </span>
   );
 }
 
-function FindingRow({ f, projectId }: { f: FindingWithSource; projectId: string }) {
-  return <FindingListItem f={f} href={`/projects/${projectId}/conversations/${f.conversation_id}?finding=${f.id}`} context={`From ${f.conversation.title}`} />;
-}
-
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
+/** One finding as a single tidy row: dot, title, a short quote, where it came from, and its status. Opens the review. */
+function FindingLine({ f, projectId, pill, tone }: { f: FindingWithSource; projectId: string; pill: string; tone: Tone }) {
   return (
-    <div className="grid gap-1 sm:grid-cols-[9rem_1fr] sm:gap-4">
-      <dt className="font-mono text-[0.7rem] tracking-wider text-cream/60 uppercase">{label}</dt>
-      <dd className="text-[0.9375rem] leading-relaxed text-cream">{children}</dd>
-    </div>
+    <li>
+      <Link
+        href={`/projects/${projectId}/conversations/${f.conversation_id}?finding=${f.id}`}
+        className="-mx-3 flex items-start gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-cream/70"
+      >
+        <span className={cn("mt-[0.45rem] size-2 shrink-0 rounded-full", FINDING_META[f.category].dot)} />
+        <span className="min-w-0 flex-1">
+          <span className="block leading-snug font-semibold">{f.title}</span>
+          <span className="mt-1 block truncate font-serif text-[0.95rem] text-ink/65 italic">“{f.source_quote}”</span>
+          <span className="mt-1 block text-xs text-ink-muted">
+            {FINDING_META[f.category].label} · {f.conversation.title}
+          </span>
+        </span>
+        <span className={cn("shrink-0 rounded-full px-2.5 py-1 text-[0.7rem] font-semibold whitespace-nowrap", TONE[tone])}>{pill}</span>
+      </Link>
+    </li>
   );
 }
 
-/** "Where this project stands", built only from stored data: no AI involved. */
-function ProjectStatus({
-  p,
-  live,
-  tasks,
-  latest,
-}: {
-  p: Project;
-  live: FindingWithSource[];
-  tasks: Task[];
-  latest: Conversation | undefined;
-}) {
-  const of = (c: FindingWithSource["category"]) => live.filter((f) => f.category === c);
-  const additions = of("potential_scope_addition");
-  const changes = of("scope_modification");
-  const questions = of("clarification_needed");
-  const changeItems = [...additions, ...changes, ...questions];
-  const approved = changeItems.filter((f) => f.client_status === "approved").length;
-  const rejected = changeItems.filter((f) => f.client_status === "rejected").length;
-  const sent = changeItems.filter((f) => f.review_status === "reviewed" && f.client_status === "sent").length;
-  const unreviewed = changeItems.filter((f) => f.review_status === "ai_detected").length;
-  const open = tasks.filter((t) => t.status === "open").sort((a, b) => (a.due_date ?? "9999").localeCompare(b.due_date ?? "9999"));
-  const next = open[0];
-  const discussed = changes.find((f) => f.due_date && /deadline|due|deliver/i.test(`${f.title} ${f.related_scope_item ?? ""}`));
-  const names = (xs: FindingWithSource[]) => (xs.length ? `: ${xs.map((x) => x.title).join(", ")}` : "");
-
+function ColumnTitle({ children, count }: { children: React.ReactNode; count?: number }) {
   return (
-    <section className="flex flex-col gap-5 rounded-panel bg-fathom p-6 text-cream sm:p-8">
-      <h2 className="display text-3xl sm:text-4xl">
-        Where it <em>stands</em>
-      </h2>
-      <dl className="flex flex-col gap-3.5">
-        <Row label="Agreed">
-          {p.agreed_scope.length ? p.agreed_scope.join(", ") : "No deliverables recorded yet"} · {formatMoney(p.fixed_price, p.currency)} ·{" "}
-          {p.deadline ? `due ${formatDateOnly(p.deadline)}` : "no deadline"}
-          {approved > 0 && ` · plus ${approved} approved change${approved === 1 ? "" : "s"}`}
-        </Row>
-        <Row label="Since then">
-          {changeItems.length === 0 ? (
-            "No possible changes found yet."
-          ) : (
-            <>
-              {additions.length} possible addition{additions.length === 1 ? "" : "s"}
-              {names(additions)}. {changes.length} change{changes.length === 1 ? "" : "s"}
-              {names(changes)}. {questions.length} open question{questions.length === 1 ? "" : "s"}
-              {names(questions)}.
-            </>
-          )}
-        </Row>
-        {changeItems.length > 0 && (
-          <Row label="Client">
-            {approved} approved · {rejected} rejected · {sent} waiting for a reply · {unreviewed} not reviewed by you yet
-          </Row>
-        )}
-        {discussed && (
-          <Row label="Deadline">
-            Discussed {formatDateOnly(discussed.due_date!)} instead of {p.deadline ? formatDateOnly(p.deadline) : "the original"}; not confirmed by the client yet.
-          </Row>
-        )}
-        <Row label="Follow-ups">
-          {open.length === 0 ? "Nothing open." : `${open.length} open${next ? `. Next: ${next.title}${next.due_date ? ` (${formatDateOnly(next.due_date)})` : ""}` : ""}.`}
-        </Row>
-        {latest?.summary && <Row label="Latest call">{`${latest.title}: ${latest.summary}`}</Row>}
-      </dl>
-    </section>
+    <p className="eyebrow mb-3">
+      {children}
+      {count != null && <span className="ml-1.5 text-ink/40">{count}</span>}
+    </p>
   );
 }
+
+/* ---------------------------------------------------------------- page */
 
 async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">["params"] }) {
   const { id } = await params;
@@ -129,20 +105,26 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
 
   const live = findings.filter((f) => f.review_status !== "dismissed");
   const changes = live.filter((f) => isChangeCategory(f.category));
+  // What's in the deal now = original agreement + what the client approved later (shown, never merged in).
+  const approved = changes.filter((f) => f.review_status === "reviewed" && f.client_status === "approved");
+  const open = changes
+    .filter((f) => !approved.includes(f))
+    .map((f) => ({ f, s: changeState(f) }))
+    .sort((a, b) => a.s.rank - b.s.rank || FINDING_ORDER.indexOf(a.f.category) - FINDING_ORDER.indexOf(b.f.category));
   const toReview = changes.filter(needsReview);
-  const waiting = live.filter(awaitingClient);
-  const commitments = live.filter((f) => f.category === "commitment");
+  const waiting = changes.filter(awaitingClient);
   const others = live.filter((f) => !isChangeCategory(f.category) && f.category !== "commitment");
-  const openTasks = tasks.filter((t) => t.status === "open");
-  // The current scope = original agreement + what the client approved later (shown separately, never merged in).
-  const approvedChanges = changes.filter((f) => f.review_status === "reviewed" && f.client_status === "approved");
+  const clientPromises = live.filter(isClientPromise);
+  // Your promises become tasks automatically; promises with no owner stated don't, so list them here and nothing is lost.
+  const untracked = live.filter((f) => f.category === "commitment" && !(f.owner_label ?? "").trim() && !tasks.some((t) => t.finding_id === f.id));
+  const openTasks = tasks.filter((t) => t.status === "open").sort((a, b) => (a.due_date ?? "9999").localeCompare(b.due_date ?? "9999"));
+  const next = openTasks[0];
 
   // Deadline corrections are surfaced next to, never over, the original deadline.
   const discussedDeadlines = live.filter(
     (f) => f.category === "scope_modification" && f.due_date && /deadline|due|deliver/i.test(`${f.title} ${f.related_scope_item ?? ""}`),
   );
-  const orderIdx = (f: FindingWithSource) => FINDING_ORDER.indexOf(f.category);
-  const sortedChanges = [...changes].sort((a, b) => orderIdx(a) - orderIdx(b));
+  const calls = [...conversations].reverse(); // latest first
 
   return (
     <div className="flex flex-col gap-12">
@@ -153,19 +135,38 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
         </div>
         <h1 className="display text-[2.6rem] sm:text-6xl">{p.name}</h1>
         {p.original_description && <p className="max-w-2xl text-base text-ink-muted sm:text-lg">{p.original_description}</p>}
-        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3">
-          <Stat value={conversations.length} label="Conversations" />
-          <Stat value={toReview.length} label="Changes to review" tone="alert" />
-          <Stat value={waiting.length} label="Awaiting client" />
-          <Stat value={openTasks.length} label="Open follow-ups" />
+        <div className="flex flex-wrap items-center gap-2">
+          <Fact>{formatMoney(p.fixed_price, p.currency)}</Fact>
+          <Fact icon={<CalendarDays />}>{p.deadline ? `Due ${formatDateOnly(p.deadline)}` : "No deadline"}</Fact>
+          {discussedDeadlines.map((f) => (
+            <span key={f.id} className="rounded-full bg-purple/15 px-3 py-1.5 text-xs font-semibold text-[#5b4596]">
+              Discussed {formatDateOnly(f.due_date!)}, not confirmed
+            </span>
+          ))}
+          <Fact icon={<MessagesSquare />}>{plural(conversations.length, "call")}</Fact>
         </div>
-        {toReview.length > 0 ? (
-          <p className="rounded-card bg-glow/20 px-4 py-3 text-sm font-semibold text-[#8a4d00]">
-            {toReview.length} possible change{toReview.length === 1 ? "" : "s"} to the original agreement need{toReview.length === 1 ? "s" : ""} your review.
-          </p>
-        ) : conversations.length > 0 ? (
-          <p className="rounded-card bg-success/25 px-4 py-3 text-sm font-semibold text-success-dark">Nothing waiting for your review.</p>
-        ) : null}
+        {conversations.length > 0 && (
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+            {toReview.length > 0 ? (
+              <a href="#scope" className="inline-flex items-center gap-2 rounded-full bg-warning px-3 py-1.5 font-semibold text-warning-dark hover:underline">
+                <span className="size-1.5 rounded-full bg-[#c27a2c]" />
+                {plural(toReview.length, "change")} to review
+              </a>
+            ) : (
+              <span className="inline-flex items-center gap-2 rounded-full bg-success px-3 py-1.5 font-semibold text-success-dark">
+                <Check className="size-3.5" />
+                Nothing to review
+              </span>
+            )}
+            {waiting.length > 0 && <span className="font-semibold text-ink/70">Waiting on the client for {waiting.length}</span>}
+            {next && (
+              <span className="text-ink/70">
+                Next up: <span className="font-semibold text-ink">{next.title}</span>
+                {next.due_date && ` · ${formatDateOnly(next.due_date)}`}
+              </span>
+            )}
+          </div>
+        )}
       </header>
 
       {conversations.length > 0 && (
@@ -176,190 +177,154 @@ async function ProjectContent({ params }: { params: PageProps<"/projects/[id]">[
         />
       )}
 
-      {conversations.length > 0 && (
-        <ProjectStatus p={p} live={live} tasks={tasks} latest={[...conversations].reverse().find((c) => c.summary)} />
-      )}
-
-      <section className="flex flex-col gap-5">
+      <section id="scope" className="flex scroll-mt-24 flex-col gap-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <SectionHeader title="Original agreement" />
+          <SectionHeader title="Scope" />
           <EditAgreementButton project={p} />
         </div>
-        <div className="surface grid gap-6 p-5 sm:grid-cols-[1fr_1fr] sm:p-6">
-          <div>
-            <p className="eyebrow mb-3">Agreed deliverables</p>
-            {p.agreed_scope.length === 0 && (
+        <div className="surface grid grid-cols-1 md:grid-cols-2">
+          <div className="min-w-0 p-5 sm:p-6">
+            <ColumnTitle>Agreed</ColumnTitle>
+            {p.agreed_scope.length === 0 && approved.length === 0 ? (
               <p className="rounded-md bg-warning px-3 py-2 text-sm font-semibold text-warning-dark">
                 No deliverables recorded yet. Add them with Edit agreement so Sera has something to compare against.
               </p>
+            ) : (
+              <ul className="flex flex-col gap-2.5">
+                {p.agreed_scope.map((s) => (
+                  <li key={s} className="flex items-start gap-2.5">
+                    <Check className="mt-0.5 size-4 shrink-0 text-success-dark" />
+                    {s}
+                  </li>
+                ))}
+                {approved.map((f) => (
+                  <li key={f.id} className="flex items-start gap-2.5">
+                    <Check className="mt-0.5 size-4 shrink-0 text-success-dark" />
+                    <span>
+                      {f.title}{" "}
+                      <span className="ml-1 rounded-full bg-success px-2 py-0.5 align-middle text-[0.7rem] font-semibold whitespace-nowrap text-success-dark">
+                        Approved later
+                      </span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
             )}
-            <ul className="flex flex-col gap-2">
-              {p.agreed_scope.map((s) => (
-                <li key={s} className="flex items-start gap-2.5 text-[0.9375rem]">
-                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-fathom" />
-                  {s}
-                </li>
-              ))}
-            </ul>
             {p.exclusions.length > 0 && (
               <>
                 <p className="eyebrow mt-6 mb-3">Not included</p>
-                <ul className="flex flex-col gap-2">
+                <ul className="flex flex-col gap-2.5">
                   {p.exclusions.map((s) => (
-                    <li key={s} className="flex items-start gap-2.5 text-[0.9375rem] text-ink/80">
-                      <span className="mt-2 size-1.5 shrink-0 rounded-full bg-pulse" />
+                    <li key={s} className="flex items-start gap-2.5 text-ink/60">
+                      <X className="mt-0.5 size-4 shrink-0 text-pulse/70" />
                       {s}
                     </li>
                   ))}
                 </ul>
               </>
             )}
-            {approvedChanges.length > 0 && (
+          </div>
+          <div className="min-w-0 border-t border-cream-dark p-5 sm:p-6 md:border-t-0 md:border-l">
+            <ColumnTitle count={open.length}>Since then</ColumnTitle>
+            {open.length === 0 ? (
+              <p className="text-sm text-ink-muted">
+                {conversations.length === 0 ? "Record a call and anything new the client asks for shows up here." : "Nothing new asked for. Everything discussed fits the agreement."}
+              </p>
+            ) : (
+              <ul className="flex flex-col">
+                {open.map(({ f, s }) => (
+                  <FindingLine key={f.id} f={f} projectId={p.id} pill={s.label} tone={s.tone} />
+                ))}
+              </ul>
+            )}
+            {others.length > 0 && (
+              <details className="group mt-3 border-t border-cream-dark pt-3">
+                <summary className="flex cursor-pointer list-none items-center gap-1.5 text-sm font-semibold text-ink/70 hover:text-ink">
+                  <ChevronRight className="size-4 transition-transform group-open:rotate-90" />
+                  Also noted: {plural(others.length, "item")} already in scope or ideas for later
+                </summary>
+                <ul className="mt-1 flex flex-col">
+                  {others.map((f) => (
+                    <FindingLine key={f.id} f={f} projectId={p.id} pill={OTHER_LABEL[f.category] ?? "Noted"} tone="muted" />
+                  ))}
+                </ul>
+              </details>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-5">
+        <SectionHeader title="To do" count={openTasks.length} />
+        <div className={cn("surface grid grid-cols-1", clientPromises.length > 0 && "md:grid-cols-2")}>
+          <div className="min-w-0 p-5 sm:p-6">
+            <ColumnTitle>Your tasks</ColumnTitle>
+            <TaskList tasks={tasks.filter((t) => t.status === "open" || tasks.length <= 8)} projectName={p.name} />
+            {untracked.length > 0 && (
               <>
-                <p className="eyebrow mt-6 mb-1">Approved since</p>
-                <p className="mb-3 text-xs text-ink-muted">Added by the client after the original agreement. Later calls count these as in scope.</p>
-                <ul className="flex flex-col gap-2">
-                  {approvedChanges.map((f) => (
-                    <li key={f.id} className="flex items-start gap-2.5 text-[0.9375rem]">
-                      <span className="mt-2 size-1.5 shrink-0 rounded-full bg-success-dark" />
-                      <span>
-                        {f.title} <span className="text-xs text-ink-muted">· from {f.conversation.title}</span>
-                      </span>
-                    </li>
+                <p className="eyebrow mt-6 mb-1">Promised on a call</p>
+                <ul className="flex flex-col">
+                  {untracked.map((f) => (
+                    <FindingLine key={f.id} f={f} projectId={p.id} pill={f.due_date ? formatDateOnly(f.due_date) : "No date"} tone="muted" />
                   ))}
                 </ul>
               </>
             )}
           </div>
-          <dl className="flex flex-col gap-4">
-            <div>
-              <dt className="eyebrow">Fixed price</dt>
-              <dd className="font-serif text-3xl">{formatMoney(p.fixed_price, p.currency)}</dd>
+          {clientPromises.length > 0 && (
+            <div className="min-w-0 border-t border-cream-dark p-5 sm:p-6 md:border-t-0 md:border-l">
+              <ColumnTitle count={clientPromises.length}>The client promised</ColumnTitle>
+              <ul className="flex flex-col">
+                {clientPromises.map((f) => (
+                  <FindingLine key={f.id} f={f} projectId={p.id} pill={f.due_date ? formatDateOnly(f.due_date) : "No date"} tone="waiting" />
+                ))}
+              </ul>
             </div>
-            <div>
-              <dt className="eyebrow">Original deadline</dt>
-              <dd className="inline-flex items-center gap-2 font-serif text-3xl">
-                <CalendarDays className="size-5" />
-                {p.deadline ? formatDateOnly(p.deadline) : "Not set"}
-              </dd>
-              {discussedDeadlines.map((f) => (
-                <dd key={f.id} className="mt-2 rounded-md bg-purple/15 px-2.5 py-1.5 text-xs font-semibold text-[#5b4596]">
-                  Discussed: {formatDateOnly(f.due_date!)} (not confirmed by the client)
-                </dd>
-              ))}
-            </div>
-          </dl>
+          )}
         </div>
       </section>
 
       <section className="flex flex-col gap-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <SectionHeader title="Conversations" count={conversations.length} />
+          <SectionHeader title="Calls" count={conversations.length} />
           {conversations.length > 0 && <AddConversationButton projectId={p.id} variant="outline" size="sm" />}
         </div>
         {conversations.length === 0 ? (
           <EmptyState
             icon={<MessagesSquare />}
-            title="No conversations yet."
-            body="Add a client conversation and Sera will compare it with the original agreement."
+            title="No calls yet."
+            body="Record or add a client call and Sera will compare it with the agreement."
             action={<AddConversationButton projectId={p.id} />}
           />
         ) : (
-          <ul className="surface divide-y divide-cream-dark">
-            {conversations.map((c) => (
+          <ol className="surface divide-y divide-cream-dark">
+            {calls.map((c, i) => (
               <li key={c.id}>
-                <Link href={`/projects/${p.id}/conversations/${c.id}`} className="flex flex-col gap-1.5 p-4 transition-colors hover:bg-cream/60">
-                  <span className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="font-semibold">{c.title}</span>
-                    <ProcessingLine status={c.processing_status} />
-                  </span>
-                  <span className="eyebrow">
-                    {formatDayHeading(localDateOf(c.recorded_at, viewer.timezone))} · {formatClock(c.recorded_at, viewer.timezone)}
-                    {c.is_sample && " · Sample"}
-                  </span>
-                  {c.summary && <span className="text-sm text-ink-muted">{c.summary}</span>}
+                <Link href={`/projects/${p.id}/conversations/${c.id}`} className="group flex items-start gap-4 p-5 transition-colors hover:bg-cream/60">
+                  <div className="min-w-0 flex-1">
+                    <span className="flex flex-wrap items-center gap-2">
+                      <span className="eyebrow">
+                        {formatDayHeading(localDateOf(c.recorded_at, viewer.timezone))} · {formatClock(c.recorded_at, viewer.timezone)}
+                      </span>
+                      {i === 0 && conversations.length > 1 && (
+                        <span className="rounded-full bg-dawn px-2 py-0.5 text-[0.7rem] font-semibold">Latest</span>
+                      )}
+                      {c.is_sample && <SampleBadge />}
+                    </span>
+                    <span className="mt-1.5 block font-semibold">{c.title}</span>
+                    {c.summary && <span className="mt-1 line-clamp-2 block text-sm text-ink-muted">{c.summary}</span>}
+                    {c.processing_status !== "completed" && (
+                      <span className="mt-2 block">
+                        <ProcessingLine status={c.processing_status} />
+                      </span>
+                    )}
+                  </div>
+                  <ChevronRight className="mt-1 size-4 shrink-0 text-ink-muted transition-transform group-hover:translate-x-0.5" />
                 </Link>
               </li>
             ))}
-          </ul>
+          </ol>
         )}
-      </section>
-
-      <section className="flex flex-col gap-5">
-        <SectionHeader title="Scope changes" count={changes.length} />
-        {sortedChanges.length === 0 ? (
-          <EmptyState
-            icon={<FileText />}
-            title="No scope changes detected."
-            body="Possible additions, changes and open questions from your conversations appear here, each with its evidence."
-          />
-        ) : (
-          <ul className="surface divide-y divide-cream-dark">
-            {sortedChanges.map((f) => (
-              <FindingRow key={f.id} f={f} projectId={p.id} />
-            ))}
-          </ul>
-        )}
-        {others.length > 0 && (
-          <details className="surface group">
-            <summary className="cursor-pointer list-none p-4 text-sm font-semibold">
-              Also noted <span className="font-mono text-ink-muted">{others.length}</span>
-              <span className="ml-2 text-ink-muted">already in scope, ideas for later</span>
-            </summary>
-            <ul className="divide-y divide-cream-dark border-t border-cream-dark">
-              {others.map((f) => (
-                <FindingRow key={f.id} f={f} projectId={p.id} />
-              ))}
-            </ul>
-          </details>
-        )}
-      </section>
-
-      <section className="flex flex-col gap-5">
-        <SectionHeader title="Follow-through" />
-        <div className="grid gap-4 sm:grid-cols-3">
-          <div className="surface flex flex-col gap-3 p-5">
-            <p className="eyebrow">Commitments</p>
-            {commitments.length === 0 ? (
-              <p className="text-sm text-ink-muted">None detected.</p>
-            ) : (
-              <ul className="flex flex-col gap-3">
-                {commitments.map((f) => (
-                  <li key={f.id} className="text-sm">
-                    <Link href={`/projects/${p.id}/conversations/${f.conversation_id}?finding=${f.id}`} className="font-semibold hover:underline">
-                      {f.title}
-                    </Link>
-                    <span className="block text-xs text-ink-muted">
-                      {f.owner_label ?? "Owner not stated"} · {f.due_date ? formatDateOnly(f.due_date) : "No deadline stated"}
-                    </span>
-                    <CalendarLink title={f.title} date={f.due_date} details={`${p.name}\n“${f.source_quote}”\n(from Sera)`} className="-ml-1.5" />
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-          <div className="surface flex flex-col gap-3 p-5">
-            <p className="eyebrow">Tasks</p>
-            <TaskList tasks={tasks.filter((t) => t.status === "open" || tasks.length <= 8)} projectName={p.name} />
-          </div>
-          <div className="surface flex flex-col gap-3 p-5">
-            <p className="eyebrow">Awaiting client</p>
-            {waiting.length === 0 ? (
-              <p className="text-sm text-ink-muted">No approvals pending.</p>
-            ) : (
-              <ul className="flex flex-col gap-3">
-                {waiting.map((f) => (
-                  <li key={f.id} className="text-sm">
-                    <Link href={`/projects/${p.id}/conversations/${f.conversation_id}?finding=${f.id}`} className="font-semibold hover:underline">
-                      {f.title}
-                    </Link>
-                    <span className="block text-xs text-ink-muted">{f.client_status === "sent" ? "Sent, no reply recorded" : "Not sent yet"}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </div>
       </section>
     </div>
   );

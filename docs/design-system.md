@@ -8,7 +8,8 @@ Token names are kept from v1 so components didn't need renaming.
 - **Cards** `--paper #FFFFFF` with a hairline border `rgba(20,30,80,0.08)` and soft navy shadows (`--sera-shadow-soft`, `--sera-shadow-lift`). No hard offset shadows.
 - **Text** `--ink #121214`, muted `--ink-muted #6B6A73`. Dividers `--cream-dark #EBE6DD`.
 - **Lavender** `--dawn #ECE6FF` for selected states and highlights; `--dawn-strong #D9CFF8` for their borders.
-- **Dark hero cards** `--fathom #1B1A24` with white text (e.g. "Where it stands").
+- **Dark hero cards** `--fathom #1B1A24` with white text (used sparingly; the project page no longer has one).
+- **Split cards:** one white card with two columns and a hairline divider (stacked on phones), each column with a mono eyebrow, e.g. the project page's *Agreed | Since then*. List rows inside are one line of status each: dot, title, a truncated serif quote, a muted context line, a pill on the right.
 - **Pastel chips with deep text:** caramel `--glow #C28148` (possible additions), purple `--purple #5C4A99` (scope changes), peach `--warning #FFE9CF` / `#8A5A2A` (needs clarification, sample badges), pink `--signal #FFC9E5` (commitments), mint `--success #C9F5E0` / `#1A5C3A` (approved, reviewed). Errors: `--pulse #B4232C` on `--error-bg #FDE8E8`.
 - Category styling lives in [lib/projects/meta.ts](../lib/projects/meta.ts).
 
